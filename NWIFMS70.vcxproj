@@ -1,0 +1,496 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{A3FEAE91-CB1F-4800-9D48-D03B2BA916FB}</ProjectGuid>
+    <RootNamespace>NWIFMS70</RootNamespace>
+    <Keyword>MFCProj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v110_xp</PlatformToolset>
+    <UseOfMfc>Static</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v110_xp</PlatformToolset>
+    <UseOfMfc>Static</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>11.0.61030.0</_ProjectFileVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir>$(Configuration)\</IntDir>
+    <LinkIncremental>false</LinkIncremental>
+    <IncludePath>F:\Projects\nwilib70\Debug;C:\app\PRODUCT\11.2.0\CLIENT\oo4o\CPP\INCLUDE;C:\Program Files %28x86%29\FarPoint Technologies\Spread 8\Include;$(VCInstallDir)include;$(VCInstallDir)atlmfc\include;$(WindowsSDK_IncludePath)</IncludePath>
+    <LibraryPath>$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir>$(Configuration)\</IntDir>
+    <LinkIncremental>false</LinkIncremental>
+    <IncludePath>F:\Projects\nwilib70\nwilib70;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Midl>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+      <ValidateAllParameters>true</ValidateAllParameters>
+    </Midl>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>F:\Projects\nwilib70\nwilib70;C:\app\product\11.2.0\client\oo4o\CPP\INCLUDE;C:\Program Files\FarPoint Technologies\Spread 8\Include;F:\Projects\blpapi_cpp_3.6.3.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
+      <ExceptionHandling>false</ExceptionHandling>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0409</Culture>
+      <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Link>
+      <AdditionalDependencies>oraclm32.lib;nwilib70.lib;spr32d80.lib;blpapi3_32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>F:\Projects\nwilib70\Debug;C:\app\product\11.2.0\client\oo4o\CPP\LIB;C:\Program Files (X86)\FarPoint Technologies\Spread 8\Lib;F:\Projects\blpapi_cpp_3.6.3.1\lib</AdditionalLibraryDirectories>
+      <IgnoreSpecificDefaultLibraries>msvcrtd.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <TargetMachine>MachineX86</TargetMachine>
+      <ManifestFile>$(InDir)$(TargetName)$(TargetExt).intermediate.manifest</ManifestFile>
+      <MinimumRequiredVersion>5.01</MinimumRequiredVersion>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Midl>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+      <ValidateAllParameters>true</ValidateAllParameters>
+    </Midl>
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <AdditionalIncludeDirectories>F:\Projects\NWIFMS70\NWIFMS70;C:\app\product\11.2.0\client\oo4o\CPP\INCLUDE;C:\Program Files\FarPoint Technologies\Spread 8\Include;F:\Projects\blpapi_cpp_3.6.3.1\include</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <ExceptionHandling />
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0409</Culture>
+      <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Link>
+      <AdditionalDependencies>oldnames.lib;nwilib70.lib;oraclm32.lib;blpapi3_32.lib;SPR32D80.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>F:\Projects\nwilib70\Release;C:\app\product\11.2.0\client\oo4o\CPP\LIB;C:\Program Files (x86)\FarPoint Technologies\Spread 8\Lib;F:\Projects\blpapi_cpp_3.6.3.1\lib</AdditionalLibraryDirectories>
+      <IgnoreSpecificDefaultLibraries>msvcrtd.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="AccountData.cpp" />
+    <ClCompile Include="AccountDlg.cpp" />
+    <ClCompile Include="AgentDlg.cpp" />
+    <ClCompile Include="Allocation.cpp" />
+    <ClCompile Include="AllocData.cpp" />
+    <ClCompile Include="AssetClassDlg.cpp" />
+    <ClCompile Include="AssetData.cpp" />
+    <ClCompile Include="ASSETDLG.CPP" />
+    <ClCompile Include="AssetFindData.cpp" />
+    <ClCompile Include="AssetIDView.cpp" />
+    <ClCompile Include="AssetMaster.cpp" />
+    <ClCompile Include="AssetMasterData.cpp" />
+    <ClCompile Include="AssetMasterRec.cpp" />
+    <ClCompile Include="AssetMaturityView.cpp" />
+    <ClCompile Include="AssetRateData.cpp" />
+    <ClCompile Include="AssetRec.cpp" />
+    <ClCompile Include="AssetSupplement.cpp" />
+    <ClCompile Include="AssetSupplementData.cpp" />
+    <ClCompile Include="AutoAllocationDlg.cpp" />
+    <ClCompile Include="AutoAllocData.cpp" />
+    <ClCompile Include="BankDlg.cpp" />
+    <ClCompile Include="BlmAssetData.cpp" />
+    <ClCompile Include="BlmDividendData.cpp" />
+    <ClCompile Include="BlmFXData.cpp" />
+    <ClCompile Include="BlmID.cpp" />
+    <ClCompile Include="BlmPriceData.cpp" />
+    <ClCompile Include="BlmRiskData.cpp" />
+    <ClCompile Include="BlockData.cpp" />
+    <ClCompile Include="Brokerfee.cpp" />
+    <ClCompile Include="BulkCopy.cpp" />
+    <ClCompile Include="CashData.cpp" />
+    <ClCompile Include="CashForm.cpp" />
+    <ClCompile Include="CashIRSIDDlg.cpp" />
+    <ClCompile Include="CashRec.cpp" />
+    <ClCompile Include="ChangeFundDlg.cpp" />
+    <ClCompile Include="ClaimCP.cpp" />
+    <ClCompile Include="ClaimData.cpp" />
+    <ClCompile Include="ClaimRec.cpp" />
+    <ClCompile Include="ClassView.cpp" />
+    <ClCompile Include="ClearingFeeData.cpp" />
+    <ClCompile Include="ClearingFeeDlg.cpp" />
+    <ClCompile Include="ConfirmData.cpp" />
+    <ClCompile Include="ConfirmView.cpp" />
+    <ClCompile Include="Connect.cpp" />
+    <ClCompile Include="ContractConvertor.cpp" />
+    <ClCompile Include="Country.cpp" />
+    <ClCompile Include="CountryData.cpp" />
+    <ClCompile Include="CouponDlg.cpp" />
+    <ClCompile Include="CouponListDlg.cpp" />
+    <ClCompile Include="CPCounterpartyDlg.cpp" />
+    <ClCompile Include="CPData.cpp" />
+    <ClCompile Include="CPDialog.cpp" />
+    <ClCompile Include="CPRec.cpp" />
+    <ClCompile Include="CurrencyData.cpp" />
+    <ClCompile Include="CurrencyDlg.cpp" />
+    <ClCompile Include="DailyInput.cpp" />
+    <ClCompile Include="DATEDLG.CPP" />
+    <ClCompile Include="DISPERR.CPP" />
+    <ClCompile Include="Docdata.cpp" />
+    <ClCompile Include="DPView.cpp" />
+    <ClCompile Include="EntryData.cpp" />
+    <ClCompile Include="ErrorEntryLinkDlg.cpp" />
+    <ClCompile Include="FileView.cpp" />
+    <ClCompile Include="FindDlg.cpp" />
+    <ClCompile Include="FloatRepo.cpp" />
+    <ClCompile Include="FloatRepoData.cpp" />
+    <ClCompile Include="FloatRepoRec.cpp" />
+    <ClCompile Include="FmsData.cpp" />
+    <ClCompile Include="FmsTicket.cpp" />
+    <ClCompile Include="FourField.cpp" />
+    <ClCompile Include="FSRec.cpp" />
+    <ClCompile Include="FundSizing.cpp" />
+    <ClCompile Include="FxSource.cpp" />
+    <ClCompile Include="IdeaApprovalView.cpp" />
+    <ClCompile Include="IdeaBlotterView.cpp" />
+    <ClCompile Include="IdeaData.cpp" />
+    <ClCompile Include="IdeaEntryView.cpp" />
+    <ClCompile Include="IdeaFindDlg.cpp" />
+    <ClCompile Include="IdeaRec.cpp" />
+    <ClCompile Include="Invert.cpp" />
+    <ClCompile Include="InvestorData.cpp" />
+    <ClCompile Include="InvestorDialog.cpp" />
+    <ClCompile Include="InvestorRec.cpp" />
+    <ClCompile Include="IRSReceivableDlg.cpp" />
+    <ClCompile Include="IssuerDlg.cpp" />
+    <ClCompile Include="MainFrm.cpp" />
+    <ClCompile Include="Maintenance.cpp" />
+    <ClCompile Include="MaturityTicket.cpp" />
+    <ClCompile Include="NavChange.cpp" />
+    <ClCompile Include="NWIFMS70.cpp" />
+    <ClCompile Include="NWIFMS70Doc.cpp" />
+    <ClCompile Include="NWIFMS70View.cpp" />
+    <ClCompile Include="OneField.cpp" />
+    <ClCompile Include="OptExpDlg.cpp" />
+    <ClCompile Include="OptMap.cpp" />
+    <ClCompile Include="OptSettlementDlg.cpp" />
+    <ClCompile Include="OrderData.cpp" />
+    <ClCompile Include="OrderEntry.cpp" />
+    <ClCompile Include="OrderRec.cpp" />
+    <ClCompile Include="OtherFeeDlg.cpp" />
+    <ClCompile Include="OtherMaint.cpp" />
+    <ClCompile Include="OutputWnd.cpp" />
+    <ClCompile Include="Password.cpp" />
+    <ClCompile Include="PastDueTrades.cpp" />
+    <ClCompile Include="Payment.cpp" />
+    <ClCompile Include="PaymentData.cpp" />
+    <ClCompile Include="PaymentRec.cpp" />
+    <ClCompile Include="PaymentRestriction.cpp" />
+    <ClCompile Include="PaymentTemplateDlg.cpp" />
+    <ClCompile Include="PayRestrictionData.cpp" />
+    <ClCompile Include="Portfolio.cpp" />
+    <ClCompile Include="PortfolioAccount.cpp" />
+    <ClCompile Include="PortfolioAccountData.cpp" />
+    <ClCompile Include="PortfolioData.cpp" />
+    <ClCompile Include="PortfolioInfo.cpp" />
+    <ClCompile Include="PortfolioInfoData.cpp" />
+    <ClCompile Include="PRICE.CPP" />
+    <ClCompile Include="PrimeCPMargin.cpp" />
+    <ClCompile Include="ProcessData.cpp" />
+    <ClCompile Include="ProhibitList.cpp" />
+    <ClCompile Include="PropertiesWnd.cpp" />
+    <ClCompile Include="RawTicketRec.cpp" />
+    <ClCompile Include="RefIndexDlg.cpp" />
+    <ClCompile Include="RepoCouponData.cpp" />
+    <ClCompile Include="RepoCouponRec.cpp" />
+    <ClCompile Include="RepoPrice.cpp" />
+    <ClCompile Include="Report.cpp" />
+    <ClCompile Include="ReportData.cpp" />
+    <ClCompile Include="ReportDate.cpp" />
+    <ClCompile Include="ReportDef.cpp" />
+    <ClCompile Include="RiskRec.cpp" />
+    <ClCompile Include="RLETTER.CPP" />
+    <ClCompile Include="RunReport.cpp" />
+    <ClCompile Include="RunReportDlg.cpp" />
+    <ClCompile Include="SECFee.cpp" />
+    <ClCompile Include="SetConventionDlg.cpp" />
+    <ClCompile Include="ShortCash.cpp" />
+    <ClCompile Include="ShortCashData.cpp" />
+    <ClCompile Include="stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="ThreeField.cpp" />
+    <ClCompile Include="TicketApproval.cpp" />
+    <ClCompile Include="TicketApprovalData.cpp" />
+    <ClCompile Include="TicketBlock.cpp" />
+    <ClCompile Include="TicketClass.cpp" />
+    <ClCompile Include="TicketEntry.cpp" />
+    <ClCompile Include="TicketFXEntry.cpp" />
+    <ClCompile Include="TicketProcess.cpp" />
+    <ClCompile Include="TicketRec.cpp" />
+    <ClCompile Include="TOKENOBJ.CPP" />
+    <ClCompile Include="TrenchCopyDlg.cpp" />
+    <ClCompile Include="TwoField.cpp" />
+    <ClCompile Include="ViewTree.cpp" />
+    <ClCompile Include="XCurrencyDlg.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="AccountData.h" />
+    <ClInclude Include="AccountDlg.h" />
+    <ClInclude Include="AgentDlg.h" />
+    <ClInclude Include="Allocation.h" />
+    <ClInclude Include="AllocData.h" />
+    <ClInclude Include="AssetClassDlg.h" />
+    <ClInclude Include="AssetData.h" />
+    <ClInclude Include="ASSETDLG.H" />
+    <ClInclude Include="AssetFindData.h" />
+    <ClInclude Include="AssetIDView.h" />
+    <ClInclude Include="AssetMaster.h" />
+    <ClInclude Include="AssetMasterData.h" />
+    <ClInclude Include="AssetMasterRec.h" />
+    <ClInclude Include="AssetMaturityView.h" />
+    <ClInclude Include="AssetRateData.h" />
+    <ClInclude Include="AssetRec.h" />
+    <ClInclude Include="AssetSupplement.h" />
+    <ClInclude Include="AssetSupplementData.h" />
+    <ClInclude Include="AutoAllocationDlg.h" />
+    <ClInclude Include="AutoAllocData.h" />
+    <ClInclude Include="BankDlg.h" />
+    <ClInclude Include="BlmAssetData.h" />
+    <ClInclude Include="BlmDividendData.h" />
+    <ClInclude Include="BlmFXData.h" />
+    <ClInclude Include="BlmID.h" />
+    <ClInclude Include="BlmPriceData.h" />
+    <ClInclude Include="BlmRiskData.h" />
+    <ClInclude Include="BlockData.h" />
+    <ClInclude Include="Brokerfee.h" />
+    <ClInclude Include="BulkCopy.h" />
+    <ClInclude Include="CashData.h" />
+    <ClInclude Include="CashForm.h" />
+    <ClInclude Include="CashIRSIDDlg.h" />
+    <ClInclude Include="CashRec.h" />
+    <ClInclude Include="ChangeFundDlg.h" />
+    <ClInclude Include="ClaimCP.h" />
+    <ClInclude Include="ClaimData.h" />
+    <ClInclude Include="ClaimRec.h" />
+    <ClInclude Include="ClassView.h" />
+    <ClInclude Include="ClearingFeeData.h" />
+    <ClInclude Include="ClearingFeeDlg.h" />
+    <ClInclude Include="ConfirmData.h" />
+    <ClInclude Include="ConfirmView.h" />
+    <ClInclude Include="Connect.h" />
+    <ClInclude Include="ContractConvertor.h" />
+    <ClInclude Include="Country.h" />
+    <ClInclude Include="CountryData.h" />
+    <ClInclude Include="CouponDlg.h" />
+    <ClInclude Include="CouponListDlg.h" />
+    <ClInclude Include="CPCounterpartyDlg.h" />
+    <ClInclude Include="CPData.h" />
+    <ClInclude Include="CPDialog.h" />
+    <ClInclude Include="CPRec.h" />
+    <ClInclude Include="CurrencyData.h" />
+    <ClInclude Include="CurrencyDlg.h" />
+    <ClInclude Include="DailyInput.h" />
+    <ClInclude Include="DATEDLG.H" />
+    <ClInclude Include="DISPERR.H" />
+    <ClInclude Include="DocData.h" />
+    <ClInclude Include="DPView.h" />
+    <ClInclude Include="EntryData.h" />
+    <ClInclude Include="ErrorEntryLinkDlg.h" />
+    <ClInclude Include="FileView.h" />
+    <ClInclude Include="FindDlg.h" />
+    <ClInclude Include="FloatRepo.h" />
+    <ClInclude Include="FloatRepoData.h" />
+    <ClInclude Include="FloatRepoRec.h" />
+    <ClInclude Include="FmsData.h" />
+    <ClInclude Include="FmsTicket.h" />
+    <ClInclude Include="FourField.h" />
+    <ClInclude Include="FSRec.h" />
+    <ClInclude Include="FundSizing.h" />
+    <ClInclude Include="FxSource.h" />
+    <ClInclude Include="IdeaApprovalView.h" />
+    <ClInclude Include="IdeaBlotterView.h" />
+    <ClInclude Include="IdeaData.h" />
+    <ClInclude Include="IdeaEntryView.h" />
+    <ClInclude Include="IdeaFindDlg.h" />
+    <ClInclude Include="IdeaRec.h" />
+    <ClInclude Include="Invert.h" />
+    <ClInclude Include="InvestorData.h" />
+    <ClInclude Include="InvestorDialog.h" />
+    <ClInclude Include="InvestorRec.h" />
+    <ClInclude Include="IRSReceivableDlg.h" />
+    <ClInclude Include="IssuerDlg.h" />
+    <ClInclude Include="MainFrm.h" />
+    <ClInclude Include="Maintenance.h" />
+    <ClInclude Include="MaturityTicket.h" />
+    <ClInclude Include="NavChange.h" />
+    <ClInclude Include="NWIFMS70.h" />
+    <ClInclude Include="NWIFMS70Doc.h" />
+    <ClInclude Include="NWIFMS70View.h" />
+    <ClInclude Include="OneField.h" />
+    <ClInclude Include="OptExpDlg.h" />
+    <ClInclude Include="OptMap.h" />
+    <ClInclude Include="OptSettlementDlg.h" />
+    <ClInclude Include="OrderData.h" />
+    <ClInclude Include="OrderEntry.h" />
+    <ClInclude Include="OrderRec.h" />
+    <ClInclude Include="OtherFeeDlg.h" />
+    <ClInclude Include="OtherMaint.h" />
+    <ClInclude Include="OutputWnd.h" />
+    <ClInclude Include="Password.h" />
+    <ClInclude Include="PastDueTrades.h" />
+    <ClInclude Include="Payment.h" />
+    <ClInclude Include="PaymentData.h" />
+    <ClInclude Include="PaymentRec.h" />
+    <ClInclude Include="PaymentRestriction.h" />
+    <ClInclude Include="PaymentTemplateDlg.h" />
+    <ClInclude Include="PayRestrictionData.h" />
+    <ClInclude Include="Portfolio.h" />
+    <ClInclude Include="PortfolioAccount.h" />
+    <ClInclude Include="PortfolioAccountData.h" />
+    <ClInclude Include="PortfolioData.h" />
+    <ClInclude Include="PortfolioInfo.h" />
+    <ClInclude Include="PortfolioInfoData.h" />
+    <ClInclude Include="PRICE.H" />
+    <ClInclude Include="PrimeCPMargin.h" />
+    <ClInclude Include="ProcessData.h" />
+    <ClInclude Include="ProhibitList.h" />
+    <ClInclude Include="PropertiesWnd.h" />
+    <ClInclude Include="RawTicketRec.h" />
+    <ClInclude Include="RefIndexDlg.h" />
+    <ClInclude Include="RepoCouponData.h" />
+    <ClInclude Include="RepoCouponRec.h" />
+    <ClInclude Include="RepoPrice.h" />
+    <ClInclude Include="Report.h" />
+    <ClInclude Include="ReportData.H" />
+    <ClInclude Include="ReportDate.h" />
+    <ClInclude Include="ReportDef.h" />
+    <ClInclude Include="Resource.h" />
+    <ClInclude Include="RiskRec.h" />
+    <ClInclude Include="RLETTER.H" />
+    <ClInclude Include="RunReport.h" />
+    <ClInclude Include="RunReportDlg.h" />
+    <ClInclude Include="SECFee.h" />
+    <ClInclude Include="SetConventionDlg.h" />
+    <ClInclude Include="ShortCash.h" />
+    <ClInclude Include="ShortCashData.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="targetver.h" />
+    <ClInclude Include="ThreeField.h" />
+    <ClInclude Include="TicketApproval.h" />
+    <ClInclude Include="TicketApprovalData.h" />
+    <ClInclude Include="TicketBlock.h" />
+    <ClInclude Include="TicketClass.h" />
+    <ClInclude Include="TicketEntry.h" />
+    <ClInclude Include="TicketFXEntry.h" />
+    <ClInclude Include="TicketProcess.h" />
+    <ClInclude Include="TicketRec.h" />
+    <ClInclude Include="TOKENOBJ.H" />
+    <ClInclude Include="TrenchCopyDlg.h" />
+    <ClInclude Include="TwoField.h" />
+    <ClInclude Include="ViewTree.h" />
+    <ClInclude Include="XCurrencyDlg.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\class_view.ico" />
+    <Image Include="res\class_view_hc.ico" />
+    <Image Include="res\classview.bmp" />
+    <Image Include="res\classview_hc.bmp" />
+    <Image Include="res\explorer.bmp" />
+    <Image Include="res\explorer_hc.bmp" />
+    <Image Include="res\file_view.ico" />
+    <Image Include="res\file_view_hc.ico" />
+    <Image Include="res\fileview.bmp" />
+    <Image Include="res\fileview_hc.bmp" />
+    <Image Include="res\menuimages.bmp" />
+    <Image Include="res\menuimages_hc.bmp" />
+    <Image Include="res\NWIFMS70.ico" />
+    <Image Include="res\NWIFMS70Doc.ico" />
+    <Image Include="res\output_wnd.ico" />
+    <Image Include="res\output_wnd_hc.ico" />
+    <Image Include="res\properties.bmp" />
+    <Image Include="res\properties_hc.bmp" />
+    <Image Include="res\properties_wnd.ico" />
+    <Image Include="res\properties_wnd_hc.ico" />
+    <Image Include="res\sort.bmp" />
+    <Image Include="res\sort_hc.bmp" />
+    <Image Include="res\Toolbar.bmp" />
+    <Image Include="res\Toolbar256.bmp" />
+    <Image Include="UserImages.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="NWIFMS70.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="res\NWIFMS70.rc2" />
+    <None Include="ClassDiagram1.cd" />
+    <None Include="ClassDiagram11.cd" />
+    <None Include="NWIFMS70.reg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties RESOURCE_FILE="NWIFMS70.rc" />
+    </VisualStudio>
+  </ProjectExtensions>
+</Project>
