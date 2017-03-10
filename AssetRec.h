@@ -138,6 +138,7 @@ protected:
 	CString m_IRSTemplate;
 	CString m_Exchange;
 	CString m_Account;
+	CString m_ClearFee;
 
 public:
 	CAssetRec() {}
@@ -218,6 +219,7 @@ public:
 	CString &GetIRSTemplate() { return m_IRSTemplate; }
 	CString &GetExchange() { return m_Exchange; }
 	CString &GetAccount() { return m_Account; }
+	CString &GetClearFee() { return m_ClearFee; }
 
 	void SetAsset(LPCTSTR Asset) { m_Asset = Asset; }
 	void SetAssetID(LPCTSTR AssetID) { m_AssetID = AssetID; }
@@ -289,6 +291,7 @@ public:
 	void SetIRSTemplate(LPCTSTR IRSTemplate) { m_IRSTemplate = IRSTemplate; }
 	void SetExchange(LPCTSTR Exchange) { m_Exchange = Exchange; }
 	void SetAccount(LPCTSTR Account) { m_Account = Account; }
+	void SetClearFee(LPCTSTR ClearFee) { m_ClearFee = ClearFee; }
 
 	virtual void Copy(CAssetRec &AssetRec);
 	const CAssetRec &operator = (CAssetRec &AssetRec) { Copy(AssetRec); return *this; }

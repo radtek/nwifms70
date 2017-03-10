@@ -380,6 +380,7 @@ void CMaintenance::InitControls()
 	m_Par.Setup(this, IDC_MAINT_PARVAL_EDIT);
 	m_AdjF.Setup(this, IDC_MAINT_ADJFACTOR_EDIT);
 	m_SwapFactor.Setup(this, IDC_MAINT_SWAPFACTOR_EDIT);
+	m_ClearFee.Setup(this, IDC_MAINT_CLEARINGFEE_EDIT);
 	m_Amount.Setup(this, IDC_MAINT_AMOUNT_EDIT);
 	m_Underline.Setup(this, IDC_MAINT_UNDERLINE_EDIT);
 	m_Underline.LimitText(10);
@@ -455,6 +456,7 @@ void CMaintenance::InitControls()
 	m_Data.Add(&m_IRSTemplate, &m_Data.GetAssetRec().GetIRSTemplate());
 	m_Data.Add(&m_Exchange, &m_Data.GetAssetRec().GetExchange());
 	m_Data.Add(m_Account, &m_Data.GetAssetRec().GetAccount());
+	m_Data.Add(&m_ClearFee, &m_Data.GetAssetRec().GetClearFee());
 	m_Data.Add(&m_UnderlineID);
 	m_Data.Add(&m_Amount);
 	m_Data.Add(&m_Data.GetInvType());

@@ -81,6 +81,7 @@ public:
 	CNumEdit m_Par;
 	CNumEdit m_AdjF;
 	CNumEdit m_SwapFactor;
+	CNumEdit m_ClearFee;
 	CNumEdit m_Amount;
 	CCntlEdit m_Underline;
 	CCntlEdit m_UnderlineID;
