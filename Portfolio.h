@@ -1,5 +1,5 @@
-#if !defined(AFX_PORTFOLIO_H__442EC913_5C2A_11D5_A45F_00062926CA4A__INCLUDED_)
-#define AFX_PORTFOLIO_H__442EC913_5C2A_11D5_A45F_00062926CA4A__INCLUDED_
+#ifndef __PORTFOLIO_H__
+#define __PORTFOLIO_H__
 
 #if _MSC_VER > 1000
 #pragma once
@@ -77,4 +77,4 @@ protected:
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.
 
-#endif // !defined(AFX_PORTFOLIO_H__442EC913_5C2A_11D5_A45F_00062926CA4A__INCLUDED_)
+#endif 

@@ -1,5 +1,5 @@
-#if !defined(AFX_CONNECT_H__08236C77_01C8_11D4_A442_00062926CA4A__INCLUDED_)
-#define AFX_CONNECT_H__08236C77_01C8_11D4_A442_00062926CA4A__INCLUDED_
+#ifndef __CONNECT_H__
+#define __CONNECT_H__
 
 #if _MSC_VER > 1000
 #pragma once
@@ -10,8 +10,6 @@
 
 /////////////////////////////////////////////////////////////////////////////
 // CConnect dialog
-#ifndef __CONNECT_H__
-#define __CONNECT_H__
 
 class CConnect : public CDialog
 {
@@ -58,4 +56,3 @@ protected:
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.
 #endif
-#endif // !defined(AFX_CONNECT_H__08236C77_01C8_11D4_A442_00062926CA4A__INCLUDED_)

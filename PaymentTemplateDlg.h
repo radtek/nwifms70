@@ -1,5 +1,5 @@
-#if !defined(AFX_PAYMENTTEMPLATEDLG_H__819BEBBA_55A4_48F0_A8D5_D44E797A3A10__INCLUDED_)
-#define AFX_PAYMENTTEMPLATEDLG_H__819BEBBA_55A4_48F0_A8D5_D44E797A3A10__INCLUDED_
+#ifndef __PAYMENTTEMPLATEDLG_H__
+#define __PAYMENTTEMPLATEDLG_H__
 
 #if _MSC_VER > 1000
 #pragma once
@@ -87,4 +87,4 @@ public:
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.
 
-#endif // !defined(AFX_PAYMENTTEMPLATEDLG_H__819BEBBA_55A4_48F0_A8D5_D44E797A3A10__INCLUDED_)
+#endif 

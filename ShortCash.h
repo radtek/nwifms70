@@ -1,5 +1,5 @@
-#if !defined(AFX_SHORTCASH_H__3382F524_A723_4833_BCED_7EADA3D59E59__INCLUDED_)
-#define AFX_SHORTCASH_H__3382F524_A723_4833_BCED_7EADA3D59E59__INCLUDED_
+#ifndef __SHORTCASH_H__
+#define __SHORTCASH_H__
 
 #if _MSC_VER > 1000
 #pragma once
@@ -74,4 +74,4 @@ protected:
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.
 
-#endif // !defined(AFX_SHORTCASH_H__3382F524_A723_4833_BCED_7EADA3D59E59__INCLUDED_)
+#endif

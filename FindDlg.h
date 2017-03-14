@@ -1,5 +1,5 @@
-#if !defined(AFX_FINDDLG_H__631CA863_37DF_11D4_A445_00062926CA4A__INCLUDED_)
-#define AFX_FINDDLG_H__631CA863_37DF_11D4_A445_00062926CA4A__INCLUDED_
+#ifndef __FINDDLG_H__
+#define __FINDDLG_H__
 
 #if _MSC_VER > 1000
 #pragma once
@@ -56,4 +56,4 @@ protected:
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.
 
-#endif // !defined(AFX_FINDDLG_H__631CA863_37DF_11D4_A445_00062926CA4A__INCLUDED_)
+#endif 

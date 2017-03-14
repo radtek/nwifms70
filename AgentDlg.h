@@ -1,6 +1,5 @@
-#if !defined(AFX_AGENTDLG_H__14013CF1_9156_45B0_ADD5_AF3007B7987E__INCLUDED_)
-#define AFX_AGENTDLG_H__14013CF1_9156_45B0_ADD5_AF3007B7987E__INCLUDED_
-
+#ifndef __AGENTDLG_H__
+#define __AGENTDLG_H__
 #if _MSC_VER > 1000
 #pragma once
 #endif // _MSC_VER > 1000
@@ -65,4 +64,4 @@ protected:
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.
 
-#endif // !defined(AFX_AGENTDLG_H__14013CF1_9156_45B0_ADD5_AF3007B7987E__INCLUDED_)
+#endif 

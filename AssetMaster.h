@@ -189,4 +189,4 @@ inline CNWIFMS70Doc* CAssetMaster::GetDocument()
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.
 
-#endif // !defined(AFX_ASSETMASTER_H__487254CE_2828_4BFA_A3DC_3661BA4AB732__INCLUDED_)
+#endif 

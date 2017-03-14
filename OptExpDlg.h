@@ -1,5 +1,5 @@
-#if !defined(AFX_OPTEXPDLG_H__4228EA83_E994_11D5_A47F_00062926CA4A__INCLUDED_)
-#define AFX_OPTEXPDLG_H__4228EA83_E994_11D5_A47F_00062926CA4A__INCLUDED_
+#ifndef __OPTEXPDLG_H__
+#define __OPTEXPDLG_H__
 
 #if _MSC_VER > 1000
 #pragma once
@@ -48,4 +48,4 @@ protected:
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.
 
-#endif // !defined(AFX_OPTEXPDLG_H__4228EA83_E994_11D5_A47F_00062926CA4A__INCLUDED_)
+#endif 

@@ -1,5 +1,5 @@
-#if !defined(AFX_INVERT_H__996D4B63_1FB1_11D5_A459_00062926CA4A__INCLUDED_)
-#define AFX_INVERT_H__996D4B63_1FB1_11D5_A459_00062926CA4A__INCLUDED_
+#ifndef __INVERT_H__
+#define __INVERT_H__
 
 #if _MSC_VER > 1000
 #pragma once
@@ -49,4 +49,4 @@ protected:
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.
 
-#endif // !defined(AFX_INVERT_H__996D4B63_1FB1_11D5_A459_00062926CA4A__INCLUDED_)
+#endif 

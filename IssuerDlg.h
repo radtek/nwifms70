@@ -1,3 +1,6 @@
+#ifndef __ISSUERDLG_H__
+#define __ISSUERDLG_H__
+
 #pragma once
 
 #ifndef __ORALOADER_H__
@@ -47,3 +50,4 @@ public:
 	afx_msg void OnBnClickedIssuerClearButton();
 	afx_msg void OnEnChangeIssuerIssuerEdit();
 };
+#endif

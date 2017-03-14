@@ -1,3 +1,6 @@
+#ifndef __IRSRECEIVABLEDLG_H__
+#define __IRSRECEIVABLEDLG_H__
+
 #pragma once
 
 #ifndef __DOCDATA_H__
@@ -42,3 +45,4 @@ public:
 	afx_msg void OnBnClickedIrsDeleteButton();
 	afx_msg void OnBnClickedIrsLoadButton();
 };
+#endif

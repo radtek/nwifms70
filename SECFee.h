@@ -1,5 +1,5 @@
-#if !defined(AFX_SECFEE_H__C3889E4F_43BB_4939_89AF_94A5EA050BDC__INCLUDED_)
-#define AFX_SECFEE_H__C3889E4F_43BB_4939_89AF_94A5EA050BDC__INCLUDED_
+#ifndef __SECFEE_H__
+#define __SECFEE_H__
 
 #if _MSC_VER > 1000
 #pragma once
@@ -64,4 +64,4 @@ public:
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.
 
-#endif // !defined(AFX_SECFEE_H__C3889E4F_43BB_4939_89AF_94A5EA050BDC__INCLUDED_)
+#endif

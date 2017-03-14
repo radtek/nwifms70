@@ -1,5 +1,5 @@
-#if !defined(AFX_PASTDUETRADES_H__D2C6345E_5CC1_46DE_B2A1_592849255340__INCLUDED_)
-#define AFX_PASTDUETRADES_H__D2C6345E_5CC1_46DE_B2A1_592849255340__INCLUDED_
+#ifndef __PASTDUETRADES_H__
+#define __PASTDUETRADES_H__
 
 #if _MSC_VER > 1000
 #pragma once
@@ -50,4 +50,4 @@ protected:
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.
 
-#endif // !defined(AFX_PASTDUETRADES_H__D2C6345E_5CC1_46DE_B2A1_592849255340__INCLUDED_)
+#endif 

@@ -1,5 +1,5 @@
-#if !defined(AFX_CASHIRSIDDLG_H__C00975F6_3838_4998_9DBB_AA613E515743__INCLUDED_)
-#define AFX_CASHIRSIDDLG_H__C00975F6_3838_4998_9DBB_AA613E515743__INCLUDED_
+#ifndef __CASHIRSIDDLG_H__
+#define __CASHIRSIDDLG_H__
 
 #if _MSC_VER > 1000
 #pragma once
@@ -55,4 +55,4 @@ protected:
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.
 
-#endif // !defined(AFX_CASHIRSIDDLG_H__C00975F6_3838_4998_9DBB_AA613E515743__INCLUDED_)
+#endif 

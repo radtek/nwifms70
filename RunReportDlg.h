@@ -1,5 +1,5 @@
-#if !defined(AFX_RUNREPORTDLG_H__230A4D73_BCDB_11D5_A479_00062926CA4A__INCLUDED_)
-#define AFX_RUNREPORTDLG_H__230A4D73_BCDB_11D5_A479_00062926CA4A__INCLUDED_
+#ifndef __RUNREPORTDLG_H__
+#define __RUNREPORTDLG_H__
 
 #if _MSC_VER > 1000
 #pragma once
@@ -71,4 +71,4 @@ protected:
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.
 
-#endif // !defined(AFX_RUNREPORTDLG_H__230A4D73_BCDB_11D5_A479_00062926CA4A__INCLUDED_)
+#endif 

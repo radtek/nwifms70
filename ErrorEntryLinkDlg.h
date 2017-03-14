@@ -1,5 +1,5 @@
-#if !defined(AFX_ERRORENTRYLINKDLG_H__71A765D1_672F_45E2_8197_7A1B5FB63D58__INCLUDED_)
-#define AFX_ERRORENTRYLINKDLG_H__71A765D1_672F_45E2_8197_7A1B5FB63D58__INCLUDED_
+#ifndef __ERRORENTRYLINKDLG_H__
+#define __ERRORENTRYLINKDLG_H__
 
 #if _MSC_VER > 1000
 #pragma once
@@ -55,4 +55,4 @@ protected:
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.
 
-#endif // !defined(AFX_ERRORENTRYLINKDLG_H__71A765D1_672F_45E2_8197_7A1B5FB63D58__INCLUDED_)
+#endif 

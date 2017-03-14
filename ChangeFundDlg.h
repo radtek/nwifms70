@@ -1,5 +1,5 @@
-#if !defined(AFX_CHANGEFUNDDLG_H__7DC80761_AE1B_4348_9538_9461AB5699AE__INCLUDED_)
-#define AFX_CHANGEFUNDDLG_H__7DC80761_AE1B_4348_9538_9461AB5699AE__INCLUDED_
+#ifndef __CHANGEFUNDDLG_H__
+#define __CHANGEFUNDDLG_H__
 
 #if _MSC_VER > 1000
 #pragma once
@@ -55,4 +55,4 @@ protected:
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.
 
-#endif // !defined(AFX_CHANGEFUNDDLG_H__7DC80761_AE1B_4348_9538_9461AB5699AE__INCLUDED_)
+#endif 

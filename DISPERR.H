@@ -1,3 +1,6 @@
+#ifndef __DISPERR_H__
+#define __DISPERR_H__
+
 // disperr.h : header file
 //
 
@@ -33,3 +36,4 @@ protected:
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
 };
+#endif

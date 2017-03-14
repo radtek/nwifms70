@@ -1,5 +1,5 @@
-#if !defined(AFX_CLAIMCP_H__38D57E15_BCE1_4B42_9D94_B4FB705F7378__INCLUDED_)
-#define AFX_CLAIMCP_H__38D57E15_BCE1_4B42_9D94_B4FB705F7378__INCLUDED_
+#ifndef __CLAIMCP_H__
+#define __CLAIMCP_H__
 
 #if _MSC_VER > 1000
 #pragma once
@@ -73,4 +73,4 @@ protected:
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.
 
-#endif // !defined(AFX_CLAIMCP_H__38D57E15_BCE1_4B42_9D94_B4FB705F7378__INCLUDED_)
+#endif 

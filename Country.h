@@ -1,5 +1,5 @@
-#if !defined(AFX_COUNTRY_H__D228F893_640D_11D5_A45F_00062926CA4A__INCLUDED_)
-#define AFX_COUNTRY_H__D228F893_640D_11D5_A45F_00062926CA4A__INCLUDED_
+#ifndef __COUNTRY_H__
+#define __COUNTRY_H__
 
 #if _MSC_VER > 1000
 #pragma once
@@ -85,4 +85,4 @@ protected:
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.
 
-#endif // !defined(AFX_COUNTRY_H__D228F893_640D_11D5_A45F_00062926CA4A__INCLUDED_)
+#endif 

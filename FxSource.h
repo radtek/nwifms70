@@ -1,3 +1,6 @@
+#ifndef __FXSOURCE_H__
+#define __FXSOURCE_H__
+
 #pragma once
 
 #ifndef __DOCDATA_H__
@@ -48,3 +51,4 @@ public:
 	void OnDblClickFxSelList(long Col, long Row);
 	void OnDblClickFxList(long Col, long Row);
 };
+#endif

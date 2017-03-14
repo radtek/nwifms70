@@ -1,3 +1,6 @@
+#ifndef __AUTOALLOCATIONDLG_H__
+#define __AUTOALLOCATIONDLG_H__
+
 #pragma once
 
 #ifndef __DOCDATA_H__
@@ -48,3 +51,4 @@ public:
 	afx_msg void OnBnClickedAaUpdateButton();
 	afx_msg void OnBnClickedAaDeleteButton();
 };
+#endif

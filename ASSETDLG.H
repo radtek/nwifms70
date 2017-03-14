@@ -1,3 +1,6 @@
+#ifndef __ASSETDLG_H__
+#define __ASSETDLG_H__
+
 // assetdlg.h : header file
 //
 
@@ -125,3 +128,4 @@ public:
 	afx_msg void OnBnClickedAssetdlgAddposButton();
 	afx_msg void OnEnChangeAssetdlgAssetEdit();
 };
+#endif

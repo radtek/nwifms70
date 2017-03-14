@@ -1,5 +1,5 @@
-#if !defined(AFX_COUPONLISDLG_H__C1D39E3D_DF2D_42C3_99CA_398D881D6B4C__INCLUDED_)
-#define AFX_COUPONLISTDLG_H__C1D39E3D_DF2D_42C3_99CA_398D881D6B4C__INCLUDED_
+#ifndef __COUPONLISTDLG_H__
+#define __COUPONLISTDLG_H__
 
 #if _MSC_VER > 1000
 #pragma once
@@ -86,4 +86,4 @@ protected:
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.
 
-#endif // !defined(AFX_COUPONLISTDLG_H__C1D39E3D_DF2D_42C3_99CA_398D881D6B4C__INCLUDED_)
+#endif 

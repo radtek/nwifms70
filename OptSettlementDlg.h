@@ -1,5 +1,5 @@
-#if !defined(AFX_OPTSETTLEMENTDLG_H__14013CF1_9156_45B0_ADD5_AF3007B7987E__INCLUDED_)
-#define AFX_OPTSETTLEMENTDLG_H__14013CF1_9156_45B0_ADD5_AF3007B7987E__INCLUDED_
+#ifndef __OPTSETTLEMENTDLG_H__
+#define __OPTSETTLEMENTDLG_H__
 
 #if _MSC_VER > 1000
 #pragma once
@@ -59,4 +59,4 @@ protected:
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.
 
-#endif // !defined(AFX_OPTSETTLEMENTDLG_H__14013CF1_9156_45B0_ADD5_AF3007B7987E__INCLUDED_)
+#endif 

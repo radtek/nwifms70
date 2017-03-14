@@ -1,5 +1,5 @@
-#if !defined(AFX_DPVIEW_H__B95CFF63_76E0_11D5_A461_00062926CA4A__INCLUDED_)
-#define AFX_DPVIEW_H__B95CFF63_76E0_11D5_A461_00062926CA4A__INCLUDED_
+#ifndef __DPVIEW_H__
+#define __DPVIEW_H__
 
 #if _MSC_VER > 1000
 #pragma once
@@ -67,4 +67,4 @@ inline CNWIFMS70Doc* CDPView::GetDocument()
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.
 
-#endif // !defined(AFX_DPVIEW_H__B95CFF63_76E0_11D5_A461_00062926CA4A__INCLUDED_)
+#endif 

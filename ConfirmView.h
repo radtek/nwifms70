@@ -250,4 +250,4 @@ inline CNWIFMS70Doc* CConfirmView::GetDocument()
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.
 
-#endif // !defined(AFX_CONFIRMVIEW_H__B6609792_6A6C_4BE2_8F85_15C194A4E806__INCLUDED_)
+#endif

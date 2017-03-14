@@ -1,5 +1,5 @@
-#if !defined(AFX_INVESTORDIALOG_H__CCB8E6F3_4AE2_11D5_A45D_00062926CA4A__INCLUDED_)
-#define AFX_INVESTORDIALOG_H__CCB8E6F3_4AE2_11D5_A45D_00062926CA4A__INCLUDED_
+#ifndef __INVESTORDIALOG_H__
+#define __INVESTORDIALOG_H__
 
 #if _MSC_VER > 1000
 #pragma once
@@ -93,4 +93,4 @@ protected:
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.
 
-#endif // !defined(AFX_INVESTORDIALOG_H__CCB8E6F3_4AE2_11D5_A45D_00062926CA4A__INCLUDED_)
+#endif 

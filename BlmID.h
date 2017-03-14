@@ -1,5 +1,5 @@
-#if !defined(AFX_BLMID_H__BF18E259_C09D_467C_81D2_3F708B8DBA10__INCLUDED_)
-#define AFX_BLMID_H__BF18E259_C09D_467C_81D2_3F708B8DBA10__INCLUDED_
+#ifndef __BLMID_H__
+#define __BLMID_H__
 
 #if _MSC_VER > 1000
 #pragma once
@@ -61,4 +61,4 @@ protected:
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.
 
-#endif // !defined(AFX_BLMID_H__BF18E259_C09D_467C_81D2_3F708B8DBA10__INCLUDED_)
+#endif 

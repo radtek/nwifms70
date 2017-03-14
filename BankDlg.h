@@ -1,5 +1,5 @@
-#if !defined(AFX_BANKDLG_H__D58E4FB0_5FCE_4945_B679_EFDFDFBC8FDD__INCLUDED_)
-#define AFX_BANKDLG_H__D58E4FB0_5FCE_4945_B679_EFDFDFBC8FDD__INCLUDED_
+#ifndef __BANKDLG_H__
+#define __BANKDLG_H__
 
 #if _MSC_VER > 1000
 #pragma once
@@ -68,4 +68,4 @@ protected:
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.
 
-#endif // !defined(AFX_BANKDLG_H__D58E4FB0_5FCE_4945_B679_EFDFDFBC8FDD__INCLUDED_)
+#endif 

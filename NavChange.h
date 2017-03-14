@@ -1,5 +1,5 @@
-#if !defined(AFX_NAVCHANGE_H__11456903_644D_11D7_A4BE_00062926CA4A__INCLUDED_)
-#define AFX_NAVCHANGE_H__11456903_644D_11D7_A4BE_00062926CA4A__INCLUDED_
+#ifndef __NAVCHANGE_H__
+#define __NAVCHANGE_H__
 
 #if _MSC_VER > 1000
 #pragma once
@@ -57,4 +57,4 @@ protected:
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.
 
-#endif // !defined(AFX_NAVCHANGE_H__11456903_644D_11D7_A4BE_00062926CA4A__INCLUDED_)
+#endif 

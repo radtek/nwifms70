@@ -1,5 +1,5 @@
-#if !defined(AFX_ALLOCATION_H__5B177684_0594_11D4_A442_00062926CA4A__INCLUDED_)
-#define AFX_ALLOCATION_H__5B177684_0594_11D4_A442_00062926CA4A__INCLUDED_
+#ifndef __ALLOCATION_H__
+#define __ALLOCATION_H__
 
 #if _MSC_VER > 1000
 #pragma once
@@ -122,4 +122,4 @@ public:
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.
 
-#endif // !defined(AFX_ALLOCATION_H__5B177684_0594_11D4_A442_00062926CA4A__INCLUDED_)
+#endif 

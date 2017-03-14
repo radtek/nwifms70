@@ -1,5 +1,5 @@
-#if !defined(AFX_PAYMENTRESTRICTION_H__A7EDE01B_CF1E_4C48_BB6D_B5C61FA403E7__INCLUDED_)
-#define AFX_PAYMENTRESTRICTION_H__A7EDE01B_CF1E_4C48_BB6D_B5C61FA403E7__INCLUDED_
+#ifndef __PAYMENTRESTRICTION_H__
+#define __PAYMENTRESTRICTION_H__
 
 #if _MSC_VER > 1000
 #pragma once
@@ -74,4 +74,4 @@ protected:
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.
 
-#endif // !defined(AFX_PAYMENTRESTRICTION_H__A7EDE01B_CF1E_4C48_BB6D_B5C61FA403E7__INCLUDED_)
+#endif 

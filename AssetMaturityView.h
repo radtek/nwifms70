@@ -1,3 +1,6 @@
+#ifndef __ASSETMATURITYVIEW_H__
+#define __ASSETMATURITYVIEW_H__
+
 #pragma once
 
 #ifndef __NWIFMS70DOC_H__
@@ -86,6 +89,7 @@ public:
 	afx_msg void OnCbnSelchangeAssetmaturityCpCombo();
 	afx_msg void OnCbnSelchangeAssetmaturityOrimaturityCombo();
 };
+#endif
 
 #ifndef _DEBUG  // debug version in CTicketEntry.cpp
 inline CNWIFMS70Doc* CAssetMaturityView::GetDocument()

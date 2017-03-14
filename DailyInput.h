@@ -1,5 +1,5 @@
-#if !defined(AFX_DAILYINPUT_H__135E6CD4_065D_11D4_A442_00062926CA4A__INCLUDED_)
-#define AFX_DAILYINPUT_H__135E6CD4_065D_11D4_A442_00062926CA4A__INCLUDED_
+#ifndef __DAILYINPUT_H__
+#define __DAILYINPUT_H__
 
 #if _MSC_VER > 1000
 #pragma once
@@ -177,4 +177,4 @@ inline CNWIFMS70Doc* CDailyInput::GetDocument()
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.
 
-#endif // !defined(AFX_DAILYINPUT_H__135E6CD4_065D_11D4_A442_00062926CA4A__INCLUDED_)
+#endif 

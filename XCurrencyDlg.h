@@ -1,5 +1,5 @@
-#if !defined(AFX_XCURRENCYDLG_H__B84A170F_9BEB_48DB_9B39_537E8D74F047__INCLUDED_)
-#define AFX_XCURRENCYDLG_H__B84A170F_9BEB_48DB_9B39_537E8D74F047__INCLUDED_
+#ifndef __XCURRENCYDLG_H__
+#define __XCURRENCYDLG_H__
 
 #if _MSC_VER > 1000
 #pragma once
@@ -93,4 +93,4 @@ protected:
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.
 
-#endif // !defined(AFX_XCURRENCYDLG_H__B84A170F_9BEB_48DB_9B39_537E8D74F047__INCLUDED_)
+#endif 

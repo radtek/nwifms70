@@ -1,5 +1,5 @@
-#if !defined(AFX_MAINTENANCE_H__5B17768A_0594_11D4_A442_00062926CA4A__INCLUDED_)
-#define AFX_MAINTENANCE_H__5B17768A_0594_11D4_A442_00062926CA4A__INCLUDED_
+#ifndef __MAINTENANCE_H__
+#define __MAINTENANCE_H__
 
 #if _MSC_VER > 1000
 #pragma once
@@ -227,4 +227,4 @@ inline CNWIFMS70Doc* CMaintenance::GetDocument()
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.
 
-#endif // !defined(AFX_MAINTENANCE_H__5B17768A_0594_11D4_A442_00062926CA4A__INCLUDED_)
+#endif 
