@@ -566,7 +566,6 @@ BOOL CProcessData::UpdateFxRef(CString TransNum, CString Portfolio)
 		}
 	}
 
-	GetFxRecArray().RemoveAll(); // Remove link
 	return TRUE;
 }
 

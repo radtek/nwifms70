@@ -29,19 +29,31 @@ CDocData::~CDocData()
 	m_AssetTypeArr.RemoveAll();
 	m_AssetProfileTypeArr.RemoveAll();
 	m_AccountArr.RemoveAll();
+	m_BlmKeyArr.RemoveAll();
 	m_BucketArr.RemoveAll();
 	m_CategoryArr.RemoveAll();
+	m_CDSFeeTypeArr.RemoveAll();
 	m_RateBasisArr.RemoveAll();
 	m_TraderArr.RemoveAll();
 	m_PFUArr.RemoveAll();
+	m_CashTypeArr.RemoveAll();
+	m_PmntFrqArr.RemoveAll();
+	m_IssuerArr.RemoveAll();
+	m_ActionArr.RemoveAll();
+	m_RateTypeArr.RemoveAll();
+	m_MethodArr.RemoveAll();
 	m_IndexArr.RemoveAll();
 	m_LevelArr.RemoveAll();
 	m_OptSetArr.RemoveAll();
+	m_FxSetConvArr.RemoveAll();
+	m_CTArr.RemoveAll();
+	m_FutureTypeArr.RemoveAll();
+	m_TrDescArr.RemoveAll();
+	m_ContactList.RemoveAll();
 	m_BestExecutionArr.RemoveAll();
 	m_PFClassArr.RemoveAll();
 	m_PFSubClassArr.RemoveAll();
 	m_ContactList.RemoveAll();
-	m_BlmKeyArr.RemoveAll();
 	m_YieldCurveArr.RemoveAll();
 }
 
@@ -61,6 +73,7 @@ void CDocData::LoadAssetData(BOOL Refresh)
 					"WHERE TYPE_FLAG = 'Y' ORDER BY 1", Refresh);
 	LoadDBRecArray(m_AssetProfileTypeArr, "SELECT IND_CODE FROM SEMAM.NW_INDUSTRIES "
 					"ORDER BY 1", Refresh);
+	LoadDBRecArray(m_FutureTypeArr, "SELECT FUTURE_TYPE FROM SEMAM.NW_FUTURE_TYPE ORDER BY 1 ", Refresh);
 	LoadDBRecArray(m_PmntFrqArr, "SELECT PAYMENT_FREQ, FREQ_DESC FROM SEMAM.NW_PAYMENT_FREQ "
 					"ORDER BY 1", Refresh);
 	LoadDBRecArray(m_IssuerArr, "SELECT ISSUER FROM SEMAM.NW_ISSUERS "

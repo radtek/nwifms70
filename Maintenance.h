@@ -104,6 +104,7 @@ public:
 	COptComboBox* m_CitiClass;
 	COptComboBox* m_BlmKey;
 	COptComboBox* m_Account;
+	COptComboBox* m_FutureType;
 	
 	CMCComboBox m_Index;
 	CMCComboBox m_Bucket;

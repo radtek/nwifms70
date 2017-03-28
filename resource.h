@@ -190,6 +190,8 @@
 #define IDD_TRADEORDER_FORM             455
 #define IDD_TRENCHCOPY_DIALOG           456
 #define IDR_MENU1                       458
+#define IDD_DIALOG1                     459
+#define IDD_FUTURE_COMM_SCHEDULE_DIALOG 459
 #define IDC_ACCOUNT_COMBO               701
 #define IDC_ACCOUNT_GROUP_EDIT          702
 #define IDC_ACCOUNT_COLLATERAL_CHECK    703
@@ -1008,6 +1010,7 @@
 #define IDC_MAINT_CAP_STATIC            2194
 #define IDC_MAIN_PLUS_AMT_STATIC        2195
 #define IDC_MAINT_ACTION_STATIC         2196
+#define IDC_MAINT_FUTTYPE_COMBO         2197
 #define IDC_DAILY_INPUT_DATE_EDIT       2201
 #define IDC_DAILY_INPUT_LIST            2202
 #define IDC_NAV_DATE_EDIT               2221
@@ -2011,6 +2014,17 @@
 #define IDC_TRENCH_TICKET_EDIT          4101
 #define IDC_TRENCH_CODE_COMBO           4102
 #define IDC_TRENCH_LIST                 4103
+#define IDC_FC_CP_COMBO                 4121
+#define IDC_FC_TRANSTYPE_COMBO          4122
+#define IDC_FC_CURRENCY_COMBO           4123
+#define IDC_FC_FUTURETYPE_COMBO         4124
+#define IDC_FC_ETRADE_CHECK             4125
+#define IDC_FC_COMMISSION_EDIT          4126
+#define IDC_FC_LIST                     4127
+#define IDC_FC_LOAD_BUTTON              4128
+#define IDC_FC_ADD_BUTTON               4129
+#define IDC_FC_UPDATE_BUTTON            4130
+#define IDC_FC_DELETE_BUTTON            4131
 #define ID_UPDATEINFO                   32771
 #define ID_PASSWORD                     32772
 #define ID_TICKET_BLOTTER               32781
@@ -2206,8 +2220,11 @@
 #define ID_CONFIRM_CLEAR                33097
 #define ID_DAILY_QUICKDIVIDEND          33097
 #define ID_CONFIRM_FIND                 33098
+#define ID_DAILY_QUICKOPTIONPRICE       33098
 #define ID_CONFIRM_FIND_EXACT_TICKET    33099
+#define ID_DAILY_QUICKOPTPRICE          33099
 #define ID_CONFIRM_FIND_TICKET          33100
+#define ID_DAILY_QUICKSWAPPRICE         33100
 #define ID_CONFIRM_UPDATE               33101
 #define ID_CONFIRM_DELETE               33102
 #define ID_CONFIRM_CLEAR_SCREEN         33103
@@ -2272,9 +2289,9 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        459
-#define _APS_NEXT_COMMAND_VALUE         33098
-#define _APS_NEXT_CONTROL_VALUE         1671
+#define _APS_NEXT_RESOURCE_VALUE        461
+#define _APS_NEXT_COMMAND_VALUE         33101
+#define _APS_NEXT_CONTROL_VALUE         1683
 #define _APS_NEXT_SYMED_VALUE           310
 #endif
 #endif

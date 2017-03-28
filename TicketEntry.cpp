@@ -1341,7 +1341,7 @@ void CTicketEntry::OnEntryFindAsset()
 {	
 	CAssetDlg Dlg;
 	CString TransType, Dir, Text;
-	BOOL bChange = FALSE;
+	BOOL bChange = FALSE, bValueDateChangable = TRUE;
 	CQData QData;
 
 	TransType = m_TransType->GetSelString(TransType);
@@ -1408,61 +1408,59 @@ void CTicketEntry::OnEntryFindAsset()
 		
 		m_dParValue = atoi(QData.RemoveComma(Dlg.m_FindData.GetRec().GetPar()));
 
-		TransType = Dlg.m_FindData.GetTransType();
+		if(!Dlg.m_FindData.GetTransType().IsEmpty())
+		{
+			TransType = Dlg.m_FindData.GetTransType();
+			m_TransType->SelectString(0, TransType);
+		}
+
 		Dir = Dlg.m_FindData.GetDir();
+		if(TransType == SECURITIES && Dlg.m_FindData.GetRec().GetClass() == "CURRENCY FWDS")
+			bValueDateChangable = FALSE;
 
 		switch(Dlg.m_nActionID)
 		{
 			case FINDACTION_ADD:
-				if(TransType == CDS || TransType == SECURITIES || 
-					TransType == CALL || TransType == PUT)
+				if(TransType == CDS || TransType == SECURITIES || TransType == CALL || TransType == PUT)
 				{
 					m_Dir.SelectString(0, Dir);
 					m_TransType->SelectString(0, TransType);
 					m_AssignCP->SelectString(0, Dlg.m_FindData.GetAssignCP());
+					
+					if(TransType == CALL ||	TransType == PUT)
+					{
+						m_Strike.SetWindowText(Dlg.m_FindData.GetStrike());
+						m_OptExp.SetData(Dlg.m_FindData.GetRec().GetMaturity());
+						m_OptTicker.SetWindowText(Dlg.m_FindData.GetOptTick());
+						m_OptID.SetWindowText(Dlg.m_FindData.GetOptID());
+						m_OptSet.SelectString(0, Dlg.m_FindData.GetOptSetCode());
+						m_DeliveryDate.SetWindowText(Dlg.m_FindData.GetDeliveryDate());
+						m_Listed->SetCheck(Dlg.m_OptListed);
+					}
 				}
 
-				if(TransType == CALL ||	TransType == PUT)
-				{
-					m_Strike.SetWindowText(Dlg.m_FindData.GetStrike());
-					m_OptExp.SetData(Dlg.m_FindData.GetRec().GetMaturity());
-					m_OptTicker.SetWindowText(Dlg.m_FindData.GetOptTick());
-					m_OptID.SetWindowText(Dlg.m_FindData.GetOptID());
-					m_OptSet.SelectString(0, Dlg.m_FindData.GetOptSetCode());
-					m_DeliveryDate.SetWindowText(Dlg.m_FindData.GetDeliveryDate());
-					m_Listed->SetCheck(Dlg.m_OptListed);
-				}
-				else
-					if(TransType == SECURITIES && 
-						Dlg.m_FindData.GetRec().GetClass() == "CURRENCY FWDS")
-						m_ValueDate.SetData(Dlg.m_FindData.GetRec().GetMaturity());
 				break;
 			case FINDACTION_UNWIND:
-				if(TransType == CDS || TransType == SECURITIES || 
-					TransType == CALL || TransType == PUT)
+				if(TransType == CDS || TransType == SECURITIES || TransType == CALL || TransType == PUT)
 				{
 					m_Dir.SelectString(0, Dir == P ? S : P);
 					if(bChange)
 						m_Amount.SetWindowText(Dlg.m_FindData.GetNominal());
 					m_TransType->SelectString(0, TransType);
 					m_AssignCP->SelectString(0, Dlg.m_FindData.GetAssignCP());
+				
+					if(TransType == CALL || TransType == PUT)
+					{
+						m_Strike.SetWindowText(Dlg.m_FindData.GetStrike());
+						m_OptExp.SetWindowText(Dlg.m_FindData.GetRec().GetMaturity());
+						m_OptTicker.SetWindowText(Dlg.m_FindData.GetOptTick());
+						m_OptID.SetWindowTextA(Dlg.m_FindData.GetOptID());
+						m_DeliveryDate.SetWindowText(Dlg.m_FindData.GetDeliveryDate());
+						m_OptSet.SelectString(0, Dlg.m_FindData.GetOptSetCode());
+						m_UnWindTicket.SetData(Dlg.m_FindData.GetTicket());
+						m_Listed->SetCheck(Dlg.m_OptListed);
+					}
 				}
-					
-				if(TransType == CALL || TransType == PUT)
-				{
-					m_Strike.SetWindowText(Dlg.m_FindData.GetStrike());
-					m_OptExp.SetWindowText(Dlg.m_FindData.GetRec().GetMaturity());
-					m_OptTicker.SetWindowText(Dlg.m_FindData.GetOptTick());
-					m_OptID.SetWindowTextA(Dlg.m_FindData.GetOptID());
-					m_DeliveryDate.SetWindowText(Dlg.m_FindData.GetDeliveryDate());
-					m_OptSet.SelectString(0, Dlg.m_FindData.GetOptSetCode());
-					m_UnWindTicket.SetData(Dlg.m_FindData.GetTicket());
-					m_Listed->SetCheck(Dlg.m_OptListed);
-				}
-				else
-					if(TransType == SECURITIES && 
-						Dlg.m_FindData.GetRec().GetClass() == "CURRENCY FWDS")
-						m_ValueDate.SetData(Dlg.m_FindData.GetRec().GetMaturity());
 				break;
 			case FINDACTION_OPTEX:
 				if(TransType == CALL || TransType == PUT)
@@ -1497,7 +1495,11 @@ void CTicketEntry::OnEntryFindAsset()
 		}
 	}
 
-	UpdateTradeDates(Dlg.m_EuropeBond == "Y" ? TRUE : FALSE);
+	if(bValueDateChangable)
+		UpdateTradeDates(Dlg.m_EuropeBond == "Y" ? TRUE : FALSE);
+	else
+		m_ValueDate.SetData(Dlg.m_FindData.GetRec().GetMaturity());
+
 	m_Asset.GetWindowText(Text);
 
 	if(TransType == FOREX && Text == "NEW ASSET")

@@ -37,6 +37,7 @@ protected:
 	CDBRecArray m_OptSetArr;
 	CDBRecArray m_FxSetConvArr;
 	CDBRecArray m_CTArr;
+	CDBRecArray m_FutureTypeArr;
 	CDBRecArray m_TrDescArr;
 	CKeyDBList m_ContactList;
 	CDBRecArray m_BestExecutionArr;
@@ -104,6 +105,7 @@ public:
 	CDBRecArray &GetOptSetArr() { return m_OptSetArr; }
 	CDBRecArray &GetFxSetConv() { return m_FxSetConvArr; }
 	CDBRecArray &GetCTArr() { return m_CTArr; }
+	CDBRecArray &GetFutureTypeArr() { return m_FutureTypeArr; }
 	CDBRecArray &GetTrDescArr() { return m_TrDescArr; }
 	CDBRecArray &GetYieldCurveArr() { return m_YieldCurveArr; }
 	CKeyDBList &GetContactList() { return m_ContactList; }

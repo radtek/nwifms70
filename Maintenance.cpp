@@ -32,6 +32,7 @@
 #include "optmap.h"
 #include "refIndexdlg.h"
 #include "PrimeCPMargin.h"
+#include "CPFutureCommDlg.h"
 #include "qdata.h"
 
 
@@ -76,6 +77,7 @@ CMaintenance::CMaintenance() : CFormView(CMaintenance::IDD)
 	m_CitiClass = NULL;
 	m_BlmKey = NULL;
 	m_Account = NULL;
+	m_FutureType = NULL;
 	m_CurrID = 0;
 	m_bLoaded = FALSE;
 	//}}AFX_DATA_INIT
@@ -141,6 +143,8 @@ CMaintenance::~CMaintenance()
 		delete m_BlmKey;
 	if(m_Account)
 		delete m_Account;
+	if(m_FutureType)
+		delete m_FutureType;
 }
 
 void CMaintenance::DoDataExchange(CDataExchange* pDX)
@@ -330,6 +334,7 @@ void CMaintenance::InitControls()
 	m_CitiClass = (COptComboBox*) new COptComboBox(this, IDC_MAINT_CITICLASS_COMBO, TRUE);
 	m_BlmKey = (COptComboBox*) new COptComboBox(this, IDC_MAINT_BLMKEY_COMBO, TRUE);
 	m_Account = (COptComboBox*) new COptComboBox(this, IDC_MAINT_ACCOUNT_COMBO, TRUE);
+	m_FutureType = (COptComboBox*) new COptComboBox(this, IDC_MAINT_FUTTYPE_COMBO, TRUE);
 	
 	m_Index.Setup(this, IDC_MAINT_FLOAT_INDEX_COMBO, 2, TRUE);
 	m_PmntFreq.Setup(this, IDC_MAINT_PMNT_FRQ_COMBO, 2, TRUE);
@@ -456,6 +461,7 @@ void CMaintenance::InitControls()
 	m_Data.Add(&m_IRSTemplate, &m_Data.GetAssetRec().GetIRSTemplate());
 	m_Data.Add(&m_Exchange, &m_Data.GetAssetRec().GetExchange());
 	m_Data.Add(m_Account, &m_Data.GetAssetRec().GetAccount());
+	m_Data.Add(m_FutureType, &m_Data.GetAssetRec().GetFutureType());
 	m_Data.Add(&m_ClearFee, &m_Data.GetAssetRec().GetClearFee());
 	m_Data.Add(&m_UnderlineID);
 	m_Data.Add(&m_Amount);
@@ -784,6 +790,7 @@ BOOL CMaintenance::UpdateData(BOOL bSaveandValid)
 			QData.CopyDBRecArrayToComboBox(GetData().GetActionArr(), *m_Action);
 			QData.CopyDBRecArrayToComboBox(GetData().GetRateTypeArr(), *m_RateType);
 			QData.CopyDBRecArrayToComboBox(GetData().GetMethodArr(), *m_Method);
+			GetData().GetFutureTypeArr().CopyToComboBox(*m_FutureType);
 			
 			GetData().GetIndexArr().CopyToMCComboBox(m_Index);
 			GetData().GetPmntFrqArr().CopyToMCComboBox(m_PmntFreq);
@@ -1362,6 +1369,14 @@ void CMaintenance::OnMaintOther()
 																
 																Dlg.DoModal();
 															}
+															else
+																if(Dlg.m_Table == "NW_FUTURE_COMM_SCHEDULE")
+																{
+																	CCPFutureCommDlg Dlg;
+																	
+																	Dlg.m_pData = &GetData();
+																	Dlg.DoModal();
+																}
 }
 
 void CMaintenance::OnMaintSecFee() 

@@ -138,6 +138,7 @@ protected:
 	CString m_IRSTemplate;
 	CString m_Exchange;
 	CString m_Account;
+	CString m_FutureType;
 	CString m_ClearFee;
 
 public:
@@ -219,6 +220,7 @@ public:
 	CString &GetIRSTemplate() { return m_IRSTemplate; }
 	CString &GetExchange() { return m_Exchange; }
 	CString &GetAccount() { return m_Account; }
+	CString &GetFutureType() { return m_FutureType; }
 	CString &GetClearFee() { return m_ClearFee; }
 
 	void SetAsset(LPCTSTR Asset) { m_Asset = Asset; }
@@ -291,6 +293,7 @@ public:
 	void SetIRSTemplate(LPCTSTR IRSTemplate) { m_IRSTemplate = IRSTemplate; }
 	void SetExchange(LPCTSTR Exchange) { m_Exchange = Exchange; }
 	void SetAccount(LPCTSTR Account) { m_Account = Account; }
+	void SetFutureType(LPCTSTR FutureType) { m_FutureType = FutureType; }
 	void SetClearFee(LPCTSTR ClearFee) { m_ClearFee = ClearFee; }
 
 	virtual void Copy(CAssetRec &AssetRec);
