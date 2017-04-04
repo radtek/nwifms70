@@ -1067,6 +1067,7 @@ void CTicketProcess::OnDblClickProcessTicketList(long Col, long Row)
 	{
 		m_Data.SetCurrentRow(Row, m_Data.GetAllocList());
 		GetData().SetTicketNumber(m_Ticket.GetData());
+		m_Booker.GetWindowText(m_sBooker);
 		if(m_Data.IsTicketProcessed())
 		{
 			MessageBox("This ticket has been processed.  Please reload tickets.", m_Data.GetRawTicket().GetTicket());
@@ -1077,6 +1078,7 @@ void CTicketProcess::OnDblClickProcessTicketList(long Col, long Row)
 	{
 		m_Data.SetCurrentRow(-1);
 		OnProcessRefresh();
+		m_sBooker.Empty();
 	}
 
 	ChangeShortLabel();
@@ -1126,7 +1128,7 @@ void CTicketProcess::OnProcessUpdate()
 
 void CTicketProcess::OnUpdateProcessAdd(CCmdUI* pCmdUI) 
 {
-	pCmdUI->Enable(m_AllocSS.GetSheetRows() > 0 && !m_AllocSS.GetSheetText(4, 1).IsEmpty() && 
+	pCmdUI->Enable(m_sBooker != GetData().GetOraUser() && m_AllocSS.GetSheetRows() > 0 && !m_AllocSS.GetSheetText(4, 1).IsEmpty() && 
 					m_SS.GetSheetCurRow() >= 1 && m_AllocSS.GetSheetRows() > 0 ? TRUE : FALSE);
 }
 
@@ -1179,7 +1181,7 @@ void CTicketProcess::OnUpdateProcessAllocation(CCmdUI* pCmdUI)
 
 void CTicketProcess::OnUpdateProcessDelete(CCmdUI* pCmdUI) 
 {
-	pCmdUI->Enable(m_SS.GetSheetCurRow() >= 1 && m_SS.GetIsBlockSelected() && strlen(m_Data.GetKey()) > 0);
+	pCmdUI->Enable(m_sBooker != GetData().GetOraUser() && m_SS.GetSheetCurRow() >= 1 && m_SS.GetIsBlockSelected() && strlen(m_Data.GetKey()) > 0);
 }
 
 void CTicketProcess::OnProcessFindAsset() 
@@ -1385,7 +1387,7 @@ void CTicketProcess::OnUpdateProcessUpdate(CCmdUI* pCmdUI)
 {
 	CString Text;
 
-	if(m_SS.GetSheetCurRow() >= 1 && m_Data.GetSRowCtrl().GetSS()->GetSheetRows() > 0) 
+	if(m_sBooker != GetData().GetOraUser() && m_SS.GetSheetCurRow() >= 1 && m_Data.GetSRowCtrl().GetSS()->GetSheetRows() > 0) 
 		Text = m_Data.GetSRowCtrl().GetSS()->GetSheetText(1, 1);
 	pCmdUI->Enable(!Text.IsEmpty());
 }

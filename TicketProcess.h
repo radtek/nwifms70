@@ -144,6 +144,7 @@ public:
 	CString m_Future;
 	CString m_Par;
 	CString m_Custodian;
+	CString m_sBooker;
 	//}}AFX_DATA
 
 // Attributes
