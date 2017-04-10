@@ -654,6 +654,7 @@ void CTicketProcess::InitControls()
 	m_Data.Add(&pTicket->GetOriNominal());
 	m_Data.Add(&pTicket->GetCPTradeID());
 	m_Data.Add(&m_NetPrice, &pTicket->GetNetPrice());
+	m_Data.Add(&m_sImgID);
 
 	CRawInvRec *pInv;
 	pInv = &m_Data.GetRawInv();
@@ -1342,10 +1343,13 @@ void CTicketProcess::OnProcessFindAsset()
 	if(m_TradeDate.GetData().IsEmpty())
 		m_TradeDate.SetData(GetData().GetDate());
 	
-	if(bValueDateChangable)
-		UpdateTradeDates(Dlg.m_EuropeBond == "Y");
-	else
-		m_ValueDate.SetData(Dlg.m_FindData.GetRec().GetMaturity());
+	if(m_sImgID.IsEmpty())
+	{
+		if(bValueDateChangable)
+			UpdateTradeDates(Dlg.m_EuropeBond == "Y");
+		else
+			m_ValueDate.SetData(Dlg.m_FindData.GetRec().GetMaturity());
+	}
 	
 	m_Asset.GetWindowText(Text);
 

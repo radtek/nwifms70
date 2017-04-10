@@ -145,6 +145,7 @@ public:
 	CString m_Par;
 	CString m_Custodian;
 	CString m_sBooker;
+	CString m_sImgID;
 	//}}AFX_DATA
 
 // Attributes
