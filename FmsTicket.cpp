@@ -1198,6 +1198,8 @@ void CFmsTicket::OnSetfocusTicketAssetEdit()
 void CFmsTicket::OnTransFindasset() 
 {
 	CAssetDlg Dlg;
+	BOOL bValueDateChangable = TRUE;
+	CString TransType, Currency;
 
 	Dlg.m_pData = &GetData();
 	if(m_nCurrID == IDC_TICKET_INV_ASSET_EDIT)
@@ -1224,7 +1226,6 @@ void CFmsTicket::OnTransFindasset()
 	m_Trader.SelectString(0, Dlg.m_FindData.GetTrader());
 	m_Custodian->SelectString(0, Dlg.m_FindData.GetCustodian());
 
-	CString TransType, Currency;
 	m_TransType->GetSelString(TransType);
 	if(TransType == CALL || TransType == PUT || TransType == SPRSWCLL || TransType == SPRSWPUT)
 	{
@@ -1233,6 +1234,9 @@ void CFmsTicket::OnTransFindasset()
 	}
 	else
 		m_OptTicker.SetWindowText(EMPTYSTRING);		
+
+	if(TransType == SECURITIES && Dlg.m_FindData.GetRec().GetClass() == "CURRENCY FWDS" || TransType == FOREX)
+		bValueDateChangable = FALSE;
 
 	m_Currency->GetSelString(Currency);
 	if(Currency.IsEmpty() || (Currency != Dlg.m_FindData.GetRec().GetCurrency() &&
@@ -1246,9 +1250,12 @@ void CFmsTicket::OnTransFindasset()
 	if(m_TradeDate.GetData().IsEmpty())
 		m_TradeDate.SetData(GetData().GetDate());
 
-	m_ValueDate.SetData(GetData().GetOraLoader().GetValueDate(m_TradeDate.GetData(), TransType, m_Listed->GetCheck(), Dlg.m_Future == "F" ? TRUE : FALSE));	
-	if(Dlg.m_EuropeBond == "Y")
-		m_ValueDate.SetData(GetData().GetPlus2Date());
+	if(bValueDateChangable)
+	{
+		m_ValueDate.SetData(GetData().GetOraLoader().GetValueDate(m_TradeDate.GetData(), TransType, m_Listed->GetCheck(), Dlg.m_Future == "F" ? TRUE : FALSE));	
+		if(Dlg.m_EuropeBond == "Y")
+			m_ValueDate.SetData(GetData().GetPlus2Date());
+	}
 
 	EnableCtrls();
 	m_TransType->SetFocus();

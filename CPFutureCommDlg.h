@@ -38,6 +38,8 @@ public:
 	COptComboBox *m_TransType;
 	COptComboBox *m_Currency;
 	COptComboBox *m_FutureType;
+	CMaskDateEdit m_FromDate;
+	CMaskDateEdit m_ToDate;
 	CNumEdit m_Commission;
 	CCheckBox *m_ETrade;
 	CString m_RowID;

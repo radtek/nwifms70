@@ -1260,7 +1260,7 @@ void CTicketProcess::OnProcessFindAsset()
 		}
 
 		Dir = Dlg.m_FindData.GetDir();
-		if(TransType == SECURITIES && Dlg.m_FindData.GetRec().GetClass() == "CURRENCY FWDS")
+		if(TransType == SECURITIES && Dlg.m_FindData.GetRec().GetClass() == "CURRENCY FWDS" || TransType == FOREX)
 			bValueDateChangable = FALSE;
 
 		switch(Dlg.m_nActionID)

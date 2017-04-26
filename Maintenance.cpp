@@ -192,6 +192,7 @@ BEGIN_MESSAGE_MAP(CMaintenance, CFormView)
 	ON_COMMAND(ID_MAINT_OR_FEE, &CMaintenance::OnMaintOrFee)
 	ON_UPDATE_COMMAND_UI(ID_MAINT_OR_FEE, &CMaintenance::OnUpdateMaintOrFee)
 	ON_COMMAND(ID_MAINT_IMPORT, &CMaintenance::OnMaintImport)
+	ON_EN_KILLFOCUS(IDC_MAINT_ISSUE_DATE_EDIT, &CMaintenance::OnEnKillfocusMaintIssueDateEdit)
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -227,7 +228,7 @@ void CMaintenance::EnableCtrls(CString &Class)
 	m_CDSRestructuring.EnableWindow(bEnable);
 
 	m_RateType->GetSelString(Text);
-	if (Class.Find("CDS SWAPS") >= 0 || ((Class.Find("EM SWAPS") >= 0 || Class.Find("DM SWAPS") >= 0) && Text == "FIXED"))
+	if (Class.Find("CDS SWAPS") >= 0 || ((Class.Find("EM SWAPS") >= 0 || Class.Find("DM SWAPS") >= 0 || Class.Find("G7 VAR SWAPS") >= 0) && Text == "FIXED"))
 		bEnable = TRUE;
 	
 	m_Underline.EnableWindow(bEnable);
@@ -509,7 +510,7 @@ BOOL CMaintenance::IsAssetOK(BOOL bAdd)
 
 	OraLoader = GetData().GetOraLoader();
 	m_RateType->GetSelString(Data);
-	if(Class.Find("CDS") >= 0 || ((Class.Find("EM SWAPS") >= 0 || Class.Find("DM SWAPS") >= 0) && Data == "FIXED"))
+	if(Class.Find("CDS") >= 0 || ((Class.Find("EM SWAPS") >= 0 || Class.Find("DM SWAPS") >= 0 || Class.Find("G7 VAR SWAPS") >= 0) && Data == "FIXED"))
 	{
 		if(Class.Find("CDS") >= 0 && m_RedCode.GetWindowTextLength() > 0)
 		{
@@ -1483,4 +1484,23 @@ void CMaintenance::OnEnSetfocusMaintRestructuringEdit()
 void CMaintenance::OnMaintImport()
 {
 	m_Data.ImportImagineAsset();
+}
+
+void CMaintenance::OnEnKillfocusMaintIssueDateEdit()
+{
+	if(m_IssueDate.GetData().GetLength() == 10)
+	{
+		CString Date, Sql;
+
+		Date = m_IssueDate.GetData();
+		Sql = "SELECT TO_DATE('" + Date + "', 'MM/DD/YYYY') - TRUNC(SYSDATE) FROM DUAL ";
+
+		if(m_Data.GetOraLoader().GetCount(Sql) > 0)
+			if(MessageBox("Issue date is beyond today. Are you sure you want to continue?", "Maintenance", MB_YESNO) != IDYES)
+			{
+				m_Data.GetOraLoader().Today(Date);
+				m_IssueDate.SetData(Date);
+				m_IssueDate.SetFocus();
+			}
+	}
 }

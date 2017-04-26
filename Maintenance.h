@@ -216,6 +216,7 @@ public:
 	afx_msg void OnMaintOrFee();
 	afx_msg void OnUpdateMaintOrFee(CCmdUI *pCmdUI);
 	afx_msg void OnMaintImport();
+	afx_msg void OnEnKillfocusMaintIssueDateEdit();
 };
 
 #ifndef _DEBUG  // debug version in CMaintenance.cpp
