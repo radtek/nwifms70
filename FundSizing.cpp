@@ -61,7 +61,7 @@ void CFundSizing::InitControls()
 	m_Bucket.Setup(this, IDC_FS_BUCKET_COMBO);
 	m_Strike.Setup(this, IDC_FS_STRIKE_EDIT);
 	m_Rate.Setup(this, IDC_FS_RATE_EDIT);
-	m_Nominal.Setup(this, IDC_FS_NOMINAL_EDIT, NULL, 0);
+	m_Nominal.Setup(this, IDC_FS_NOMINAL_EDIT, NULL, 2);
 	m_Amount.Setup(this, IDC_FS_AMOUNT_EDIT, NULL, 2);
 	m_Price.Setup(this, IDC_FS_PRICE_EDIT, NULL);
 	m_Asset.Setup(this, IDC_FS_ASSET_EDIT);
