@@ -60,7 +60,9 @@ BOOL CCPFutureCommDlg::IsOK(int nAction)
 	if(m_CP->GetCurSel() < 0)
 		Text = "No counterparty selected";
 	if(m_TransType->GetCurSel() < 0)
-		Text = "No trans_type selected";
+		Text = "No trans type selected";
+	if(m_FutureType->GetCurSel() < 0)
+		Text = "No future type selected";
 	if(m_Currency->GetCurSel() < 0)
 		Text = "No currency selected";
 	if(m_FromDate.GetData().IsEmpty())
@@ -148,9 +150,7 @@ BOOL CCPFutureCommDlg::OnInitDialog()
 
 void CCPFutureCommDlg::BlockSelectedFcList(long BlockCol, long BlockRow, long BlockCol2, long BlockRow2)
 {
-	m_SS.SetSheetCurRow(BlockRow);
-	RowToControls();
-	EnableCtrls();
+	DblClickFcList(BlockCol, BlockRow);
 }
 
 

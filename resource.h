@@ -3,6 +3,7 @@
 // Used by NWIFMS70.rc
 //
 #define IDC_ASSETDLG_ADDPOS_BUTTON      3
+#define IDCANCEL2                       3
 #define IDD_ABOUTBOX                    100
 #define IDP_OLE_INIT_FAILED             100
 #define IDD_ASSET_FORM                  101
@@ -192,6 +193,7 @@
 #define IDR_MENU1                       458
 #define IDD_DIALOG1                     459
 #define IDD_FUTURE_COMM_SCHEDULE_DIALOG 459
+#define IDD_FUTURE_FEES_DIALOG          461
 #define IDC_ACCOUNT_COMBO               701
 #define IDC_ACCOUNT_GROUP_EDIT          702
 #define IDC_ACCOUNT_COLLATERAL_CHECK    703
@@ -2018,13 +2020,28 @@
 #define IDC_FC_TRANSTYPE_COMBO          4122
 #define IDC_FC_CURRENCY_COMBO           4123
 #define IDC_FC_FUTURETYPE_COMBO         4124
-#define IDC_FC_ETRADE_CHECK             4125
-#define IDC_FC_COMMISSION_EDIT          4126
-#define IDC_FC_LIST                     4127
-#define IDC_FC_LOAD_BUTTON              4128
-#define IDC_FC_ADD_BUTTON               4129
-#define IDC_FC_UPDATE_BUTTON            4130
-#define IDC_FC_DELETE_BUTTON            4131
+#define IDC_FC_FROMDATE_EDIT            4125
+#define IDC_FFEE_ACCOUNT_COMBO          4125
+#define IDC_FC_TODATE_EDIT              4126
+#define IDC_FC_ETRADE_CHECK             4127
+#define IDC_FFEE_FROMDATE_EDIT          4127
+#define IDC_FC_COMMISSION_EDIT          4128
+#define IDC_FC_LIST                     4129
+#define IDC_FC_LOAD_BUTTON              4130
+#define IDC_FC_ADD_BUTTON               4131
+#define IDC_FC_UPDATE_BUTTON            4132
+#define IDC_FC_DELETE_BUTTON            4133
+#define IDC_FFEE_CUSTODIAN_COMBO        4151
+#define IDC_FFEE_TRANSTYPE_COMBO        4152
+#define IDC_FFEE_FUTURETYPE_COMBO       4153
+#define IDC_FFEE_CURRENCY_COMBO         4154
+#define IDC_FFEE_TODATE_EDIT            4155
+#define IDC_FFEE_FEE_EDIT               4156
+#define IDC_FFEE_LIST                   4157
+#define IDC_FFEE_LOAD_BUTTON            4158
+#define IDC_FFEE_ADD_BUTTON             4159
+#define IDC_FFEE_UPDATE_BUTTON          4160
+#define IDC_FFEE_DELETE_BUTTON          4161
 #define ID_UPDATEINFO                   32771
 #define ID_PASSWORD                     32772
 #define ID_TICKET_BLOTTER               32781
@@ -2289,9 +2306,9 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        461
+#define _APS_NEXT_RESOURCE_VALUE        463
 #define _APS_NEXT_COMMAND_VALUE         33101
-#define _APS_NEXT_CONTROL_VALUE         1683
+#define _APS_NEXT_CONTROL_VALUE         1694
 #define _APS_NEXT_SYMED_VALUE           310
 #endif
 #endif

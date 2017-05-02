@@ -139,7 +139,6 @@ protected:
 	CString m_Exchange;
 	CString m_Account;
 	CString m_FutureType;
-	CString m_ClearFee;
 
 public:
 	CAssetRec() {}
@@ -221,7 +220,6 @@ public:
 	CString &GetExchange() { return m_Exchange; }
 	CString &GetAccount() { return m_Account; }
 	CString &GetFutureType() { return m_FutureType; }
-	CString &GetClearFee() { return m_ClearFee; }
 
 	void SetAsset(LPCTSTR Asset) { m_Asset = Asset; }
 	void SetAssetID(LPCTSTR AssetID) { m_AssetID = AssetID; }
@@ -294,7 +292,6 @@ public:
 	void SetExchange(LPCTSTR Exchange) { m_Exchange = Exchange; }
 	void SetAccount(LPCTSTR Account) { m_Account = Account; }
 	void SetFutureType(LPCTSTR FutureType) { m_FutureType = FutureType; }
-	void SetClearFee(LPCTSTR ClearFee) { m_ClearFee = ClearFee; }
 
 	virtual void Copy(CAssetRec &AssetRec);
 	const CAssetRec &operator = (CAssetRec &AssetRec) { Copy(AssetRec); return *this; }
