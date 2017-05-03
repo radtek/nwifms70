@@ -225,6 +225,12 @@ BOOL CCashRec::DeleteRec(COraLoader &OraLoader, BOOL bByID)
 		Rec.Closing(OraLoader, FALSE);
 	}
 
+	if(GetPayType() == "FUTU COST" && !GetIRSID().IsEmpty())
+	{
+		OraLoader.GetSql().Format("UPDATE SEMAM.NW_FUTURE_COMMISSION SET CASH_NUM = NULL WHERE TRANS_NUM = %s ", QData.GetQueryNumber(GetIRSID()));
+		OraLoader.ExecuteSql();
+	}
+
 	OraLoader.GetSql().Format("DELETE SEMAM.NW_CASH_PMNTS WHERE CASH_NUM = %s ", 
 								QData.GetQueryNumber(GetCashNum()));
 	return OraLoader.ExecuteSql();
