@@ -65,9 +65,9 @@ BOOL CContractConvertor::OnInitDialog()
 
 		if(m_OraLoader.Open())
 		{
-			m_Asset.SetWindowText(m_OraLoader.GetDBString(0));
-			m_Desc.SetWindowText(m_OraLoader.GetDBString(1));
-			m_Factor.SetWindowText(m_OraLoader.GetDBString(2));
+			m_Asset.SetData(m_OraLoader.GetDBString(0));
+			m_Desc.SetData(m_OraLoader.GetDBString(1));
+			m_Factor.SetData(m_OraLoader.GetDBString(2));
 			m_dFactor = atof(QData.RemoveComma(m_OraLoader.GetDBString(2)));
 			if(m_dFactor > 0)
 				m_Factor.SetReadOnly();
@@ -80,6 +80,7 @@ BOOL CContractConvertor::OnInitDialog()
 
 void CContractConvertor::OnOK() 
 {
+	m_NominalStr = m_Nominal.GetData();
 	if(!m_NominalStr.IsEmpty())
 		CDialog::OnOK();
 }
@@ -87,24 +88,19 @@ void CContractConvertor::OnOK()
 void CContractConvertor::OnKillfocusContractContractEdit() 
 {
 	CQData QData;
-	CString Text;
 	
 	if(m_dFactor > 0)
 	{
-		m_Contract.GetWindowText(Text);
-		m_dNominal = atof(QData.RemoveComma(Text))*m_dFactor;
-		m_NominalStr = QData.WriteNumber(m_dNominal);
-		m_Nominal.SetWindowText(m_NominalStr);
+		m_dNominal = atof(QData.RemoveComma(m_Contract.GetData()))*m_dFactor;
+		m_Nominal.SetData(QData.WriteNumber(m_dNominal));
 	}
 }
 
 void CContractConvertor::OnKillfocusContractFactorEdit() 
 {
 	CQData QData;
-	CString Text;
 	
-	m_Factor.GetWindowText(Text);
-	m_dFactor = atof(QData.RemoveComma(Text));
+	m_dFactor = atof(QData.RemoveComma(m_Factor.GetData()));
 }
 
 void CContractConvertor::OnKillfocusContractNominalEdit() 
@@ -113,8 +109,7 @@ void CContractConvertor::OnKillfocusContractNominalEdit()
 	
 	if(m_dFactor > 0)
 	{
-		m_Nominal.GetWindowText(m_NominalStr);
-		m_dNominal = atof(QData.RemoveComma(m_NominalStr));
-		m_Contract.SetWindowText(QData.WriteNumber(m_dNominal/m_dFactor));
+		m_dNominal = atof(QData.RemoveComma(m_Nominal.GetData()));
+		m_Contract.SetData(QData.WriteNumber(m_dNominal/m_dFactor));
 	}	
 }

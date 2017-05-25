@@ -45,6 +45,7 @@ public:
 	CMaskDateEdit m_DateEdit;
 	int m_CouponType;
 	BOOL m_bLoaded;
+	BOOL m_bCash;
 	//}}AFX_DATA
 
 

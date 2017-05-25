@@ -22,7 +22,7 @@ class CCouponListDlg : public CDialog
 // Construction
 public:
 	CCouponListDlg(CWnd* pParent = NULL);   // standard constructor
-	~CCouponListDlg();
+	~CCouponListDlg() {}
 
 // Dialog Data
 	//{{AFX_DATA(CCouponListDlg)
@@ -43,7 +43,7 @@ public:
 	CNumEdit m_AmountEdit;
 	CNumEdit m_RemainingEdit;
 	CMaskDateEdit m_DateEdit;
-	CCheckBox *m_CouponPaid;
+	CCheckBox m_CouponPaid;
 	CString m_Amount;
 	CString m_Currency;
 	CString m_Curr;
@@ -51,6 +51,7 @@ public:
 	CString m_Remaining;
 	int m_CouponType;
 	BOOL m_bLoaded;
+	BOOL m_bCash;
 	CDBRecArray m_CouponArray;
 	//}}AFX_DATA
 

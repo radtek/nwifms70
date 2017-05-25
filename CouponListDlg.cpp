@@ -21,14 +21,8 @@ CCouponListDlg::CCouponListDlg(CWnd* pParent /*=NULL*/)
 {
 	//{{AFX_DATA_INIT(CCouponListDlg)
 	m_Counterparty = "";
-	m_CouponPaid = NULL;
+	m_bCash = TRUE;
 	//}}AFX_DATA_INIT
-}
-
-CCouponListDlg::~CCouponListDlg()
-{
-	if(m_CouponPaid)
-		delete m_CouponPaid;
 }
 
 void CCouponListDlg::DoDataExchange(CDataExchange* pDX)
@@ -66,10 +60,10 @@ void CCouponListDlg::UpdateFields()
 		Remaining += atof(QData.RemoveComma(m_SelSS.GetSheetText(8, i)));
 	}
 
-	m_TotalEdit.SetWindowText(QData.WriteNumber(Amount, TRUE, 2));
-	m_TotalEdit.GetWindowText(m_Amount);
-	m_TotalRemainingEdit.SetWindowText(QData.WriteNumber(Remaining, TRUE, 2));
-	m_TotalRemainingEdit.GetWindowText(m_Remaining);
+	m_TotalEdit.SetData(QData.WriteNumber(Amount, TRUE, 2));
+	m_Amount = m_TotalEdit.GetData();
+	m_TotalRemainingEdit.SetData(QData.WriteNumber(Remaining, TRUE, 2));
+	m_Remaining = m_TotalRemainingEdit.GetData();
 
 	GetDlgItem(IDOK)->EnableWindow(m_SelSS.GetSheetRows() > 0 ? TRUE : FALSE);
 }
@@ -85,41 +79,38 @@ void CCouponListDlg::UpdateNumber(BOOL bFxChange)
 
 	LAmt = atof(QData.RemoveComma(m_LAmount));
 
-	m_FxrateEdit.GetWindowText(Text);
+	Text = m_FxrateEdit.GetData();
 
 	if(Text.IsEmpty() || atof(QData.RemoveComma(Text)) == 1.0)
 	{
-		m_AmountEdit.GetWindowText(Text);
-		Amt = atof(QData.RemoveComma(Text));
+		Amt = atof(QData.RemoveComma(m_AmountEdit.GetData()));
 		m_Remaining = QData.WriteNumber(Amt - LAmt, TRUE, 2);
 	}
 	else
 	{
 		if(bFxChange)
 		{
-			m_FxrateEdit.GetWindowText(Text);
-			Fxrate = atof(QData.RemoveComma(Text));
+			Fxrate = atof(QData.RemoveComma(m_FxrateEdit.GetData()));
 			if(Fxrate > 0)
 			{
 				Amt = LAmt/Fxrate;
-				m_AmountEdit.SetWindowText(QData.WriteNumber(Amt, TRUE, 2));
+				m_AmountEdit.SetData(QData.WriteNumber(Amt, TRUE, 2));
 			}
 		}
 		else
 		{
-			m_AmountEdit.GetWindowText(Text);
-			Amt = atof(QData.RemoveComma(Text));
+			Amt = atof(QData.RemoveComma(m_AmountEdit.GetData()));
 			if(Amt != 0)
 			{
 				Fxrate = LAmt/Amt;
-				m_FxrateEdit.SetWindowText(QData.WriteNumber(Fxrate, FALSE, -1));
+				m_FxrateEdit.SetData(QData.WriteNumber(Fxrate, FALSE, -1));
 			}
 		}
 
 		m_Remaining = "0.00";
 	}
 
-	m_RemainingEdit.SetWindowText(m_Remaining);
+	m_RemainingEdit.SetData(m_Remaining);
 }
 /////////////////////////////////////////////////////////////////////////////
 // CCouponListDlg message handlers
@@ -135,9 +126,8 @@ END_EVENTSINK_MAP()
 BOOL CCouponListDlg::OnInitDialog() 
 {
 	CDialog::OnInitDialog();
-	CString Sql;
 	CQData QData;
-	char port[40];
+	CString Port, CP, Curr, SqlPhrase = "AND A.INSTRUCTED IS NULL ";
 
 	m_SelSS.SetVisibleRows(7);
 	m_SelSS.SetVisibleCols(6);
@@ -152,11 +142,16 @@ BOOL CCouponListDlg::OnInitDialog()
 	m_FxrateEdit.Setup(this, IDC_COUPONLIST_FXRATE_EDIT);
 	m_AmountEdit.Setup(this, IDC_COUPONLIST_AMOUNT_EDIT, NULL, 2);
 	m_RemainingEdit.Setup(this, IDC_COUPONLIST_REMAINING_EDIT, NULL, 2);
-	m_CouponPaid = new CCheckBox(this, IDC_COUPONLIST_PAID_CHECK);
+	m_CouponPaid.Setup(this, IDC_COUPONLIST_PAID_CHECK);
 	m_TotalEdit.Setup(this, IDC_COUPONLIST_TOTALAMOUNT_EDIT, NULL, 2);
 	m_TotalRemainingEdit.Setup(this, IDC_COUPONLIST_TOTALREMAINING_EDIT, NULL, 2);
 
-	strcpy_s(port, QData.GetQueryText(m_Portfolio));
+	Port = QData.GetQueryText(m_Portfolio);
+	Port += " ";
+	CP = QData.GetQueryText(m_Counterparty);
+	CP += " ";
+	Curr = QData.GetQueryText(m_Currency);
+	Curr += " ";
 
 	switch(m_CouponType)
 	{
@@ -164,87 +159,78 @@ BOOL CCouponListDlg::OnInitDialog()
 			m_SS.SetVisibleCols(5);
 			if(m_Currency == "USD")
 			{
-				m_OraLoader.GetSql().Format("SELECT A.ASSET_CODE, 'USD' \"CURRENCY\", "
-							"B.CP_TRADE_ID, A.TRANS_NUM, A.ACCRUAL \"AMOUNT\", 'Y' \"COUPON_PAID\" "
-							"FROM SEMAM.NW_ASSET_INTEREST_FULL A, SEMAM.NW_TR_TICKETS B "
-							"WHERE B.TRANS_NUM(+) = A.TRANS_NUM "
-							"AND A.PMNT_TYPE IN ('CDS') "
-							"AND A.COUPON_PAID IS NULL "
-							"AND ABS(A.RECEIVABLE - A.RECEIVED) > 10 "
-							"AND A.PORTFOLIO = %s ", port);
+				m_OraLoader.GetSql() = "SELECT A.ASSET_CODE, 'USD' \"CURRENCY\", B.CP_TRADE_ID, A.TRANS_NUM, "
+										"A.ACCRUAL \"AMOUNT\", 'Y' \"COUPON_PAID\" "
+										"FROM SEMAM.NW_ASSET_INTEREST_FULL_V A, SEMAM.NW_TR_TICKETS B "
+										"WHERE B.TRANS_NUM(+) = A.TRANS_NUM "
+										"AND A.PMNT_TYPE IN ('CDS') "
+										"AND A.COUPON_PAID IS NULL "
+										"AND ABS(A.RECEIVABLE - A.RECEIVED) > 10 "
+										"AND A.PORTFOLIO = " + Port;
+				if(!m_bCash)
+					m_OraLoader.GetSql() += SqlPhrase;
 
 				if(!m_Counterparty.IsEmpty())
-				{
-					Sql.Format("AND B.COUNTERPARTY = %s ", QData.GetQueryText(m_Counterparty));
-					m_OraLoader.GetSql() += Sql;
-				}
+					m_OraLoader.GetSql() += "AND B.COUNTERPARTY = " + CP;
 			}
 			else
 			{
-				m_OraLoader.GetSql().Format("SELECT A.ASSET_CODE, A.CURRENCY, B.CP_TRADE_ID, "
-							"A.TRANS_NUM, A.L_ACCRUAL \"AMOUNT\", 'Y' \"COUPON_PAID\" "
-							"FROM SEMAM.NW_ASSET_INTEREST_FULL A, SEMAM.NW_TR_TICKETS B "
-							"WHERE B.TRANS_NUM(+) = A.TRANS_NUM "
-							"AND A.PMNT_TYPE IN ('CDS') "
-							"AND A.COUPON_PAID IS NULL "
-							"AND ABS(A.RECEIVABLE - A.RECEIVED) > 10 "
-							"AND A.PORTFOLIO = %s ", port);
-			
-				if(strlen(m_Currency) > 0)
-				{
-					Sql.Format("AND A.CURRENCY = %s ", QData.GetQueryText(m_Currency));
-					m_OraLoader.GetSql() += Sql;
-				}
+				m_OraLoader.GetSql() = "SELECT A.ASSET_CODE, A.CURRENCY, B.CP_TRADE_ID, A.TRANS_NUM, "
+										"A.L_ACCRUAL \"AMOUNT\", 'Y' \"COUPON_PAID\" "
+										"FROM SEMAM.NW_ASSET_INTEREST_FULL_V A, SEMAM.NW_TR_TICKETS B "
+										"WHERE B.TRANS_NUM(+) = A.TRANS_NUM "
+										"AND A.PMNT_TYPE IN ('CDS') "
+										"AND A.COUPON_PAID IS NULL "
+										"AND ABS(A.RECEIVABLE - A.RECEIVED) > 10 "
+										"AND A.PORTFOLIO = " + Port;
+				if(!m_bCash)
+					m_OraLoader.GetSql() += SqlPhrase;
+
+				if(!m_Currency.IsEmpty())
+					m_OraLoader.GetSql() += "AND A.CURRENCY = " + Curr;
 
 				if(!m_Counterparty.IsEmpty())
-				{
-					Sql.Format("AND B.COUNTERPARTY = %s ", QData.GetQueryText(m_Counterparty));
-					m_OraLoader.GetSql() += Sql;
-				}
+					m_OraLoader.GetSql() += "AND B.COUNTERPARTY = " + CP; 
 			}
+			
 			m_OraLoader.GetSql() += "ORDER BY 1, 2, 4 ";
 			break;
 		
 		case 2: // IRS
 			if(m_Currency == "USD")
 			{
-				m_OraLoader.GetSql().Format("SELECT A.ASSET_CODE, 'USD' \"CURRENCY\", B.CP_TRADE_ID, "
-							"A.TRANS_NUM, A.ACCRUAL \"AMOUNT\", 'Y' \"COUPON_PAID\" "
-							"FROM SEMAM.NW_ASSET_INTEREST_FULL A, SEMAM.NW_TR_TICKETS B "
-							"WHERE B.TRANS_NUM(+) = A.TRANS_NUM "
-							"AND A.PMNT_TYPE IN ('INT. SWAP') "
-							"AND A.COUPON_PAID IS NULL "
-							"AND ABS(A.RECEIVABLE - A.RECEIVED) > 10 "
-							"AND A.PORTFOLIO = %s ", port);
+				m_OraLoader.GetSql() = "SELECT A.ASSET_CODE, 'USD' \"CURRENCY\", B.CP_TRADE_ID, A.TRANS_NUM, "
+										"A.ACCRUAL \"AMOUNT\", 'Y' \"COUPON_PAID\" "
+										"FROM SEMAM.NW_ASSET_INTEREST_FULL_V A, SEMAM.NW_TR_TICKETS B "
+										"WHERE B.TRANS_NUM(+) = A.TRANS_NUM "
+										"AND A.PMNT_TYPE IN ('INT. SWAP') "
+										"AND A.COUPON_PAID IS NULL "
+										"AND ABS(A.RECEIVABLE - A.RECEIVED) > 10 "
+										"AND A.PORTFOLIO = " + Port;
+				if(!m_bCash)
+					m_OraLoader.GetSql() += SqlPhrase;
 
 				if(!m_Counterparty.IsEmpty())
-				{
-					Sql.Format("AND A.COUNTERPARTY = %s ", QData.GetQueryText(m_Counterparty));
-					m_OraLoader.GetSql() += Sql;
-				}
+					m_OraLoader.GetSql() += "AND A.COUNTERPARTY = " + CP;
 			}
 			else
 			{
-				m_OraLoader.GetSql().Format("SELECT A.ASSET_CODE, A.CURRENCY, B.CP_TRADE_ID, A.TRANS_NUM, "
-							"A.L_ACCRUAL \"AMOUNT\", 'Y' \"COUPON_PAID\"  "
-							"FROM SEMAM.NW_ASSET_INTEREST_FULL A, SEMAM.NW_TR_TICKETS B "
-							"WHERE B.TRANS_NUM(+) = A.TRANS_NUM "
-							"AND A.PMNT_TYPE IN ('INT. SWAP') "
-							"AND A.COUPON_PAID IS NULL "
-							"AND ABS(A.RECEIVABLE - A.RECEIVED) > 10 "
-							"AND A.PORTFOLIO = %s ", port);
-			
-				if(strlen(m_Currency) > 0)
-				{
-					Sql.Format("AND A.CURRENCY = %s ", QData.GetQueryText(m_Currency));
-					m_OraLoader.GetSql() += Sql;
-				}
+				m_OraLoader.GetSql() = "SELECT A.ASSET_CODE, A.CURRENCY, B.CP_TRADE_ID, A.TRANS_NUM, "
+										"A.L_ACCRUAL \"AMOUNT\", 'Y' \"COUPON_PAID\"  "
+										"FROM SEMAM.NW_ASSET_INTEREST_FULL_V A, SEMAM.NW_TR_TICKETS B "
+										"WHERE B.TRANS_NUM(+) = A.TRANS_NUM "
+										"AND A.PMNT_TYPE IN ('INT. SWAP') "
+										"AND A.COUPON_PAID IS NULL "
+										"AND ABS(A.RECEIVABLE - A.RECEIVED) > 10 "
+										"AND A.PORTFOLIO = " + Port;
+				if(!m_bCash)
+					m_OraLoader.GetSql() += SqlPhrase;
+
+				if(!m_Currency.IsEmpty())
+					m_OraLoader.GetSql() += "AND A.CURRENCY = " + Curr;
 
 				if(!m_Counterparty.IsEmpty())
-				{
-					Sql.Format("AND A.COUNTERPARTY = %s ", QData.GetQueryText(m_Counterparty));
-					m_OraLoader.GetSql() += Sql;
-				}
+					m_OraLoader.GetSql() += "AND A.COUNTERPARTY = " + CP;
 			}
 			m_OraLoader.GetSql() += "ORDER BY 1, 2, 4 ";
 			break;
@@ -253,27 +239,30 @@ BOOL CCouponListDlg::OnInitDialog()
 			m_SS.SetVisibleCols(3);
 			if(m_Currency == "USD")
 			{
-				m_OraLoader.GetSql().Format("SELECT A.ASSET_CODE, 'USD' \"CURRENCY\", SUM(A.ACCRUAL) \"AMOUNT\", 'Y' \"COUPON_PAID\" "
-							"FROM SEMAM.NW_ASSET_INTEREST_FULL A "
-							"WHERE A.PMNT_TYPE IN ('SECURITIES') "
-							"AND A.COUPON_PAID IS NULL "
-							"AND ABS(A.RECEIVABLE - A.RECEIVED) > 10 "
-							"AND A.PORTFOLIO = %s ", port);
+				m_OraLoader.GetSql() = "SELECT A.ASSET_CODE, 'USD' \"CURRENCY\", SUM(A.ACCRUAL) \"AMOUNT\", 'Y' \"COUPON_PAID\" "
+										"FROM SEMAM.NW_ASSET_INTEREST_FULL_V A "
+										"WHERE A.PMNT_TYPE IN ('SECURITIES') "
+										"AND A.COUPON_PAID IS NULL "
+										"AND ABS(A.RECEIVABLE - A.RECEIVED) > 10 "
+										"AND A.PORTFOLIO = " + Port;
+				if(!m_bCash)
+					m_OraLoader.GetSql() += SqlPhrase;
+
 				m_OraLoader.GetSql() += "GROUP BY A.ASSET_CODE HAVING ABS(SUM(A.L_ACCRUAL)) > 10 ";
 			}
 			else
 			{
-				m_OraLoader.GetSql().Format("SELECT A.ASSET_CODE, A.CURRENCY, SUM(A.L_ACCRUAL) \"AMOUNT\", 'Y' \"COUPON_PAID\" "
-						"FROM SEMAM.NW_ASSET_INTEREST_FULL A "
-						"WHERE A.PMNT_TYPE IN ('SECURITIES') "
-						"AND A.COUPON_PAID IS NULL "
-						"AND ABS(A.RECEIVABLE - A.RECEIVED) > 10 "
-						"AND A.PORTFOLIO = %s ", port);
-				if(strlen(m_Currency) > 0)
-				{
-					Sql.Format("AND A.CURRENCY = %s ", QData.GetQueryText(m_Currency));
-					m_OraLoader.GetSql() += Sql;
-				}
+				m_OraLoader.GetSql() = "SELECT A.ASSET_CODE, A.CURRENCY, SUM(A.L_ACCRUAL) \"AMOUNT\", 'Y' \"COUPON_PAID\" "
+										"FROM SEMAM.NW_ASSET_INTEREST_FULL_V A "
+										"WHERE A.PMNT_TYPE IN ('SECURITIES') "
+										"AND A.COUPON_PAID IS NULL "
+										"AND ABS(A.RECEIVABLE - A.RECEIVED) > 10 "
+										"AND A.PORTFOLIO = " + Port;
+				if(!m_bCash)
+					m_OraLoader.GetSql() += SqlPhrase;
+
+				if(!m_Currency.IsEmpty())
+					m_OraLoader.GetSql() += "AND A.CURRENCY = " + Curr;
 
 				m_OraLoader.GetSql() += "GROUP BY A.ASSET_CODE, A.CURRENCY "
 										"HAVING ABS(SUM(A.L_ACCRUAL)) > 10 ";
@@ -286,30 +275,33 @@ BOOL CCouponListDlg::OnInitDialog()
 			m_SS.SetVisibleCols(3);
 			if(m_Currency == "USD")
 			{
-				m_OraLoader.GetSql().Format("UNION SELECT A.ASSET_CODE, 'USD' \"CURRENCY\", "
-							"SUM(A.ACCRUAL) \"AMOUNT\", 'Y' \"COUPON_PAID\" "
-							"FROM SEMAM.NW_ASSET_INTEREST_FULL A "
-							"WHERE A.PMNT_TYPE IN ('CDS', 'SECURITIES') "
-							"AND A.COUPON_PAID IS NULL "
-							"AND ABS(A.RECEIVABLE - A.RECEIVED) > 10 "
-							"AND PORTFOLIO = %s ", port);
+				m_OraLoader.GetSql() = "SELECT A.ASSET_CODE, 'USD' \"CURRENCY\", SUM(A.ACCRUAL) \"AMOUNT\", "
+										"'Y' \"COUPON_PAID\" "
+										"FROM SEMAM.NW_ASSET_INTEREST_FULL_V A "
+										"WHERE A.PMNT_TYPE IN ('CDS', 'SECURITIES') "
+										"AND A.COUPON_PAID IS NULL "
+										"AND ABS(A.RECEIVABLE - A.RECEIVED) > 10 "
+										"AND PORTFOLIO = " + Port;
+				if(!m_bCash)
+					m_OraLoader.GetSql() += SqlPhrase;
+
 				m_OraLoader.GetSql() += "GROUP BY A.ASSET_CODE HAVING ABS(SUM(A.L_ACCRUAL)) > 10 ";
 			}
 			else
 			{
-				m_OraLoader.GetSql().Format("SELECT A.ASSET_CODE, A.CURRENCY, "
-					"SUM(A.L_ACCRUAL) \"AMOUNT\", 'Y' \"COUPON_PAID\" "
-					"FROM SEMAM.NW_ASSET_INTEREST_FULL A "
-					"WHERE A.PMNT_TYPE IN ('CDS', 'SECURITIES') "
-					"AND A.COUPON_PAID IS NULL "
-					"AND ABS(A.RECEIVABLE - A.RECEIVED) > 10 "
-					"AND A.PORTFOLIO = %s ", port);
-			
-				if(strlen(m_Currency) > 0)
-				{
-					Sql.Format("AND A.CURRENCY = %s ", QData.GetQueryText(m_Currency));
-					m_OraLoader.GetSql() += Sql;
-				}
+				m_OraLoader.GetSql() = "SELECT A.ASSET_CODE, A.CURRENCY, SUM(A.L_ACCRUAL) \"AMOUNT\", "
+										"'Y' \"COUPON_PAID\" "
+										"FROM SEMAM.NW_ASSET_INTEREST_FULL_V A "
+										"WHERE A.PMNT_TYPE IN ('CDS', 'SECURITIES') "
+										"AND A.COUPON_PAID IS NULL "
+										"AND ABS(A.RECEIVABLE - A.RECEIVED) > 10 "
+										"AND A.PORTFOLIO = " + Port;
+				if(!m_bCash)
+					m_OraLoader.GetSql() += SqlPhrase;
+
+				if(!m_Currency.IsEmpty())
+					m_OraLoader.GetSql() += "AND A.CURRENCY = " + Curr;
+				
 				m_OraLoader.GetSql() += "GROUP BY A.ASSET_CODE, A.CURRENCY "
 										"HAVING ABS(SUM(A.L_ACCRUAL)) > 10 ";
 			}
@@ -374,46 +366,55 @@ void CCouponListDlg::OnDblClickCouponList(long Col, long Row)
 			m_Amount = m_SS.GetSheetText(3, Row);
 		bOK = TRUE;
 
-		char port[20];
-		LPCTSTR p;
-		CString Sql;
+		CString Port, Asset;
+		CString Sql, SqlPhrase = "AND B.INSTRUCTED IS NULL ";
 		CQData QData;
 		
-		strcpy_s(port, QData.GetQueryText(m_Portfolio));
-		p = QData.GetQueryText(m_Asset);
+		Port = QData.GetQueryText(m_Portfolio);
+		Port += " ";
+		Asset = QData.GetQueryText(m_Asset);
+		Asset += " ";
 
 		if(m_Currency != "USD")
 		{
-			Sql.Format("SELECT A.CURRENCY, A.ASS_TO, A.TRANS_TYPE, SUM(A.L_ACCRUAL) \"L_ACCRUAL\", TO_NUMBER(NULL) \"CASH\", "
-						"A.TRANS_NUM, A.INV_NUM, 1 \"FXRATE\", 0 \"REMAINING\", SUM(A.L_ACCRUAL) \"L_ACCRUAL\", 'Y' \"COUPON_PAID\" "
-						"FROM SEMAM.NW_INTEREST_RECEIVABLE A, SEMAM.NW_ASSET_INTEREST_FULL B "
-						"WHERE B.PORTFOLIO = A.PORTFOLIO "
-						"AND B.ASSET_CODE = A.ASSET_CODE "
-						"AND B.ASSET_TO = A.ASS_TO "
-						"AND DECODE(B.PMNT_TYPE, 'CDS', A.TRANS_NUM, 1) = DECODE(B.PMNT_TYPE, 'CDS', B.TRANS_NUM, 1) "
-						"AND B.COUPON_PAID IS NULL "
-						"AND ABS(B.RECEIVABLE - B.RECEIVED) > 10 "
-						"AND A.PORTFOLIO = %s "
-						"AND A.ASSET_CODE = %s "
-						"AND A.CURRENCY = '%s' "
-						"GROUP BY A.CURRENCY, A.ASS_TO, A.TRANS_TYPE, A.TRANS_NUM, A.INV_NUM "
-						"ORDER BY 1, 2, 3 DESC ", port, p, (LPCTSTR) m_Currency);
+			Sql = "SELECT A.CURRENCY, A.ASS_TO, A.TRANS_TYPE, SUM(A.L_ACCRUAL) \"L_ACCRUAL\", TO_NUMBER(NULL) \"CASH\", "
+					"A.TRANS_NUM, A.INV_NUM, 1 \"FXRATE\", 0 \"REMAINING\", SUM(A.L_ACCRUAL) \"L_ACCRUAL\", 'Y' \"COUPON_PAID\" "
+					"FROM SEMAM.NW_INTEREST_RECEIVABLE A, SEMAM.NW_ASSET_INTEREST_FULL_V B "
+					"WHERE B.PORTFOLIO = A.PORTFOLIO "
+					"AND B.ASSET_CODE = A.ASSET_CODE "
+					"AND B.ASSET_TO = A.ASS_TO "
+					"AND DECODE(B.PMNT_TYPE, 'CDS', A.TRANS_NUM, 1) = DECODE(B.PMNT_TYPE, 'CDS', B.TRANS_NUM, 1) "
+					"AND B.COUPON_PAID IS NULL "
+					"AND ABS(B.RECEIVABLE - B.RECEIVED) > 10 ";
+
+			if(!m_bCash)
+				Sql += SqlPhrase;
+
+			Sql += "AND A.PORTFOLIO = " + Port + 
+				   "AND A.ASSET_CODE = " + Asset + 
+				   "AND A.CURRENCY = '" + m_Currency + "' "
+				   "GROUP BY A.CURRENCY, A.ASS_TO, A.TRANS_TYPE, A.TRANS_NUM, A.INV_NUM "
+				   "ORDER BY 1, 2, 3 DESC ";
 		}
 		else
 		{
-			Sql.Format("SELECT 'USD' \"CURRENCY\", A.ASS_TO, A.TRANS_TYPE, SUM(A.ACCRUAL) \"ACCRUAL\", TO_NUMBER(NULL) \"CASH\", A.TRANS_NUM, "
-						"A.INV_NUM, SUM(A.L_ACCRUAL)/SUM(A.ACCRUAL) \"FXRATE\", 0 \"REMAINING\", SUM(A.L_ACCRUAL) \"L_ACCRUAL\", 'Y' \"COUPON_PAID\"  "
-						"FROM SEMAM.NW_INTEREST_RECEIVABLE A, SEMAM.NW_ASSET_INTEREST_FULL B "
-						"WHERE B.PORTFOLIO = A.PORTFOLIO "
-						"AND B.ASSET_CODE = A.ASSET_CODE "
-						"AND B.ASSET_TO = A.ASS_TO "
-						"AND DECODE(B.PMNT_TYPE, 'CDS', A.TRANS_NUM, 1) = DECODE(B.PMNT_TYPE, 'CDS', B.TRANS_NUM, 1) "
-						"AND B.COUPON_PAID IS NULL "
-						"AND ABS(B.RECEIVABLE - B.RECEIVED) > 10 "
-						"AND A.PORTFOLIO = %s "
-						"AND A.ASSET_CODE = %s "
-						"GROUP BY A.ASS_TO, A.TRANS_TYPE, A.TRANS_NUM, A.INV_NUM "
-						"ORDER BY 1, 2, 3 DESC ", port, p);
+			Sql = "SELECT 'USD' \"CURRENCY\", A.ASS_TO, A.TRANS_TYPE, SUM(A.ACCRUAL) \"ACCRUAL\", TO_NUMBER(NULL) \"CASH\", A.TRANS_NUM, "
+					"A.INV_NUM, SUM(A.L_ACCRUAL)/SUM(A.ACCRUAL) \"FXRATE\", 0 \"REMAINING\", SUM(A.L_ACCRUAL) \"L_ACCRUAL\", 'Y' \"COUPON_PAID\"  "
+					"FROM SEMAM.NW_INTEREST_RECEIVABLE A, SEMAM.NW_ASSET_INTEREST_FULL_V B "
+					"WHERE B.PORTFOLIO = A.PORTFOLIO "
+					"AND B.ASSET_CODE = A.ASSET_CODE "
+					"AND B.ASSET_TO = A.ASS_TO "
+					"AND DECODE(B.PMNT_TYPE, 'CDS', A.TRANS_NUM, 1) = DECODE(B.PMNT_TYPE, 'CDS', B.TRANS_NUM, 1) "
+					"AND B.COUPON_PAID IS NULL "
+					"AND ABS(B.RECEIVABLE - B.RECEIVED) > 10 ";
+
+			if(!m_bCash)
+				Sql += SqlPhrase;
+
+			Sql += "AND A.PORTFOLIO = " + Port + 
+					"AND A.ASSET_CODE = " + Asset + 
+					"GROUP BY A.ASS_TO, A.TRANS_TYPE, A.TRANS_NUM, A.INV_NUM "
+					"ORDER BY 1, 2, 3 DESC ";
 		}
 
 		if(m_OraLoader.Open(Sql))
@@ -488,20 +489,20 @@ void CCouponListDlg::OnDblClickCouponSelList(long Col, long Row)
 		CQData QData;
 		
 		m_SelSS.SetSheetCurRow(Row);
-		m_AssetEdit.SetWindowText(m_Asset);
+		m_AssetEdit.SetData(m_Asset);
 		m_DateEdit.SetData(m_SelSS.GetSheetText(2, Row));
 		
 		m_Curr = m_SelSS.GetSheetText(m_SelSS.GetSheetCols(), Row); // GetCurrency
 		if(m_Curr == "USD")
-			m_FxrateEdit.SetWindowText(m_SelSS.GetSheetText(7, Row));  // Update Fxrate
+			m_FxrateEdit.SetData(m_SelSS.GetSheetText(7, Row));  // Update Fxrate
 		else
-			m_FxrateEdit.SetWindowText("");  // if none USD, do not lock fxrate
+			m_FxrateEdit.SetData(EMPTYSTRING);  // if none USD, do not lock fxrate
 	
-		m_FxrateEdit.GetWindowText(Text);
+		Text = m_FxrateEdit.GetData();
 		m_FxrateEdit.EnableWindow(Text.IsEmpty() || atof(QData.RemoveComma(Text)) == 1 ? FALSE : TRUE);
-		m_AmountEdit.SetWindowText(m_SelSS.GetSheetText(4, Row));  // Update Amount
-		m_RemainingEdit.SetWindowText(m_SelSS.GetSheetText(8, Row)); // Update Remaining
-		m_CouponPaid->SetCheck(m_SelSS.GetSheetText(9, Row));
+		m_AmountEdit.SetData(m_SelSS.GetSheetText(4, Row));  // Update Amount
+		m_RemainingEdit.SetData(m_SelSS.GetSheetText(8, Row)); // Update Remaining
+		m_CouponPaid.SetData(m_SelSS.GetSheetText(9, Row));
 		m_LAmount = m_SelSS.GetSheetText(10, Row); // Update Local Amount
 		m_SelSS.SetSheetCurRow(Row);
 		m_bLoaded = TRUE;
@@ -539,13 +540,13 @@ void CCouponListDlg::OnCouponListUpdateButton()
 
 	if(m_SelSS.GetSheetCurRow() > 0)
 	{
-		m_AmountEdit.GetWindowText(Text);
+		Text = m_AmountEdit.GetData();
 		m_SelSS.SetSheetText(4, m_SelSS.GetSheetCurRow(), Text);
-		m_FxrateEdit.GetWindowText(Text);
+		Text = m_FxrateEdit.GetData();
 		m_SelSS.SetSheetText(7, m_SelSS.GetSheetCurRow(), Text);
-		m_RemainingEdit.GetWindowText(Text);
+		Text = m_RemainingEdit.GetData();
 		m_SelSS.SetSheetText(8, m_SelSS.GetSheetCurRow(), Text);
-		m_SelSS.SetSheetText(9, m_SelSS.GetSheetCurRow(), m_CouponPaid->GetCheckString());
+		m_SelSS.SetSheetText(9, m_SelSS.GetSheetCurRow(), m_CouponPaid.GetCheckString());
 		UpdateFields();
 	}
 }
@@ -566,7 +567,7 @@ void CCouponListDlg::OnOK()
 		m_CouponArray.Add(Rec);
 	}
 
-	m_TotalEdit.GetWindowText(m_Amount);
+	m_Amount = m_TotalEdit.GetData();
 	if(atof(QData.RemoveComma(m_Amount)) > 0)
 		m_Amount = "-" + m_Amount;
 	else

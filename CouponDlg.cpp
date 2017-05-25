@@ -20,6 +20,7 @@ CCouponDlg::CCouponDlg(CWnd* pParent /*=NULL*/)
 	: CDialog(CCouponDlg::IDD, pParent)
 {
 	//{{AFX_DATA_INIT(CCouponDlg)
+	m_bCash = TRUE;
 	//}}AFX_DATA_INIT
 }
 
@@ -56,7 +57,7 @@ BOOL CCouponDlg::OnInitDialog()
 {
 	CDialog::OnInitDialog();
 	
-	CString Sql;
+	CString Sql, SqlPhrase = "AND A.INSTRUCTED IS NULL ";
 
 	BeginWaitCursor();
 	m_SS.SetVisibleRows(10);
@@ -87,110 +88,149 @@ BOOL CCouponDlg::OnInitDialog()
 	{
 		case 1: // CDS only
 			if(m_Currency == "USD")
-				Sql.Format("SELECT A.ASSET_CODE, 'USD' \"CURRENCY\", B.CP_TRADE_ID, A.TRANS_NUM, SUM(A.ACCRUAL) \"AMOUNT\" "
-					"FROM SEMAM.NW_ASSET_INTEREST_FULL A, SEMAM.NW_TR_TICKETS B "
-					"WHERE B.TRANS_NUM(+) = A.TRANS_NUM "
-					"AND A.PMNT_TYPE IN ('CDS') "
-					"AND A.PORTFOLIO = '%s' "
-					"AND A.COUPON_PAID IS NULL "
-					"AND ABS(A.RECEIVABLE - A.RECEIVED) > 10 "
-					"GROUP BY A.ASSET_CODE, B.CP_TRADE_ID, A.TRANS_NUM "
-					"ORDER BY 1, 2, 4 ", (LPCTSTR) m_Portfolio);
+			{
+				Sql ="SELECT A.ASSET_CODE, 'USD' \"CURRENCY\", B.CP_TRADE_ID, A.TRANS_NUM, SUM(A.ACCRUAL) \"AMOUNT\" "
+					 "FROM SEMAM.NW_ASSET_INTEREST_FULL_V A, SEMAM.NW_TR_TICKETS B "
+					 "WHERE B.TRANS_NUM(+) = A.TRANS_NUM "
+					 "AND A.PMNT_TYPE IN ('CDS') "
+					 "AND A.PORTFOLIO = '" + m_Portfolio + "' "
+					 "AND A.COUPON_PAID IS NULL "
+					 "AND ABS(A.RECEIVABLE - A.RECEIVED) > 10 ";
+			    
+				if(!m_bCash)
+					 Sql += SqlPhrase;
+				
+				Sql += "GROUP BY A.ASSET_CODE, B.CP_TRADE_ID, A.TRANS_NUM "
+					   "ORDER BY 1, 2, 4 ";
+			}
 			else
-				Sql.Format("SELECT A.ASSET_CODE, A.CURRENCY, B.CP_TRADE_ID, A.TRANS_NUM, SUM(A.L_ACCRUAL) \"AMOUNT\" "
-					"FROM SEMAM.NW_ASSET_INTEREST_FULL A, SEMAM.NW_TR_TICKETS B "
-					"WHERE B.TRANS_NUM(+) = A.TRANS_NUM "
-					"AND A.PMNT_TYPE IN ('CDS') "
-					"AND A.PORTFOLIO = '%s' "
-					"AND A.CURRENCY = '%s' "
-					"AND A.COUPON_PAID IS NULL "
-					"AND ABS(A.RECEIVABLE - A.RECEIVED) > 10 "
-					"GROUP BY A.ASSET_CODE, A.CURRENCY, B.CP_TRADE_ID, A.TRANS_NUM "
-					"ORDER BY 1, 2, 4 ", (LPCTSTR) m_Portfolio, (LPCTSTR) m_Currency);
-				break;
+			{
+				Sql = "SELECT A.ASSET_CODE, A.CURRENCY, B.CP_TRADE_ID, A.TRANS_NUM, SUM(A.L_ACCRUAL) \"AMOUNT\" "
+					   "FROM SEMAM.NW_ASSET_INTEREST_FULL_V A, SEMAM.NW_TR_TICKETS B "
+					   "WHERE B.TRANS_NUM(+) = A.TRANS_NUM "
+					   "AND A.PMNT_TYPE IN ('CDS') "
+					   "AND A.PORTFOLIO = '" + m_Portfolio + "' "
+					   "AND A.CURRENCY = '" + m_Currency + "' "
+					   "AND A.COUPON_PAID IS NULL "
+					   "AND ABS(A.RECEIVABLE - A.RECEIVED) > 10 ";
+			   
+				if(!m_bCash)
+					 Sql += SqlPhrase;
+				
+				Sql += "GROUP BY A.ASSET_CODE, A.CURRENCY, B.CP_TRADE_ID, A.TRANS_NUM "
+						"ORDER BY 1, 2, 4 ";
+			}
+
+			break;
 		
 		case 2: // IRS Only
 			if(m_Currency == "USD")
-				Sql.Format("SELECT A.ASSET_CODE, 'USD' \"CURRENCY\", B.CP_TRADE_ID, A.TRANS_NUM, SUM(A.ACCRUAL) \"AMOUNT\" "
-					"FROM SEMAM.NW_ASSET_INTEREST_FULL A, SEMAM.NW_TR_TICKETS B "
-					"WHERE B.TRANS_NUM(+) = A.TRANS_NUM "
-					"AND A.PMNT_TYPE IN ('INT. SWAP') "
-					"AND A.PORTFOLIO = '%s' "
-					"AND A.COUPON_PAID IS NULL "
-					"AND ABS(A.RECEIVABLE - A.RECEIVED) > 10 "
-					"GROUP BY A.ASSET_CODE, B.CP_TRADE_ID, A.TRANS_NUM "
-					"ORDER BY 1, 2, 4 ", (LPCTSTR) m_Portfolio);
+			{
+				Sql = "SELECT A.ASSET_CODE, 'USD' \"CURRENCY\", B.CP_TRADE_ID, A.TRANS_NUM, SUM(A.ACCRUAL) \"AMOUNT\" "
+						"FROM SEMAM.NW_ASSET_INTEREST_FULL_V A, SEMAM.NW_TR_TICKETS B "
+						"WHERE B.TRANS_NUM(+) = A.TRANS_NUM "
+						"AND A.PMNT_TYPE IN ('INT. SWAP') "
+						"AND A.PORTFOLIO = '" + m_Portfolio + "' "
+						"AND A.COUPON_PAID IS NULL "
+						"AND ABS(A.RECEIVABLE - A.RECEIVED) > 10 ";
+				
+				if(!m_bCash)
+					Sql += SqlPhrase;
+				
+				Sql += "GROUP BY A.ASSET_CODE, B.CP_TRADE_ID, A.TRANS_NUM "
+						"ORDER BY 1, 2, 4 ";
+			}
 			else
-				Sql.Format("SELECT A.ASSET_CODE, A.CURRENCY, B.CP_TRADE_ID, A.TRANS_NUM, SUM(A.L_ACCRUAL) \"AMOUNT\" "
-					"FROM SEMAM.NW_ASSET_INTEREST_FULL A, SEMAM.NW_TR_TICKETS B "
-					"WHERE B.TRANS_NUM(+) = A.TRANS_NUM "
-					"AND A.PMNT_TYPE IN ('INT. SWAP') "
-					"AND A.PORTFOLIO = '%s' "
-					"AND A.CURRENCY = '%s' "
-					"AND A.COUPON_PAID IS NULL "
-					"AND ABS(A.RECEIVABLE - A.RECEIVED) > 10 "
-					"GROUP BY A.ASSET_CODE, A.CURRENCY, B.CP_TRADE_ID, A.TRANS_NUM "
-					"ORDER BY 1, 2, 4 ", (LPCTSTR) m_Portfolio, (LPCTSTR) m_Currency);
-				break;
+			{
+				Sql = "SELECT A.ASSET_CODE, A.CURRENCY, B.CP_TRADE_ID, A.TRANS_NUM, SUM(A.L_ACCRUAL) \"AMOUNT\" "
+						"FROM SEMAM.NW_ASSET_INTEREST_FULL_V A, SEMAM.NW_TR_TICKETS B "
+						"WHERE B.TRANS_NUM(+) = A.TRANS_NUM "
+						"AND A.PMNT_TYPE IN ('INT. SWAP') "
+						"AND A.PORTFOLIO = '" + m_Portfolio + "' "
+						"AND A.CURRENCY = '" + m_Currency + "' "
+						"AND A.COUPON_PAID IS NULL "
+						"AND ABS(A.RECEIVABLE - A.RECEIVED) > 10 ";
+				if(!m_bCash)
+					Sql += SqlPhrase;
 
+				Sql += "GROUP BY A.ASSET_CODE, A.CURRENCY, B.CP_TRADE_ID, A.TRANS_NUM "
+						"ORDER BY 1, 2, 4 ";
+			}
+			break;
 		case 3: // All others
 			if(m_Currency == "USD")
-				Sql.Format("SELECT A.ASSET_CODE, 'USD' \"CURRENCY\", SUM(ACCRUAL) \"AMOUNT\" "
-					"FROM SEMAM.NW_ASSET_INTEREST_FULL A "
-					"WHERE PORTFOLIO = '%s' "
-					"AND A.PMNT_TYPE = 'SECURITIES' "
-					"AND A.COUPON_PAID IS NULL "
-					"AND ABS(A.RECEIVABLE - A.RECEIVED) > 10 "
-					"GROUP BY ASSET_CODE "
-					"ORDER BY 1, 2 ", (LPCTSTR) m_Portfolio);
+			{
+				Sql = "SELECT A.ASSET_CODE, 'USD' \"CURRENCY\", SUM(ACCRUAL) \"AMOUNT\" "
+						"FROM SEMAM.NW_ASSET_INTEREST_FULL_V A "
+						"WHERE PORTFOLIO = '" + m_Portfolio + "' "
+						"AND A.PMNT_TYPE = 'SECURITIES' "
+						"AND A.COUPON_PAID IS NULL "
+						"AND ABS(A.RECEIVABLE - A.RECEIVED) > 10 ";
+				
+				if(!m_bCash)
+					Sql += SqlPhrase;
+				
+				Sql += "GROUP BY ASSET_CODE "
+						"ORDER BY 1, 2 ";
+			}
 			else
-				Sql.Format("SELECT A.ASSET_CODE, CURRENCY, SUM(L_ACCRUAL) \"AMOUNT\" "
-					"FROM SEMAM.NW_ASSET_INTEREST_FULL A "
-					"WHERE PORTFOLIO = '%s' "
-					"AND A.PMNT_TYPE = 'SECURITIES' "
-					"AND CURRENCY = '%s' "
-					"AND A.COUPON_PAID IS NULL "
-					"AND ABS(A.RECEIVABLE - A.RECEIVED) > 10 "
-					"GROUP BY ASSET_CODE, CURRENCY "
-					"ORDER BY 1, 2 ", (LPCTSTR) m_Portfolio, (LPCTSTR) m_Currency);
+			{
+				Sql = "SELECT A.ASSET_CODE, CURRENCY, SUM(L_ACCRUAL) \"AMOUNT\" "
+						"FROM SEMAM.NW_ASSET_INTEREST_FULL_V A "
+						"WHERE PORTFOLIO = '" + m_Portfolio + "' "
+						"AND A.PMNT_TYPE = 'SECURITIES' "
+						"AND CURRENCY = '" + m_Currency + "' "
+						"AND A.COUPON_PAID IS NULL "
+						"AND ABS(A.RECEIVABLE - A.RECEIVED) > 10 ";
+				
+				if(!m_bCash)
+					Sql += SqlPhrase;
+				
+				Sql += "GROUP BY ASSET_CODE, CURRENCY "
+						"ORDER BY 1, 2 ";
+			}
 			break;
 		case 4: // Dividend
-			if(m_Currency == "USD") 
-				Sql.Format("SELECT A.ASSET_CODE, 'USD' \"CURRENCY\", SUM(AMOUNT) \"AMOUNT\" "
-					 "FROM SEMAM.NW_DIV_RECEIVABLE A "
-					 "WHERE PORTFOLIO = '%s' "
-					 "AND A.PMNT_TYPE = 'DIVIDENT P' "
-					 "AND PAID = 'N' "
-					 "GROUP BY ASSET_CODE "
-					 "ORDER BY 1, 2 ", (LPCTSTR) m_Portfolio, (LPCTSTR) m_Currency);
+			if(m_Currency == "USD")
+				Sql = "SELECT A.ASSET_CODE, 'USD' \"CURRENCY\", SUM(AMOUNT) \"AMOUNT\" "
+					  "FROM SEMAM.NW_DIV_RECEIVABLE A "
+					  "WHERE PORTFOLIO = '" + m_Portfolio + "' "
+					  "AND A.PMNT_TYPE = 'DIVIDENT P' "
+					  "AND PAID = 'N' "
+					  "GROUP BY ASSET_CODE "
+					  "ORDER BY 1, 2 ";
 			else
-				Sql.Format("SELECT A.ASSET_CODE, CURRENCY, SUM(L_AMOUNT) \"AMOUNT\" "
-					 "FROM SEMAM.NW_DIV_RECEIVABLE A "
-					 "WHERE PORTFOLIO = '%s' "
-					 "AND A.CURRENCY = '%s' "
-					 "AND A.PMNT_TYPE = 'DIVIDENT P' "
-					 "AND PAID = 'N' "
-					 "GROUP BY ASSET_CODE, CURRENCY "
-					 "ORDER BY 1, 2 ", (LPCTSTR) m_Portfolio, (LPCTSTR) m_Currency);
+				Sql = "SELECT A.ASSET_CODE, CURRENCY, SUM(L_AMOUNT) \"AMOUNT\" "
+					  "FROM SEMAM.NW_DIV_RECEIVABLE A "
+					  "WHERE PORTFOLIO = '" + m_Portfolio + "' "
+					  "AND A.CURRENCY = '" + m_Currency + "' "
+					  "AND A.PMNT_TYPE = 'DIVIDENT P' "
+					  "AND PAID = 'N' "
+					  "GROUP BY ASSET_CODE, CURRENCY "
+					  "ORDER BY 1, 2 ";
 			break;
 		case 5: // Tax
-			if(m_Currency == "USD") 
-				Sql.Format("SELECT A.ASSET_CODE, 'USD' \"CURRENCY\", SUM(AMOUNT) \"AMOUNT\" "
-					 "FROM SEMAM.NW_DIV_RECEIVABLE A "
-					 "WHERE PORTFOLIO = '%s' "
-					 "AND A.PMNT_TYPE = 'TAX' "
-					 "AND PAID = 'N' "
-					 "GROUP BY ASSET_CODE "
-					 "ORDER BY 1, 2 ", (LPCTSTR) m_Portfolio);
+			if(m_Currency == "USD")
+			{
+				Sql = "SELECT A.ASSET_CODE, 'USD' \"CURRENCY\", SUM(AMOUNT) \"AMOUNT\" "
+					  "FROM SEMAM.NW_DIV_RECEIVABLE A "
+					  "WHERE PORTFOLIO = '" + m_Portfolio + "' "
+					  "AND A.PMNT_TYPE = 'TAX' "
+					  "AND PAID = 'N' "
+					  "GROUP BY ASSET_CODE "
+					  "ORDER BY 1, 2 ";
+			}
 			else
-				Sql.Format("SELECT A.ASSET_CODE, CURRENCY, SUM(L_AMOUNT) \"AMOUNT\" "
+			{
+				Sql = "SELECT A.ASSET_CODE, CURRENCY, SUM(L_AMOUNT) \"AMOUNT\" "
 					 "FROM SEMAM.NW_DIV_RECEIVABLE A "
-					 "WHERE PORTFOLIO = '%s' "
-					 "AND CURRENCY = '%s' "
+					 "WHERE PORTFOLIO = '" + m_Portfolio + "' "
+					 "AND CURRENCY = '" + m_Currency + "' "
 					 "AND A.PMNT_TYPE = 'TAX' "
 					 "AND PAID = 'N' "
 					 "GROUP BY ASSET_CODE, CURRENCY "
-					 "ORDER BY 1, 2 ", (LPCTSTR) m_Portfolio, (LPCTSTR) m_Currency);
+					 "ORDER BY 1, 2 ";
+			}
 			break;
 		default:
 			break;
@@ -233,140 +273,186 @@ void CCouponDlg::OnDblClickCouponList(long Col, long Row)
 		bOK = TRUE;
 
 		CQData QData;
-		LPCTSTR p;
-		CString Sql;
+		CString Asset, Sql, SqlPhrase = "AND B.INSTRUCTED IS NULL ";
 
-		p = QData.GetQueryText(m_Asset);
+		Asset = QData.GetQueryText(m_Asset);
+		Asset += " ";
 
 		switch(m_CouponType)
 		{
 			case 1: // CDS
 				if(m_Currency == "USD")
-					Sql.Format("SELECT A.ASS_TO, 'USD' \"CURRENCY\", SUM(A.ACCRUAL) \"CASH\", SUM(A.L_ACCRUAL)/SUM(A.ACCRUAL) \"FXRATE\", "
+				{
+					Sql = "SELECT A.ASS_TO, 'USD' \"CURRENCY\", SUM(A.ACCRUAL) \"CASH\", SUM(A.L_ACCRUAL)/SUM(A.ACCRUAL) \"FXRATE\", "
 							"SUM(A.L_ACCRUAL) \"L_ACCRUAL\", A.TRANS_NUM "
-							"FROM SEMAM.NW_INTEREST_RECEIVABLE A "
-							"JOIN SEMAM.NW_ASSET_INTEREST_FULL B ON (A.PORTFOLIO = B.PORTFOLIO "
-									"AND A.ASSET_CODE = B.ASSET_CODE AND A.ASS_TO = B.ASSET_TO "
-									"AND A.TRANS_NUM = B.TRANS_NUM AND B.COUPON_PAID IS NULL "
-									"AND ABS(B.RECEIVABLE - B.RECEIVED) > 0) "
-							"WHERE A.PORTFOLIO = '%s' "
-							"AND A.ASSET_CODE = %s "
-							"GROUP BY A.ASS_TO, A.TRANS_NUM "  
-							"ORDER BY 1 DESC ", (LPCTSTR) m_Portfolio, p);
+							"FROM SEMAM.NW_INTEREST_RECEIVABLE A, SEMAM.NW_ASSET_INTEREST_FULL_V B "
+							"WHERE B.PORTFOLIO = A.PORTFOLIO "
+							"AND B.ASSET_CODE = A.ASSET_CODE "
+							"AND B.ASSET_TO = A.ASS_TO "
+							"AND A.TRANS_NUM = B.TRANS_NUM "
+							"AND B.COUPON_PAID IS NULL "
+							"AND ABS(B.RECEIVABLE - B.RECEIVED) > 0 ";
+					
+					if(!m_bCash)
+						Sql += SqlPhrase;
+					
+					Sql += "AND A.PORTFOLIO = '" + m_Portfolio + "' "
+						   "AND A.ASSET_CODE = " + Asset + 
+						   "GROUP BY A.ASS_TO, A.TRANS_NUM "  
+						   "ORDER BY 1 DESC ";
+				}
 				else
-					Sql.Format("SELECT A.ASS_TO, A.CURRENCY, SUM(A.L_ACCRUAL) \"CASH\", TO_NUMBER(NULL) \"FXRATE\" , "
+				{
+					Sql = "SELECT A.ASS_TO, A.CURRENCY, SUM(A.L_ACCRUAL) \"CASH\", TO_NUMBER(NULL) \"FXRATE\" , "
 							"SUM(A.L_ACCRUAL) \"L_ACCRUAL\", A.TRANS_NUM "
-							"FROM SEMAM.NW_INTEREST_RECEIVABLE A "
-							"JOIN SEMAM.NW_ASSET_INTEREST_FULL B ON (A.PORTFOLIO = B.PORTFOLIO "
-									"AND A.ASSET_CODE = B.ASSET_CODE AND A.ASS_TO = B.ASSET_TO "
-									"AND A.TRANS_NUM = B.TRANS_NUM AND B.COUPON_PAID IS NULL "
-									"AND ABS(B.RECEIVABLE - B.RECEIVED) > 0) "
-							"WHERE A.PORTFOLIO = '%s' "
-							"AND A.ASSET_CODE = %s "
-							"AND A.CURRENCY = '%s' "
+							"FROM SEMAM.NW_INTEREST_RECEIVABLE A, SEMAM.NW_ASSET_INTEREST_FULL_V B "
+							"WHERE B.PORTFOLIO = A.PORTFOLIO "
+							"AND B.ASSET_CODE = A.ASSET_CODE "
+							"AND B.ASSET_TO = A.ASS_TO "
+							"AND B.TRANS_NUM = A.TRANS_NUM "
+							"AND B.COUPON_PAID IS NULL "
+							"AND ABS(B.RECEIVABLE - B.RECEIVED) > 0 ";
+					
+					if(!m_bCash)
+						Sql += SqlPhrase;
+					
+					Sql += "AND A.PORTFOLIO = '" + m_Portfolio + "' "
+							"AND A.ASSET_CODE = " + Asset + 
+							"AND A.CURRENCY = '" + m_Currency + "' "
 							"GROUP BY A.ASS_TO, A.CURRENCY, A.TRANS_NUM "
-							"ORDER BY 1 DESC ", (LPCTSTR) m_Portfolio, p, (LPCTSTR) m_Currency);
+							"ORDER BY 1 DESC ";
+				}
 				break;
-			
 			case 2: // IRS
 				if(m_Currency == "USD")
-					Sql.Format("SELECT A.ASS_TO, 'USD' \"CURRENCY\", SUM(A.ACCRUAL) \"CASH\", SUM(A.L_ACCRUAL)/SUM(A.ACCRUAL) \"FXRATE\", "
+				{
+					Sql = "SELECT A.ASS_TO, 'USD' \"CURRENCY\", SUM(A.ACCRUAL) \"CASH\", SUM(A.L_ACCRUAL)/SUM(A.ACCRUAL) \"FXRATE\", "
 							"SUM(A.L_ACCRUAL) \"L_ACCRUAL\", A.TRANS_NUM "
-							"FROM SEMAM.NW_INTEREST_RECEIVABLE A "
-							"JOIN SEMAM.NW_ASSET_INTEREST_FULL B ON (A.PORTFOLIO = B.PORTFOLIO "
-									"AND A.ASSET_CODE = B.ASSET_CODE AND A.ASS_TO = B.ASSET_TO "
-									"AND A.TRANS_NUM = B.TRANS_NUM AND B.COUPON_PAID IS NULL "
-									"AND ABS(B.RECEIVABLE - B.RECEIVED) > 0) "
-							"WHERE  A.PORTFOLIO = '%s' "
-							"AND A.ASSET_CODE = %s "
+							"FROM SEMAM.NW_INTEREST_RECEIVABLE A, SEMAM.NW_ASSET_INTEREST_FULL_V B "
+							"WHERE B.PORTFOLIO = A.PORTFOLIO "
+							"AND B.ASSET_CODE = A.ASSET_CODE "
+							"AND B.ASSET_TO = A.ASS_TO "
+							"AND B.TRANS_NUM = A.TRANS_NUM "
+							"AND B.COUPON_PAID IS NULL "
+							"AND ABS(B.RECEIVABLE - B.RECEIVED) > 0 ";
+					
+					if(!m_bCash)
+						Sql += SqlPhrase;
+					
+					Sql += "AND A.PORTFOLIO = '" + m_Portfolio + "' "
+							"AND A.ASSET_CODE = " + Asset + 
 							"GROUP BY A.ASS_TO, A.TRANS_NUM "  
-							"ORDER BY 1 DESC ", (LPCTSTR) m_Portfolio, p);
+							"ORDER BY 1 DESC ";
+				}
 				else
-					Sql.Format("SELECT A.ASS_TO, A.CURRENCY, SUM(A.L_ACCRUAL) \"CASH\", TO_NUMBER(NULL) \"FXRATE\" , "
+				{
+					Sql = "SELECT A.ASS_TO, A.CURRENCY, SUM(A.L_ACCRUAL) \"CASH\", TO_NUMBER(NULL) \"FXRATE\" , "
 							"SUM(A.L_ACCRUAL) \"L_ACCRUAL\", A.TRANS_NUM "
-							"FROM SEMAM.NW_INTEREST_RECEIVABLE A "
-							"JOIN SEMAM.NW_ASSET_INTEREST_FULL B ON (A.PORTFOLIO = B.PORTFOLIO "
-									"AND A.ASSET_CODE = B.ASSET_CODE AND A.ASS_TO = B.ASSET_TO "
-									"AND A.TRANS_NUM = B.TRANS_NUM AND B.COUPON_PAID IS NULL "
-									"AND ABS(B.RECEIVABLE - B.RECEIVED) > 0) "
-							"WHERE A.PORTFOLIO = '%s' "
-							"AND A.ASSET_CODE = %s "
-							"AND A.CURRENCY = '%s' "
+							"FROM SEMAM.NW_INTEREST_RECEIVABLE A, SEMAM.NW_ASSET_INTEREST_FULL_V B "
+							"WHERE B.PORTFOLIO = A.PORTFOLIO "
+							"AND B.ASSET_CODE = A.ASSET_CODE "
+							"AND B.ASSET_TO = A.ASS_TO "
+							"AND B.TRANS_NUM = A.TRANS_NUM "
+							"AND B.COUPON_PAID IS NULL "
+							"AND ABS(B.RECEIVABLE - B.RECEIVED) > 0 ";
+					
+					if(!m_bCash)
+						Sql += SqlPhrase;
+					
+					Sql += "AND A.PORTFOLIO = '" + m_Portfolio + "' "
+							"AND A.ASSET_CODE = " + Asset + 
+							" AND A.CURRENCY = '" + m_Currency + "' "
 							"GROUP BY A.ASS_TO, A.CURRENCY, A.TRANS_NUM "
-							"ORDER BY 1 DESC ", (LPCTSTR) m_Portfolio, p, (LPCTSTR) m_Currency);
+							"ORDER BY 1 DESC ";
+				}
 				break;
 
 			case 3: // Others
 				if(m_Currency == "USD")
-					Sql.Format("SELECT A.ASS_TO, 'USD' \"CURRENCY\", SUM(A.ACCRUAL) \"CASH\", SUM(A.L_ACCRUAL)/SUM(A.ACCRUAL) \"FXRATE\", "
+				{
+					Sql = "SELECT A.ASS_TO, 'USD' \"CURRENCY\", SUM(A.ACCRUAL) \"CASH\", SUM(A.L_ACCRUAL)/SUM(A.ACCRUAL) \"FXRATE\", "
 							"SUM(A.L_ACCRUAL) \"L_ACCRUAL\" "
-							"FROM SEMAM.NW_INTEREST_RECEIVABLE A "
-							"JOIN SEMAM.NW_ASSET_INTEREST_FULL B ON (A.PORTFOLIO = B.PORTFOLIO "
-										"AND A.ASSET_CODE = B.ASSET_CODE AND A.ASS_TO = B.ASSET_TO "
-										"AND B.COUPON_PAID IS NULL AND ABS(B.RECEIVABLE - B.RECEIVED) > 0) "
-							"WHERE A.TRANS_TYPE IN ('SECURITIES', 'REPO') "
-							"AND A.PORTFOLIO = '%s' "
-							"AND A.ASSET_CODE = %s "
+							"FROM SEMAM.NW_INTEREST_RECEIVABLE A, SEMAM.NW_ASSET_INTEREST_FULL_V B "
+							"WHERE B.PORTFOLIO = A.PORTFOLIO "
+							"AND B.ASSET_CODE = A.ASSET_CODE "
+							"AND B.ASSET_TO = A.ASS_TO "
+							"AND B.COUPON_PAID IS NULL "
+							"AND ABS(B.RECEIVABLE - B.RECEIVED) > 0 ";
+					
+					if(!m_bCash)
+						Sql += SqlPhrase;
+
+					Sql += "AND A.TRANS_TYPE IN ('SECURITIES', 'REPO') "
+							"AND A.PORTFOLIO = '" + m_Portfolio + "' "
+							"AND A.ASSET_CODE = " + Asset + 
 							"GROUP BY A.ASS_TO "
-							"ORDER BY 1 DESC ", (LPCTSTR) m_Portfolio, p);
+							"ORDER BY 1 DESC ";
+				}
 				else
-					Sql.Format("SELECT A.ASS_TO, A.CURRENCY, SUM(A.L_ACCRUAL) \"CASH\", TO_NUMBER(NULL) \"FXRATE\", "
+				{
+					Sql = "SELECT A.ASS_TO, A.CURRENCY, SUM(A.L_ACCRUAL) \"CASH\", TO_NUMBER(NULL) \"FXRATE\", "
 							"SUM(A.L_ACCRUAL) \"L_ACCRUAL\" "
-							"FROM SEMAM.NW_INTEREST_RECEIVABLE A "
-							"JOIN SEMAM.NW_ASSET_INTEREST_FULL B ON (A.PORTFOLIO = B.PORTFOLIO "
-										"AND A.ASSET_CODE = B.ASSET_CODE AND A.ASS_TO = B.ASSET_TO "
-										"AND B.COUPON_PAID IS NULL AND ABS(B.RECEIVABLE - B.RECEIVED) > 0) "
-							"WHERE A.TRANS_TYPE IN ('SECURITIES', 'REPO') "
-							"AND A.PORTFOLIO = '%s' "
-							"AND A.ASSET_CODE = %s "
-							"AND A.CURRENCY = '%s' "
+							"FROM SEMAM.NW_INTEREST_RECEIVABLE A, SEMAM.NW_ASSET_INTEREST_FULL_V B "
+							"WHERE B.PORTFOLIO = A.PORTFOLIO "
+							"AND B.ASSET_CODE = A.ASSET_CODE "
+							"AND B.ASSET_TO = A.ASS_TO "
+							"AND B.COUPON_PAID IS NULL "
+							"AND ABS(B.RECEIVABLE - B.RECEIVED) > 0 ";
+					
+					if(!m_bCash)
+						Sql += SqlPhrase;
+
+					Sql += "AND A.TRANS_TYPE IN ('SECURITIES', 'REPO') "
+							"AND A.PORTFOLIO = '" + m_Portfolio + "' "
+							"AND A.ASSET_CODE = " + Asset + 
+							"AND A.CURRENCY = '" + m_Currency + "' "
 							"GROUP BY A.ASS_TO, A.CURRENCY "
-							"ORDER BY 1 DESC ", (LPCTSTR) m_Portfolio, p, (LPCTSTR) m_Currency);
+							"ORDER BY 1 DESC ";
+				}
 				break;
 			case 4: // Dividend
 				if(m_Currency == "USD") 
-					Sql.Format("SELECT A.EXD_DATE, 'USD' \"CURRENCY\", SUM(AMOUNT) \"CASH\", SUM(L_AMOUNT)/SUM(AMOUNT) \"FXRATE\", "
+					Sql = "SELECT A.EXD_DATE, 'USD' \"CURRENCY\", SUM(AMOUNT) \"CASH\", SUM(L_AMOUNT)/SUM(AMOUNT) \"FXRATE\", "
 							"SUM(L_AMOUNT) \"L_AMOUNT\" "
 							"FROM SEMAM.NW_DIV_RECEIVABLE A "
-							"WHERE PORTFOLIO = '%s' "
-							"AND ASSET_CODE = %s "
+							"WHERE PORTFOLIO = '" + m_Portfolio + "' "
+							"AND ASSET_CODE = " + Asset + 
 							"AND A.PMNT_TYPE = 'DIVIDENT P' "
 							"AND PAID = 'N' "
 							"GROUP BY EXD_DATE "
-							"ORDER BY 1, 2 ", (LPCTSTR) m_Portfolio, p);
+							"ORDER BY 1, 2 ";
 				else
-					Sql.Format("SELECT A.EXD_DATE, CURRENCY, SUM(L_AMOUNT) \"CASH\", TO_NUMBER(NULL) \"FXRATE\", SUM(L_AMOUNT) \"L_AMOUNT\" "
+					Sql = "SELECT A.EXD_DATE, CURRENCY, SUM(L_AMOUNT) \"CASH\", TO_NUMBER(NULL) \"FXRATE\", SUM(L_AMOUNT) \"L_AMOUNT\" "
 							"FROM SEMAM.NW_DIV_RECEIVABLE A "
-							"WHERE PORTFOLIO = '%s' "
-							"AND ASSET_CODE = %s "
-							"AND CURRENCY = '%s' "
+							"WHERE PORTFOLIO = '" + m_Portfolio + "' "
+							"AND ASSET_CODE = " + Asset + 
+							"AND CURRENCY = '" + m_Currency + "' "
 							"AND A.PMNT_TYPE = 'DIVIDENT P' "
 							"AND PAID = 'N' "
 							"GROUP BY EXD_DATE, CURRENCY "
-							"ORDER BY 1, 2 ", (LPCTSTR) m_Portfolio, p, (LPCTSTR) m_Currency);
+							"ORDER BY 1, 2 ";
 				break;
 			case 5: // Tax
-				if(m_Currency == "USD") 
-					Sql.Format("SELECT A.EXD_DATE, 'USD' \"CURRENCY\", SUM(AMOUNT) \"CASH\", SUM(L_AMOUNT)/SUM(AMOUNT) \"FXRATE\", "
+				if(m_Currency == "USD")
+					Sql = "SELECT A.EXD_DATE, 'USD' \"CURRENCY\", SUM(AMOUNT) \"CASH\", SUM(L_AMOUNT)/SUM(AMOUNT) \"FXRATE\", "
 							"SUM(L_AMOUNT) \"L_AMOUNT\" "
 							"FROM SEMAM.NW_DIV_RECEIVABLE A "
-							"WHERE PORTFOLIO = '%s' "
-							"AND ASSET_CODE = %s "
-							"AND CURRENCY = '%s' "
-							"AND A.PMNT_TYPE = 'TAX' "
+							"WHERE PORTFOLIO = '" + m_Portfolio + "' "
+							"AND ASSET_CODE = " + Asset + 
+							" AND A.PMNT_TYPE = 'TAX' "
 							"AND PAID = 'N' "
 							"GROUP BY EXD_DATE "
-							"ORDER BY 1, 2 ", (LPCTSTR) m_Portfolio, p, (LPCTSTR) m_Currency);
+							"ORDER BY 1, 2 ";
 				else
-					Sql.Format("SELECT A.EXD_DATE, CURRENCY, SUM(L_AMOUNT) \"CASH\", TO_NUMBER(NULL) \"FXRATE\", SUM(L_AMOUNT) \"L_AMOUNT\" "
+					Sql = "SELECT A.EXD_DATE, CURRENCY, SUM(L_AMOUNT) \"CASH\", TO_NUMBER(NULL) \"FXRATE\", SUM(L_AMOUNT) \"L_AMOUNT\" "
 							"FROM SEMAM.NW_DIV_RECEIVABLE A "
-							"WHERE PORTFOLIO = '%s' "
-							"AND ASSET_CODE = %s "
-							"AND CURRENCY = '%s' "
+							"WHERE PORTFOLIO = '" + m_Portfolio + "' "
+							"AND ASSET_CODE = " + Asset + 
+							"AND CURRENCY = '" + m_Currency + "' "
 							"AND A.PMNT_TYPE = 'TAX' "
 							"AND PAID = 'N' "
 							"GROUP BY A.EXD_DATE, CURRENCY "
-							"ORDER BY 1, 2 ", (LPCTSTR) m_Portfolio, p, (LPCTSTR) m_Currency);
+							"ORDER BY 1, 2 ";
 				break;
 			default:
 				break;
@@ -421,14 +507,14 @@ void CCouponDlg::OnDblClickCouponInfoList(long Col, long Row)
 	m_bLoaded = FALSE;
 	m_DateEdit.SetData(m_Date);
 	if(m_Currency == "USD")
-		m_FxrateEdit.SetWindowText(m_Fxrate);
+		m_FxrateEdit.SetData(m_Fxrate);
 	else
-		m_FxrateEdit.SetWindowText("");
+		m_FxrateEdit.SetData("");
 	m_FxrateEdit.EnableWindow(m_Fxrate.IsEmpty() || atof(m_Fxrate) == 1.0 ? FALSE : TRUE);
 	
-	m_AmountEdit.SetWindowText(m_Amount);
+	m_AmountEdit.SetData(m_Amount);
 	m_Remaining = "0.00";
-	m_RemainingEdit.SetWindowText(m_Remaining);
+	m_RemainingEdit.SetData(m_Remaining);
 
 	m_bLoaded = TRUE;
 }
@@ -446,40 +532,37 @@ void CCouponDlg::UpdateNumber(BOOL bFxChange)
 
 	LAmt = atof(QData.RemoveComma(m_LAmount));
 
-	m_FxrateEdit.GetWindowText(Text);
+	Text = m_FxrateEdit.GetData();
 
 	if(Text.IsEmpty() || atoi(Text) == 1)
 	{
-		m_AmountEdit.GetWindowText(Text);
-		Amt = atof(QData.RemoveComma(Text));
+		Amt = atof(QData.RemoveComma(m_AmountEdit.GetData()));
 		m_Remaining = QData.WriteNumber(Amt - LAmt, TRUE, 2);
 	}
 	else
 	{
 		if(bFxChange)
 		{
-			m_FxrateEdit.GetWindowText(Text);
-			Fxrate = atof(QData.RemoveComma(Text));
+			Fxrate = atof(QData.RemoveComma(m_FxrateEdit.GetData()));
 			if(Fxrate > 0)
 			{
 				Amt = LAmt/Fxrate;
-				m_AmountEdit.SetWindowText(QData.WriteNumber(Amt, TRUE, 2));
+				m_AmountEdit.SetData(QData.WriteNumber(Amt, TRUE, 2));
 			}
 		}
 		else
 		{
-			m_AmountEdit.GetWindowText(Text);
-			Amt = atof(QData.RemoveComma(Text));
+			Amt = atof(QData.RemoveComma(m_AmountEdit.GetData()));
 			if(Amt != 0)
 			{
 				Fxrate = LAmt/Amt;
-				m_FxrateEdit.SetWindowText(QData.WriteNumber(Fxrate, FALSE, -1));
+				m_FxrateEdit.SetData(QData.WriteNumber(Fxrate, FALSE, -1));
 			}
 		}
 		m_Remaining = "0.00";
 	}
 
-	m_RemainingEdit.SetWindowText(m_Remaining);
+	m_RemainingEdit.SetData(m_Remaining);
 }
 
 void CCouponDlg::OnKillfocusCouponAmountEdit() 
@@ -494,9 +577,9 @@ void CCouponDlg::OnKillfocusCouponFxrateEdit()
 
 void CCouponDlg::OnOK() 
 {
-	m_AmountEdit.GetWindowText(m_Amount);
-	m_FxrateEdit.GetWindowText(m_Fxrate);
-	m_RemainingEdit.GetWindowText(m_Remaining);
+	m_Amount = m_AmountEdit.GetData();
+	m_Fxrate = m_FxrateEdit.GetData();
+	m_Remaining = m_RemainingEdit.GetData();
 	
 	CDialog::OnOK();
 }

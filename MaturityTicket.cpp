@@ -31,65 +31,7 @@ CMaturityTicket::CMaturityTicket()
 	: CFormView(CMaturityTicket::IDD)
 {
 	//{{AFX_DATA_INIT(CMaturityTicket)
-	m_TRS = NULL;
-	m_DocRq = NULL;
-	m_DocRecvd = NULL;
-	m_Confirm = NULL;
-
-    m_Portfolio = NULL;
-	m_TransType = NULL;
-    m_Currency = NULL;
-    m_CP = NULL;
-    m_RateBasis = NULL;
-	m_Formula = NULL;
-	m_Custodian = NULL;
-
-	m_InvTrDesc = NULL;
-	m_InvAccount = NULL;
-	m_InvCurrency = NULL;
-	m_InvAssignCP = NULL;
-
-	m_SetCurrency = NULL;
 	//}}AFX_DATA_INIT
-}
-
-CMaturityTicket::~CMaturityTicket()
-{
-	if(m_TRS)
-		delete m_TRS;
-	if(m_DocRq)
-		delete m_DocRq;
-	if(m_DocRecvd)
-		delete m_DocRecvd;
-	if(m_Confirm)
-		delete m_Confirm;
-
-    if(m_Portfolio)
-		delete m_Portfolio;
-	if(m_TransType)
-		delete m_TransType;
-    if(m_Currency)
-		delete m_Currency;
-	if(m_CP)
-		delete m_CP;
-    if(m_RateBasis)
-		delete m_RateBasis;
-	if(m_Formula)
-		delete m_Formula;
-	if(m_Custodian)
-		delete m_Custodian;
-
-	if(m_InvTrDesc)
-		delete m_InvTrDesc;
-	if(m_InvAccount)
-		delete m_InvAccount;
-	if(m_InvCurrency)
-		delete m_InvCurrency;
-	if(m_InvAssignCP)
-		delete m_InvAssignCP;
-
-	if(m_SetCurrency)
-		delete m_SetCurrency;
 }
 
 void CMaturityTicket::DoDataExchange(CDataExchange* pDX)
@@ -100,7 +42,6 @@ void CMaturityTicket::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_MATURITY_INV_LIST, m_InvSS);
 	//}}AFX_DATA_MAP
 }
-
 
 BEGIN_MESSAGE_MAP(CMaturityTicket, CFormView)
 	//{{AFX_MSG_MAP(CMaturityTicket)
@@ -149,18 +90,18 @@ void CMaturityTicket::InitControls()
 	m_InvSS.LockSheet();
 	m_InvSS.SetSheetRows(0);
 	
-	m_TRS = (CCheckBox*) new CCheckBox(this, IDC_MATURITY_TRS_CHECK, TRS);
-	m_DocRq = (CCheckBox*) new CCheckBox(this, IDC_MATURITY_DOCREQ_CHECK);
-	m_DocRecvd = (CCheckBox*) new CCheckBox(this, IDC_MATURITY_DOCRCVD_CHECK);
-	m_Confirm = (CCheckBox*) new CCheckBox(this, IDC_MATURITY_CONFIRM_CHECK, Y);
+	m_TRS.Setup(this, IDC_MATURITY_TRS_CHECK, TRS);
+	m_DocRq.Setup(this, IDC_MATURITY_DOCREQ_CHECK);
+	m_DocRecvd.Setup(this, IDC_MATURITY_DOCRCVD_CHECK);
+	m_Confirm.Setup(this, IDC_MATURITY_CONFIRM_CHECK, Y);
 
-    m_Portfolio = (COptComboBox*) new COptComboBox(this, IDC_MATURITY_PORTFOLIO_COMBO);
-	m_TransType = (COptComboBox*) new COptComboBox(this, IDC_MATURITY_TRANSTYPE_COMBO);
-	m_Currency = (COptComboBox*) new COptComboBox(this, IDC_MATURITY_CURRENCY_COMBO);
-    m_CP = (COptComboBox*) new COptComboBox(this, IDC_MATURITY_CP_COMBO);
-    m_RateBasis = (COptComboBox*) new COptComboBox(this, IDC_MATURITY_RATEBASIS_COMBO, TRUE);
-	m_Formula = (COptComboBox*) new COptComboBox(this, IDC_MATURITY_FORMULA_COMBO, TRUE, TRUE);
-    m_Custodian = (COptComboBox*) new COptComboBox(this, IDC_MATURITY_CUSTODIAN_COMBO, TRUE);
+    m_Portfolio.Setup(this, IDC_MATURITY_PORTFOLIO_COMBO);
+	m_TransType.Setup(this, IDC_MATURITY_TRANSTYPE_COMBO);
+	m_Currency.Setup(this, IDC_MATURITY_CURRENCY_COMBO);
+    m_CP.Setup(this, IDC_MATURITY_CP_COMBO);
+    m_RateBasis.Setup(this, IDC_MATURITY_RATEBASIS_COMBO, TRUE);
+	m_Formula.Setup(this, IDC_MATURITY_FORMULA_COMBO, TRUE, TRUE);
+    m_Custodian.Setup(this, IDC_MATURITY_CUSTODIAN_COMBO, TRUE);
  
 	m_Dir.Setup(this, IDC_MATURITY_DIR_COMBO);
 	m_Trader.Setup(this, IDC_MATURITY_TRADER_COMBO);
@@ -204,10 +145,10 @@ void CMaturityTicket::InitControls()
 	m_InvAmount.Setup(this, IDC_MATURITY_INV_NOMINAL_EDIT);
 	m_InvCash.Setup(this, IDC_MATURITY_INV_CASH_EDIT, NULL, 2);
 	m_InvInterest.Setup(this, IDC_MATURITY_INV_INTEREST_EDIT, NULL, 2);
-	m_InvTrDesc = (COptComboBox*) new COptComboBox(this, IDC_MATURITY_INV_TRDESC_COMBO);
-	m_InvAccount = (COptComboBox*) new COptComboBox(this, IDC_MATURITY_INV_ACCOUNT_COMBO, TRUE);
-	m_InvCurrency = (COptComboBox*) new COptComboBox(this, IDC_MATURITY_INV_CURRENCY_COMBO, TRUE);
-	m_InvAssignCP = (COptComboBox*) new COptComboBox(this, IDC_MATURITY_INV_ASSIGNCP_COMBO, TRUE);
+	m_InvTrDesc.Setup(this, IDC_MATURITY_INV_TRDESC_COMBO);
+	m_InvAccount.Setup(this, IDC_MATURITY_INV_ACCOUNT_COMBO, TRUE);
+	m_InvCurrency.Setup(this, IDC_MATURITY_INV_CURRENCY_COMBO, TRUE);
+	m_InvAssignCP.Setup(this, IDC_MATURITY_INV_ASSIGNCP_COMBO, TRUE);
 
 	m_RecCurrency.Setup(this, IDC_MATURITY_INV_REC_CURRENCY_EDIT);
 	m_RecInterest.Setup(this, IDC_MATURITY_INV_REC_INT_EDIT, NULL, 2);
@@ -215,7 +156,7 @@ void CMaturityTicket::InitControls()
 	m_RecCash.Setup(this, IDC_MATURITY_INV_REC_CASH_EDIT, NULL, 2);
 	m_RecTotal.Setup(this, IDC_MATURITY_INV_REC_TOTAL_EDIT, NULL, 2);
 
-	m_SetCurrency = new COptComboBox(this, IDC_MATURITY_SETCURRENCY_COMBO);
+	m_SetCurrency.Setup(this, IDC_MATURITY_SETCURRENCY_COMBO);
 	m_SetFx.Setup(this, IDC_MATURITY_SETFX_EDIT);
 	m_SetAmount.Setup(this, IDC_MATURITY_SETCASH_EDIT, NULL, TRUE);
 	m_SetMaturity.Setup(this, IDC_MATURITY_SETMATURITY_EDIT);
@@ -229,19 +170,17 @@ BOOL CMaturityTicket::UpdateData(BOOL bSaveandValid)
 	}
 	else
 	{
-		CQData QData;
-
 		GetData().LoadSupportData();
-		QData.CopyDBRecArrayToComboBox(GetData().GetPortfolioArr(), *m_Portfolio);
-		QData.CopyDBRecArrayToComboBox(GetData().GetTransTypeArr(), *m_TransType);
-		QData.CopyDBRecArrayToComboBox(GetData().GetRateBasisArr(), *m_RateBasis);
-		QData.CopyDBRecArrayToComboBox(GetData().GetCurrencyArr(), *m_Currency, 0, FALSE);
-		QData.CopyDBRecArrayToComboBox(GetData().GetCurrencyArr(), *m_InvCurrency);
-		QData.CopyDBRecArrayToComboBox(GetData().GetCurrencyArr(), *m_SetCurrency);
-		QData.CopyKeyDBListKeyToComboBox(GetData().GetContactList(), *m_CP, FALSE);
-		QData.CopyKeyDBListKeyToComboBox(GetData().GetContactList(), *m_Custodian, FALSE);
-		QData.CopyKeyDBListKeyToComboBox(GetData().GetContactList(), *m_InvAssignCP, TRUE);
-		QData.CopyDBRecArrayToComboBox(GetData().GetAccountArr(), *m_InvAccount);
+		GetData().GetPortfolioArr().CopyToComboBox(m_Portfolio);
+		GetData().GetTransTypeArr().CopyToComboBox(m_TransType);
+		GetData().GetRateBasisArr().CopyToComboBox(m_RateBasis);
+		GetData().GetCurrencyArr().CopyToComboBox(m_Currency);
+		GetData().GetCurrencyArr().CopyToComboBox(m_InvCurrency);
+		GetData().GetCurrencyArr().CopyToComboBox(m_SetCurrency);
+		GetData().GetContactList().CopyKeyToComboBox(m_CP);
+		GetData().GetContactList().CopyKeyToComboBox(m_Custodian);
+		GetData().GetContactList().CopyKeyToComboBox(m_InvAssignCP);
+		GetData().GetAccountArr().CopyToComboBox(m_InvAccount);
 		GetData().GetTransDirArr().CopyToMCComboBox(m_Dir);
 		GetData().GetTraderArr().CopyToMCComboBox(m_Trader);
 	}
@@ -259,13 +198,13 @@ void CMaturityTicket::OnInitialUpdate()
 	BeginWaitCursor();
 	InitControls();
 	
-	m_InvTrDesc->AddString(BOOKING);
-	m_InvTrDesc->AddString(FXBKNG);
-	m_InvTrDesc->AddString(MATURITY);
+	m_InvTrDesc.AddString(BOOKING);
+	m_InvTrDesc.AddString(FXBKNG);
+	m_InvTrDesc.AddString(MATURITY);
 
-	m_Formula->AddString(NONE);
-	m_Formula->AddString(DAILYREPO);
-	m_Formula->AddString(DAILYREPOA);
+	m_Formula.AddString(NONE);
+	m_Formula.AddString(DAILYREPO);
+	m_Formula.AddString(DAILYREPOA);
 
 	UpdateData(FALSE);
 	OnMaturityLoadTrade();
@@ -287,55 +226,53 @@ void CMaturityTicket::OnDblClickMaturityTicketList(long Col, long Row)
 
 		m_Processed = m_SS.GetSheetText(1, Row);
 		m_TransNum.SetData(m_SS.GetSheetText(2, Row));
-		m_Portfolio->SelectString(0, m_SS.GetSheetText(3, Row));
+		m_Portfolio.SetData(m_SS.GetSheetText(3, Row));
 		m_Ticket.SetData(m_SS.GetSheetText(4, Row));
-		m_CP->SelectString(0, m_SS.GetSheetText(5, Row));
-		m_Asset.SetWindowText(m_SS.GetSheetText(6, Row));
-		m_Trader.SelectString(0, m_SS.GetSheetText(7, Row));
+		m_CP.SetData(m_SS.GetSheetText(5, Row));
+		m_Asset.SetData(m_SS.GetSheetText(6, Row));
+		m_Trader.SetData(m_SS.GetSheetText(7, Row));
 		m_TradeDate.SetData(m_SS.GetSheetText(8, Row));
 		m_ValueDate.SetData(m_SS.GetSheetText(9, Row));
-		m_TransType->SelectString(0, m_SS.GetSheetText(10, Row));
-		m_Dir.SelectString(0, m_SS.GetSheetText(11, Row));
-		m_Amount.SetWindowText(m_SS.GetSheetText(12, Row));
-		m_Price.SetWindowTextA(m_SS.GetSheetText(13, Row));
-		m_Currency->SelectString(0, m_SS.GetSheetText(14, Row));
-		m_SetCurrency->SelectString(0, m_SS.GetSheetText(14, Row));
-		m_Fxrate.SetWindowText(m_SS.GetSheetText(15, Row));
-		m_CT.SetWindowText(m_SS.GetSheetText(16, Row));
-		m_TRS->SetCheck(m_SS.GetSheetText(17, Row));
-		m_BrFee.SetWindowText(m_SS.GetSheetText(18, Row));
-		m_SoftDAmount.SetWindowText(m_SS.GetSheetText(19, Row));
-		m_OtherFee.SetWindowText(m_SS.GetSheetText(20, Row));
-		m_Rate.SetWindowText(m_SS.GetSheetText(21, Row));
-		m_RateBasis->SelectString(0, m_SS.GetSheetText(22, Row));
+		m_TransType.SetData(m_SS.GetSheetText(10, Row));
+		m_Dir.SetData(m_SS.GetSheetText(11, Row));
+		m_Amount.SetData(m_SS.GetSheetText(12, Row));
+		m_Price.SetData(m_SS.GetSheetText(13, Row));
+		m_Currency.SetData(m_SS.GetSheetText(14, Row));
+		m_SetCurrency.SetData(m_SS.GetSheetText(14, Row));
+		m_Fxrate.SetData(m_SS.GetSheetText(15, Row));
+		m_CT.SetData(m_SS.GetSheetText(16, Row));
+		m_TRS.SetData(m_SS.GetSheetText(17, Row));
+		m_BrFee.SetData(m_SS.GetSheetText(18, Row));
+		m_SoftDAmount.SetData(m_SS.GetSheetText(19, Row));
+		m_OtherFee.SetData(m_SS.GetSheetText(20, Row));
+		m_Rate.SetData(m_SS.GetSheetText(21, Row));
+		m_RateBasis.SetData(m_SS.GetSheetText(22, Row));
 		m_Maturity.SetData(m_SS.GetSheetText(23, Row));
-		m_Formula->SelectString(0, m_SS.GetSheetText(24, Row));
+		m_Formula.SetData(m_SS.GetSheetText(24, Row));
 		m_OriBooking.SetData(m_SS.GetSheetText(25, Row));
 		m_OriMaturity.SetData(m_SS.GetSheetText(26, Row));
-		m_Custodian->SelectString(0, m_SS.GetSheetText(27, Row));
-		m_Note.SetWindowText(m_SS.GetSheetText(28, Row));
-		m_Note2.SetWindowText(m_SS.GetSheetText(29, Row));
-		m_CPTradeID.SetWindowText(m_SS.GetSheetText(30, Row));
-		m_DocRq->SetCheck(m_SS.GetSheetText(31, Row));
-		m_DocRecvd->SetCheck(m_SS.GetSheetText(32, Row));
-		m_Confirm->SetCheck(m_SS.GetSheetText(33, Row));
-		m_AssetDesc.SetWindowText(m_SS.GetSheetText(34, Row));
-		m_AssetCurr.SetWindowText(m_SS.GetSheetText(35, Row));
+		m_Custodian.SetData(m_SS.GetSheetText(27, Row));
+		m_Note.SetData(m_SS.GetSheetText(28, Row));
+		m_Note2.SetData(m_SS.GetSheetText(29, Row));
+		m_CPTradeID.SetData(m_SS.GetSheetText(30, Row));
+		m_DocRq.SetData(m_SS.GetSheetText(31, Row));
+		m_DocRecvd.SetData(m_SS.GetSheetText(32, Row));
+		m_Confirm.SetData(m_SS.GetSheetText(33, Row));
+		m_AssetDesc.SetData(m_SS.GetSheetText(34, Row));
+		m_AssetCurr.SetData(m_SS.GetSheetText(35, Row));
 		m_SetMaturity.SetData(m_SS.GetSheetText(36, Row));
-		m_SetAmount.SetWindowText(m_SS.GetSheetText(37, Row));
+		m_SetAmount.SetData(m_SS.GetSheetText(37, Row));
 		m_InvNum = m_SS.GetSheetText(38, Row);
 		
 		COraLoader OraLoader;
 
 		OraLoader = GetData().GetOraLoader();
-		OraLoader.GetSql().Format("SELECT ASSET_CODE, TR_DESC, NOM_AMOUNT, ACTUAL_VDATE, "
-									"ACTUAL_CLOSING, POST_DATE, CURRENCY, FOREX_REF_NUM, "
-									"CROSS_RATE, CASH_AMOUNT, INT_AMOUNT, ACC_CODE, "
-									"ASSIGN_CP, ASSIGN_CT FROM SEMAM.NW_TR_INV "
-									"WHERE INV_NUM = %s ", (LPCTSTR) m_InvNum);
 
 		m_InvSS.ClearSheet();
-		OraLoader.Open();
+		OraLoader.Open("SELECT ASSET_CODE, TR_DESC, NOM_AMOUNT, ACTUAL_VDATE, ACTUAL_CLOSING, POST_DATE, "
+							"CURRENCY, FOREX_REF_NUM, CROSS_RATE, CASH_AMOUNT, INT_AMOUNT, ACC_CODE, "
+							"ASSIGN_CP, ASSIGN_CT FROM SEMAM.NW_TR_INV "
+							"WHERE INV_NUM = " + m_InvNum);
 		OraLoader.LoadDBSheet(m_InvSS);
 		OnDblClickMaturityInvList(1, m_InvSS.GetSheetRows() > 0 ? 1 : -1);
 	}
@@ -344,53 +281,53 @@ void CMaturityTicket::OnDblClickMaturityTicketList(long Col, long Row)
 		m_SS.SetSheetCurRow(-1);
 		m_Processed.Empty();
 		m_TransNum.SetData(EMPTYSTRING);
-		m_Portfolio->SetCurSel(-1);
+		m_Portfolio.SetCurSel(-1);
 		m_Ticket.SetData(EMPTYSTRING);
-		m_CP->SetCurSel(-1);
-		m_Asset.SetWindowText(EMPTYSTRING);
+		m_CP.SetCurSel(-1);
+		m_Asset.SetData(EMPTYSTRING);
 		m_Trader.SetCurSel(-1);
 		m_TradeDate.SetData(EMPTYSTRING);
 		m_ValueDate.SetData(EMPTYSTRING);
-		m_TransType->SetCurSel(-1);
+		m_TransType.SetCurSel(-1);
 		m_Dir.SetCurSel(-1);
-		m_Amount.SetWindowText(EMPTYSTRING);
-		m_Price.SetWindowText(EMPTYSTRING);
-		m_Currency->SetCurSel(-1);
-		m_Fxrate.SetWindowText(EMPTYSTRING);
-		m_CT.SetWindowText(EMPTYSTRING);
-		m_TRS->SetCheck(0);
-		m_BrFee.SetWindowText(EMPTYSTRING);
-		m_SoftDAmount.SetWindowText(EMPTYSTRING);
-		m_OtherFee.SetWindowText(EMPTYSTRING);
-		m_Rate.SetWindowText(EMPTYSTRING);
-		m_RateBasis->SetCurSel(-1);
+		m_Amount.SetData(EMPTYSTRING);
+		m_Price.SetData(EMPTYSTRING);
+		m_Currency.SetCurSel(-1);
+		m_Fxrate.SetData(EMPTYSTRING);
+		m_CT.SetData(EMPTYSTRING);
+		m_TRS.SetCheck(0);
+		m_BrFee.SetData(EMPTYSTRING);
+		m_SoftDAmount.SetData(EMPTYSTRING);
+		m_OtherFee.SetData(EMPTYSTRING);
+		m_Rate.SetData(EMPTYSTRING);
+		m_RateBasis.SetCurSel(-1);
 		m_Maturity.SetData(EMPTYSTRING);
-		m_Formula->SetCurSel(-1);
+		m_Formula.SetCurSel(-1);
 		m_OriBooking.SetData(EMPTYSTRING);
 		m_OriMaturity.SetData(EMPTYSTRING);
-		m_Custodian->SetCurSel(-1);
-		m_Note.SetWindowText(EMPTYSTRING);
-		m_Note2.SetWindowText(EMPTYSTRING);
-		m_CPTradeID.SetWindowText(EMPTYSTRING);
-		m_DocRq->SetCheck(0);
-		m_DocRecvd->SetCheck(0);
-		m_Confirm->SetCheck(0);
-		m_AssetDesc.SetWindowText(EMPTYSTRING);
-		m_AssetCurr.SetWindowText(EMPTYSTRING);
+		m_Custodian.SetCurSel(-1);
+		m_Note.SetData(EMPTYSTRING);
+		m_Note2.SetData(EMPTYSTRING);
+		m_CPTradeID.SetData(EMPTYSTRING);
+		m_DocRq.SetCheck(0);
+		m_DocRecvd.SetCheck(0);
+		m_Confirm.SetCheck(0);
+		m_AssetDesc.SetData(EMPTYSTRING);
+		m_AssetCurr.SetData(EMPTYSTRING);
 		m_SetMaturity.SetData(EMPTYSTRING);
-		m_SetAmount.SetWindowText(EMPTYSTRING);
+		m_SetAmount.SetData(EMPTYSTRING);
 		m_InvNum.Empty();
 	}
 
 	CString TransType;
 
-	m_TransType->GetSelString(TransType);
+	TransType = m_TransType.GetData();
 	if(TransType == INTSWAP)
 		m_SetAmount.EnableWindow(TRUE);
 	else
 	{
 		m_SetAmount.EnableWindow(FALSE);
-		m_SetAmount.SetWindowText(EMPTYSTRING);
+		m_SetAmount.SetData(EMPTYSTRING);
 	}
 
 	GetDlgItem(IDC_MATURITY_PROCESS_BUTTON)->EnableWindow(m_InvSS.GetSheetCurRow() > 0);
@@ -402,38 +339,38 @@ void CMaturityTicket::OnDblClickMaturityInvList(long Col, long Row)
 	{
 		m_InvSS.SetSheetCurRow(Row);
 
-		m_InvAsset.SetWindowText(m_InvSS.GetSheetText(1, Row));
-		m_InvTrDesc->SelectString(0, m_InvSS.GetSheetText(2, Row));
-		m_InvAmount.SetWindowText(m_InvSS.GetSheetText(3, Row));
+		m_InvAsset.SetData(m_InvSS.GetSheetText(1, Row));
+		m_InvTrDesc.SetData(m_InvSS.GetSheetText(2, Row));
+		m_InvAmount.SetData(m_InvSS.GetSheetText(3, Row));
 		m_InvValueDate.SetData(m_InvSS.GetSheetText(4, Row));
 		m_InvCloseDate.SetData(m_InvSS.GetSheetText(5, Row));
 		m_InvPostDate.SetData(m_InvSS.GetSheetText(6, Row));
-		m_InvCurrency->SelectString(0, m_InvSS.GetSheetText(7, Row));
+		m_InvCurrency.SetData(m_InvSS.GetSheetText(7, Row));
 		m_InvForexRef.SetData(m_InvSS.GetSheetText(8, Row));
-		m_InvCrossRate.SetWindowText(m_InvSS.GetSheetText(9, Row));
-		m_InvCash.SetWindowText(m_InvSS.GetSheetText(10, Row));
-		m_InvInterest.SetWindowText(m_InvSS.GetSheetText(11, Row));
-		m_InvAccount->SelectString(0, m_InvSS.GetSheetText(12, Row));
-		m_InvAssignCP->SelectString(0, m_InvSS.GetSheetText(13, Row));
-		m_InvAssignCT.SetWindowText(m_InvSS.GetSheetText(14, Row));
+		m_InvCrossRate.SetData(m_InvSS.GetSheetText(9, Row));
+		m_InvCash.SetData(m_InvSS.GetSheetText(10, Row));
+		m_InvInterest.SetData(m_InvSS.GetSheetText(11, Row));
+		m_InvAccount.SetData(m_InvSS.GetSheetText(12, Row));
+		m_InvAssignCP.SetData(m_InvSS.GetSheetText(13, Row));
+		m_InvAssignCT.SetData(m_InvSS.GetSheetText(14, Row));
 	}
 	else
 	{
 		m_InvSS.SetSheetCurRow(-1);
-		m_InvAsset.SetWindowText(EMPTYSTRING);
-		m_InvTrDesc->SetCurSel(-1);
-		m_InvAmount.SetWindowText(EMPTYSTRING);
+		m_InvAsset.SetData(EMPTYSTRING);
+		m_InvTrDesc.SetCurSel(-1);
+		m_InvAmount.SetData(EMPTYSTRING);
 		m_InvValueDate.SetData(EMPTYSTRING);
 		m_InvCloseDate.SetData(EMPTYSTRING);
 		m_InvPostDate.SetData(EMPTYSTRING);
-		m_InvCurrency->SetCurSel(-1);
+		m_InvCurrency.SetCurSel(-1);
 		m_InvForexRef.SetData(EMPTYSTRING);
-		m_InvCrossRate.SetWindowText(EMPTYSTRING);
-		m_InvCash.SetWindowText(EMPTYSTRING);
-		m_InvInterest.SetWindowText(EMPTYSTRING);
-		m_InvAccount->SetCurSel(-1);
-		m_InvAssignCP->SetCurSel(-1);
-		m_InvAssignCT.SetWindowText(EMPTYSTRING);
+		m_InvCrossRate.SetData(EMPTYSTRING);
+		m_InvCash.SetData(EMPTYSTRING);
+		m_InvInterest.SetData(EMPTYSTRING);
+		m_InvAccount.SetCurSel(-1);
+		m_InvAssignCP.SetCurSel(-1);
+		m_InvAssignCT.SetData(EMPTYSTRING);
 	}
 }
 
@@ -454,7 +391,7 @@ void CMaturityTicket::OnCbnSelchangeMaturitySetCurrencyCombo()
 
 void CMaturityTicket::OnEnChangeMaturitySetcashEdit()
 {
-	GetDlgItem(IDC_MATURITY_PROCESS_BUTTON)->EnableWindow(m_SetCurrency->GetCurSel() >= 0 && m_SetAmount.GetWindowTextLength() > 0);
+	GetDlgItem(IDC_MATURITY_PROCESS_BUTTON)->EnableWindow(m_SetCurrency.GetCurSel() >= 0 && m_SetAmount.GetWindowTextLength() > 0);
 }
 
 void CMaturityTicket::OnMaturityLoadTrade()
@@ -491,58 +428,60 @@ void CMaturityTicket::OnMaturityProcessTrade()
 {
 	int Row;
 	COraLoader OraLoader;
-	CString TransType, Currency, Amount, AssignCP, AssignCT;
+	CString TransType, Currency, Amount, AssignCP, AssignCT, Maturity;
 
 	OraLoader.SetDB(&theDB);
 
-	m_TransType->GetSelString(TransType);
-	m_SetCurrency->GetSelString(Currency);
+	TransType = m_TransType.GetData();
+	Currency = m_SetCurrency.GetData();
+	Maturity = m_SetMaturity.GetData();
 
 	Row = m_SS.GetSheetCurRow();
 	if(TransType == INTSWAP)
 	{
 		CQData QData;
-		m_InvAssignCP->GetSelString(AssignCP);
-		AssignCP = QData.GetQueryText(AssignCP);
-		m_InvAssignCT.GetWindowText(AssignCT);
-		AssignCT = QData.GetQueryText(AssignCT);
-		m_InvCash.GetWindowText(Amount);
+		AssignCP = QData.GetQueryText(m_InvAssignCP.GetData());
+		AssignCT = QData.GetQueryText(m_InvAssignCT.GetData());
+		Amount = m_InvCash.GetData();
 		if(Amount.IsEmpty() || atof(Amount) == 0)
-			m_SetAmount.GetWindowText(Amount);
+			Amount = m_SetAmount.GetData();
 
 		Amount = QData.GetQueryNumber(Amount);
-		OraLoader.GetSql().Format("UPDATE SEMAM.NW_TR_INV SET ACTUAL_VDATE = '%s', "
-									"CURRENCY = '%s', CASH_AMOUNT = %s, INT_AMOUNT = 0, "
-									"ASSIGN_CP = %s, ASSIGN_CT = %s WHERE INV_NUM = %s ",
-									(LPCTSTR) m_SetMaturity.GetData(), (LPCTSTR) Currency,
-									(LPCTSTR) (Amount.IsEmpty() ? "0" : (LPCTSTR) Amount), 
-									(LPCTSTR) AssignCP, (LPCTSTR) AssignCT, (LPCTSTR) m_InvNum);
+		if(Amount.IsEmpty())
+			Amount = "0";
+
+		OraLoader.GetSql() =  "UPDATE SEMAM.NW_TR_INV SET ACTUAL_VDATE = '" + Maturity + "', "
+								"CURRENCY = '" + Currency + "', "
+								"CASH_AMOUNT = " + Amount + ", "
+								"INT_AMOUNT = 0, "
+								"ASSIGN_CP = " + AssignCP + ", "
+								"ASSIGN_CT = " + AssignCT + 
+								" WHERE INV_NUM = " + m_InvNum;
 	}
 	else
-		OraLoader.GetSql().Format("UPDATE SEMAM.NW_TR_INV SET ACTUAL_VDATE = '%s', CURRENCY = '%s' "
-									"WHERE INV_NUM = %s ", (LPCTSTR) m_SetMaturity.GetData(),
-									(LPCTSTR) Currency, (LPCTSTR) m_InvNum);
+		OraLoader.GetSql() = "UPDATE SEMAM.NW_TR_INV SET ACTUAL_VDATE = '" + Maturity + "', "
+								"CURRENCY = '" + Currency + "' "
+								"WHERE INV_NUM = " + m_InvNum;
 
 	if(OraLoader.ExecuteSql())
 	{
-		OraLoader.GetSql().Format("UPDATE SEMAM.NW_TR_TICKETS A "
-									"SET MATURITY_DATE = '%s', ORIG_SW_MATURITY = '%s' "
-									"WHERE A.TRANS_NUM = (SELECT TRANS_NUM FROM SEMAM.NW_TR_INV B "
-															"WHERE B.INV_NUM = %s) ",
-									(LPCTSTR) m_SetMaturity.GetData(), (LPCTSTR) m_SetMaturity.GetData(), 
-									(LPCTSTR) m_InvNum);
+		OraLoader.GetSql() = "UPDATE SEMAM.NW_TR_TICKETS A "
+								"SET MATURITY_DATE = '" + Maturity + "', "
+								"ORIG_SW_MATURITY = '" + Maturity + "' "
+								"WHERE A.TRANS_NUM = (SELECT TRANS_NUM FROM SEMAM.NW_TR_INV B "
+														"WHERE B.INV_NUM = " + m_InvNum + ") ";
 
 		if(OraLoader.ExecuteSql())
 		{
 			if(TransType == INTSWAP)
-				m_InvCash.SetWindowText(Amount);
+				m_InvCash.SetData(Amount);
 			else
-				m_InvCash.SetWindowText(EMPTYSTRING);
+				m_InvCash.SetData(EMPTYSTRING);
 
-			m_InvCurrency->SelectString(0, Currency);
+			m_InvCurrency.SetData(Currency);
 			m_InvValueDate.SetData(m_SetMaturity.GetData());
-			OraLoader.GetSql().Format("UPDATE SEMAM.NW_MATURITY_TRADE SET PROCESSED = 'Y' "
-										"WHERE INV_NUM = %s ", (LPCTSTR) m_InvNum);
+			OraLoader.GetSql() = "UPDATE SEMAM.NW_MATURITY_TRADE SET PROCESSED = 'Y' "
+									"WHERE INV_NUM = " + m_InvNum;
 			OraLoader.ExecuteSql();
 		}
 		
@@ -558,9 +497,9 @@ void CMaturityTicket::OnUpdateMaturityProcessTrade(CCmdUI *pCmdUI)
 		pCmdUI->Enable(FALSE);
 	else
 	{
-		m_TransType->GetSelString(TransType);
+		TransType = m_TransType.GetData();
 		if(TransType == INTSWAP)
-			pCmdUI->Enable(m_SetCurrency->GetCurSel() >= 0 && m_SetAmount.GetWindowTextLength() > 0);
+			pCmdUI->Enable(m_SetCurrency.GetCurSel() >= 0 && m_SetAmount.GetWindowTextLength() > 0);
 		else
 			pCmdUI->Enable(TRUE);
 	}
@@ -573,7 +512,7 @@ void CMaturityTicket::OnEnChangeMaturitySetfxEdit()
 	if(m_SetFx.GetWindowTextLength() > 0)
 		Currency = USD;
 	else
-		m_Currency->GetSelString(Currency);
+		Currency = m_Currency.GetData();
 
-	m_SetCurrency->SelectString(0, Currency);
+	m_SetCurrency.SetData(Currency);
 }

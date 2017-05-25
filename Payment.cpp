@@ -24,32 +24,7 @@ CPayment::CPayment()
 	: CFormView(CPayment::IDD)
 {
 	//{{AFX_DATA_INIT(CPayment)
-	m_Dir = NULL;
-	m_Portfolio = NULL;
-	m_CP = NULL;
-	m_Currency = NULL;
-	m_Paid = NULL;
-	m_CashType = NULL;
-	m_ToAccount = NULL;
 	//}}AFX_DATA_INIT
-}
-
-CPayment::~CPayment()
-{
-	if(m_Dir)
-		delete m_Dir;
-	if(m_Portfolio)
-		delete m_Portfolio;
-	if(m_CP)
-		delete m_CP;
-	if(m_Currency)
-		delete m_Currency;
-	if(m_Paid)
-		delete m_Paid;
-	if(m_CashType)
-		delete m_CashType;
-	if(m_ToAccount)
-		delete m_ToAccount;
 }
 
 void CPayment::DoDataExchange(CDataExchange* pDX)
@@ -129,12 +104,10 @@ BOOL CPayment::IsOK()
 	CString Buf, Text;
 	double Amt, Sum;
 
-	m_Amount.GetWindowText(Buf);
-	Amt = atof(Buf);
-	m_Sum.GetWindowText(Buf);
-	Sum = atof(Buf);
+	Amt = atof(m_Amount.GetData());
+	Sum = atof(m_Sum.GetData());
 
-	m_Dir->GetSelString(Buf);
+	Buf = m_Dir.GetData();
 	if(Buf.IsEmpty())
 		Text = "The instruction type must be filled";
 	else
@@ -170,10 +143,10 @@ void CPayment::Init()
 	
 	m_PayID.Setup(this, IDC_PAY_PAYID_EDIT);
 	m_RefID.Setup(this, IDC_PAY_REF_EDIT);
-	m_Dir = (COptComboBox*) new COptComboBox(this, IDC_PAY_TYPE_COMBO);
-	m_Portfolio = (COptComboBox*) new COptComboBox(this, IDC_PAY_PORTFOLIO_COMBO);
-	m_PMAccount = (COptComboBox*) new COptComboBox(this, IDC_PAY_ACCOUNT_COMBO);
-	m_CP = (COptComboBox*) new COptComboBox(this, IDC_PAY_CP_COMBO);
+	m_Dir.Setup(this, IDC_PAY_TYPE_COMBO);
+	m_Portfolio.Setup(this, IDC_PAY_PORTFOLIO_COMBO);
+	m_PMAccount.Setup(this, IDC_PAY_ACCOUNT_COMBO);
+	m_CP.Setup(this, IDC_PAY_CP_COMBO);
 	m_Date.Setup(this, IDC_PAY_DATE_EDIT);
 	m_Sum.Setup(this, IDC_PAY_SUM_EDIT, NULL, 2);
 	m_Amount.Setup(this, IDC_PAY_AMOUNT_EDIT, NULL, 2);
@@ -181,9 +154,9 @@ void CPayment::Init()
 	m_Note.Setup(this, IDC_PAY_NOTE_EDIT);
 	m_Note.LimitText(40);
 	m_ValueDate.Setup(this, IDC_PAY_VALUEDATE_EDIT);
-	m_Currency = (COptComboBox*) new COptComboBox(this, IDC_PAY_CURRENCY_COMBO);
-	m_CashType = (COptComboBox*) new COptComboBox(this, IDC_PAY_CASHTYPE_COMBO, TRUE);
-	m_ToAccount = (COptComboBox*) new COptComboBox(this, IDC_PAY_TOACCOUNT_COMBO, TRUE);
+	m_Currency.Setup(this, IDC_PAY_CURRENCY_COMBO);
+	m_CashType.Setup(this, IDC_PAY_CASHTYPE_COMBO, TRUE);
+	m_ToAccount.Setup(this, IDC_PAY_TOACCOUNT_COMBO, TRUE);
 	m_Bank.Setup(this, IDC_PAY_BANK_EDIT);
 	m_BankID.Setup(this, IDC_PAY_BANK_ID_EDIT);
 	m_BankBIC.Setup(this, IDC_PAY_BANK_BIC_EDIT);
@@ -199,28 +172,28 @@ void CPayment::Init()
 	m_CPRef.Setup(this, IDC_PAY_CP_REF_EDIT);
 	m_AssetCode.Setup(this, IDC_PAY_ASSET_EDIT);
 	m_AssetCode.LimitText(10);
-	m_Paid = (CCheckBox*) new CCheckBox(this, IDC_PAY_PAID_CHECK);
+	m_Paid.Setup(this, IDC_PAY_PAID_CHECK);
 	m_Fxrate.Setup(this, IDC_PAY_FXRATE_EDIT);
 
 	CPaymentRec *pRec;
 	pRec = &m_Data.GetPayRec();
 	m_Data.Add(&m_PayID, &pRec->GetPayID());
 	m_Data.Add(&m_RefID, &pRec->GetRefID());
-	m_Data.Add(m_Portfolio, &pRec->GetPortfolio());
-	m_Data.Add(m_PMAccount, &pRec->GetAccount());
-	m_Data.Add(m_CP, &pRec->GetCP());
-	m_Data.Add(m_Dir, &pRec->GetDir());
+	m_Data.Add(&m_Portfolio, &pRec->GetPortfolio());
+	m_Data.Add(&m_PMAccount, &pRec->GetAccount());
+	m_Data.Add(&m_CP, &pRec->GetCP());
+	m_Data.Add(&m_Dir, &pRec->GetDir());
 	m_Data.Add(&m_Date, &pRec->GetDate());
-	m_Data.Add(m_Currency, &pRec->GetCurrency());
+	m_Data.Add(&m_Currency, &pRec->GetCurrency());
 	m_Data.Add(&m_Amount, &pRec->GetAmount());
 	m_Data.Add(&m_Adjust, &pRec->GetAdjust());
 	m_Data.Add(&m_Note, &pRec->GetNote());
 	m_Data.Add(&m_ValueDate, &pRec->GetValueDate());
-	m_Data.Add(m_CashType, &pRec->GetCashType());
+	m_Data.Add(&m_CashType, &pRec->GetCashType());
 	m_Data.Add(&m_AssetCode, &pRec->GetAssetCode());
 	m_Data.Add(&m_CPRef, &pRec->GetCPRef());
-	m_Data.Add(m_Paid, &pRec->GetCloseFlag());
-	m_Data.Add(m_ToAccount, &pRec->GetToAccount());
+	m_Data.Add(&m_Paid, &pRec->GetCloseFlag());
+	m_Data.Add(&m_ToAccount, &pRec->GetToAccount());
 	m_Data.Add(&m_Fxrate, &pRec->GetFxrate());
 	m_Data.Add(&m_Deletable);
 
@@ -273,16 +246,17 @@ void CPayment::LoadCoupon(BOOL nType)
 	m_Sel_SS.SetVisibleCols(3);
 
 	CouponDlg.m_OraLoader = m_Data.GetOraLoader();
-	m_Portfolio->GetSelString(CouponDlg.m_Portfolio);
-	m_Currency->GetSelString(CouponDlg.m_Currency);
+	CouponDlg.m_Portfolio = m_Portfolio.GetData();
+	CouponDlg.m_Currency = m_Currency.GetData();
 	CouponDlg.m_CouponType = nType;
+	CouponDlg.m_bCash = FALSE;
 	switch(nType)
 	{
 		case 1: // CDS Only
-			m_CP->GetSelString(CouponDlg.m_Counterparty);
+			CouponDlg.m_Counterparty = m_CP.GetData();
 			break;
 		case 2: // IRS Only
-			m_CP->GetSelString(CouponDlg.m_Counterparty);
+			CouponDlg.m_Counterparty = m_CP.GetData();
 			break;
 		case 3: // Other Coupon
 			CouponDlg.m_Counterparty.Empty();
@@ -317,9 +291,9 @@ void CPayment::LoadCoupon(BOOL nType)
 		for(i = 0; i < CouponDlg.m_CouponArray.GetSize(); i ++)
 			m_Sel_SS.AddSheetRow(*CouponDlg.m_CouponArray.GetAt(i));
 
-		m_Amount.SetWindowText(CouponDlg.m_Amount);
-		m_Adjust.SetWindowText(CouponDlg.m_Remaining);
-		m_Sum.SetWindowText(CouponDlg.m_Amount);
+		m_Amount.SetData(CouponDlg.m_Amount);
+		m_Adjust.SetData(CouponDlg.m_Remaining);
+		m_Sum.SetData(CouponDlg.m_Amount);
 	}
 }
 
@@ -332,7 +306,7 @@ BOOL CPayment::UpdateData(BOOL bSaveAndValidate)
 	{
 		CString CashType;
 
-		m_CashType->GetSelString(CashType);
+		CashType = m_CashType.GetData();
 		m_Data.SetbCoupon(CashType == "COUPON PAY" || CashType == "SWAP INT");
 
 		if(IsOK())
@@ -344,13 +318,13 @@ BOOL CPayment::UpdateData(BOOL bSaveAndValidate)
 
 		GetData().LoadSupportData();
 		GetData().LoadCashData();
-		QData.CopyDBRecArrayToComboBox(GetData().GetCurrencyArr(), *m_Currency);
-		QData.CopyDBRecArrayToComboBox(GetData().GetPortfolioArr(), *m_Portfolio);
-		QData.CopyDBRecArrayToComboBox(GetData().GetAccountArr(), *m_PMAccount, 0, FALSE);
-		QData.CopyDBRecArrayToComboBox(GetData().GetAccountArr(), *m_ToAccount);
-		QData.CopyDBRecArrayToComboBox(GetData().GetCashTypeArr(), *m_CashType);
-		if(m_CP->GetCount() == 0)
-			QData.CopyKeyDBListKeyToComboBox(GetData().GetContactList(), *m_CP);
+		GetData().GetCurrencyArr().CopyToComboBox(m_Currency);
+		GetData().GetPortfolioArr().CopyToComboBox(m_Portfolio);
+		GetData().GetAccountArr().CopyToComboBox(m_PMAccount);
+		GetData().GetAccountArr().CopyToComboBox(m_ToAccount);
+		GetData().GetCashTypeArr().CopyToComboBox(m_CashType);
+		if(m_CP.GetCount() == 0)
+			GetData().GetContactList().CopyKeyToComboBox(m_CP);
 	}
 	return TRUE;
 }
@@ -364,20 +338,17 @@ void CPayment::UpdateSum(BOOL bAdjustment)
 		double Amt, Sum, Adjust;
 		CQData QData;
 
-		m_Sum.GetWindowText(Text);
-		Sum = atof(QData.RemoveComma(Text));
-		m_Amount.GetWindowText(Text);
-
-		Amt = atof(QData.RemoveComma(Text));
+		Sum = atof(QData.RemoveComma(m_Sum.GetData()));		
+		Amt = atof(QData.RemoveComma(m_Amount.GetData()));
 		Adjust = Amt - Sum;
-		m_Adjust.SetWindowText(QData.WriteNumber(Adjust, TRUE, 2));
+		m_Adjust.SetData(QData.WriteNumber(Adjust, TRUE, 2));
 	}
 	else
 	{
 		m_Data.ComputeSum(m_Sel_SS, Text);
-		m_Amount.SetWindowText(Text);
-		m_Adjust.SetWindowText("0.00");
-		m_Sum.SetWindowText(Text);
+		m_Amount.SetData(Text);
+		m_Adjust.SetData("0.00");
+		m_Sum.SetData(Text);
 	}
 }
 /////////////////////////////////////////////////////////////////////////////
@@ -400,8 +371,8 @@ void CPayment::OnInitialUpdate()
 	Init();
 	
 	GetData().LoadDates();
-	m_Dir->AddString("PAYMENT");
-	m_Dir->AddString("RECEIPT");
+	m_Dir.AddString("PAYMENT");
+	m_Dir.AddString("RECEIPT");
 	
 	GetData().GetOraLoader().Today(m_StrDate);
 	m_Date.SetData(m_StrDate);
@@ -429,9 +400,9 @@ void CPayment::OnDblClickPayOpentradeList(long Col, long Row)
 		CQData QData;
 
 		Text = m_OT_SS.GetSheetText(1, Row);
-		m_Portfolio->GetSelString(Data);
+		Data = m_Portfolio.GetData();
 		if(Data.IsEmpty())
-			m_Portfolio->SelectString(-1, Text);
+			m_Portfolio.SetData(Text);
 		else
 			if(Text != Data)
 			{
@@ -473,9 +444,9 @@ void CPayment::OnDblClickPayInstructionList(long Col, long Row)
 			m_Data.GetPayRec().GetRefID() != m_Data.GetPayTemplate().GetRec().GetRefID())
 		{
 			m_Data.GetPayTemplate().SetCurrentRow(Row);
-			m_RefID.SetWindowText(m_Data.GetPayTemplate().GetRec().GetRefID());
-			m_CP->SelectString(-1, m_Data.GetPayTemplate().GetRec().GetCP());
-			m_Currency->SelectString(-1, m_Data.GetPayTemplate().GetRec().GetCurrency());
+			m_RefID.SetData(m_Data.GetPayTemplate().GetRec().GetRefID());
+			m_CP.SetData(m_Data.GetPayTemplate().GetRec().GetCP());
+			m_Currency.SetData(m_Data.GetPayTemplate().GetRec().GetCurrency());
 			m_OT_SS.ClearSheet();
 		}
 	}
@@ -488,7 +459,7 @@ void CPayment::OnChangePayAmountEdit()
 		if(m_Sel_SS.GetSheetRows() > 0)
 			UpdateSum(TRUE);
 		else
-			m_Adjust.SetWindowText("0.00");
+			m_Adjust.SetData("0.00");
 	}
 }
 
@@ -501,7 +472,7 @@ void CPayment::OnPayClearscreen()
 	m_Data.GetSRowCtrl().ClearSheet();
 	m_Data.GetSRowCtrl().Refresh();
 	m_Data.SetbCoupon(FALSE);
-	m_Sum.SetWindowText(EMPTYSTRING);
+	m_Sum.SetData(EMPTYSTRING);
 
 	m_Date.SetData(m_StrDate);
 	m_ValueDate.SetData(m_StrDate);
@@ -514,7 +485,7 @@ void CPayment::OnPayFind()
 
 void CPayment::OnUpdatePayLoadOpentrade(CCmdUI* pCmdUI) 
 {
-	pCmdUI->Enable(m_CP->GetCurSel() >= 0 && m_Currency->GetCurSel() > 0 && !m_ValueDate.GetData().IsEmpty());
+	pCmdUI->Enable(m_CP.GetCurSel() >= 0 && m_Currency.GetCurSel() > 0 && !m_ValueDate.GetData().IsEmpty());
 }
 
 void CPayment::OnPayLoadOpentrade() 
@@ -564,7 +535,8 @@ void CPayment::OnUpdatePayDelete(CCmdUI* pCmdUI)
 void CPayment::OnSelchangePayTypeCombo() 
 {
 	CString Text;
-	m_Dir->GetSelString(Text);
+	
+	Text = m_Dir.GetData();
 	if(Text.IsEmpty())
 		return;
 
@@ -588,11 +560,11 @@ void CPayment::OnSelchangePayTypeCombo()
 		m_Data.GetSRowCtrl().ClearSheet();
 		m_Data.GetSRowCtrl().Refresh();
 
-		m_Dir->SelectString(-1, Text);
+		m_Dir.SetData(Text);
 		m_Date.SetData(Date);
 		m_ValueDate.SetData(Date);
 		m_Data.SetbCoupon(FALSE);
-		m_Sum.SetWindowText(EMPTYSTRING);
+		m_Sum.SetData(EMPTYSTRING);
 	}
 }
 
@@ -613,14 +585,12 @@ void CPayment::OnDblClickPayList(long Col, long Row)
 						strcmp(m_SS.GetSheetText(13, Row), "SWAP INT") == 0) ? TRUE : FALSE);
 		m_Data.SetCurrentRow(Row);
 		if(m_Data.ComputeSum(m_Sel_SS, Text) != 0)
-			m_Sum.SetWindowText(Text);
+			m_Sum.SetData(Text);
 		else
 		{
-			m_Amount.GetWindowText(Text);
-			Sum += atof(QData.RemoveComma(Text));
-			m_Adjust.GetWindowText(Text);
-			Sum += atof(QData.RemoveComma(Text));
-			m_Sum.SetWindowText(QData.WriteNumber(Sum, TRUE, 2));
+			Sum += atof(QData.RemoveComma(m_Amount.GetData()));
+			Sum += atof(QData.RemoveComma(m_Adjust.GetData()));
+			m_Sum.SetData(QData.WriteNumber(Sum, TRUE, 2));
 		}
 	}
 }
@@ -647,17 +617,17 @@ void CPayment::OnSelchangePayPortfolioCombo()
 {
 	CString Portfolio, Dir;
 
-	m_Portfolio->GetSelString(Portfolio);
+	Portfolio = m_Portfolio.GetData();
 	if(Portfolio.IsEmpty())
 		return;
 
-	m_Dir->GetSelString(Dir);
+	Dir = m_Dir.GetData();
 
 	if(Dir == "PAYMENT")
 		m_Data.LoadTemplates(Portfolio, TRUE);
 
 	GetData().GetPortfolioArr().SetPortfolio(Portfolio);
-	m_PMAccount->SelectString(-1, GetData().GetPortfolioArr().GetAccount());
+	m_PMAccount.SetData(GetData().GetPortfolioArr().GetAccount());
 }
 
 void CPayment::OnPayFindAsset()
@@ -665,12 +635,12 @@ void CPayment::OnPayFindAsset()
 	CAssetDlg Dlg;
 
 	Dlg.m_pData = &GetData();
-	m_AssetCode.GetWindowText(Dlg.m_FindData.GetRec().GetAsset());
+	Dlg.m_FindData.GetRec().GetAsset() = m_AssetCode.GetData();
 
 	if(Dlg.DoModal() != IDOK)
 		return;
 
-	m_AssetCode.SetWindowText(Dlg.m_FindData.GetRec().GetAsset());
+	m_AssetCode.SetData(Dlg.m_FindData.GetRec().GetAsset());
 }
 
 void CPayment::OnUpdatePayFindAsset(CCmdUI* pCmdUI)
@@ -690,10 +660,7 @@ void CPayment::OnKillfocusPayAssetEdit()
 
 void CPayment::OnUpdatePayLoadCoupon(CCmdUI* pCmdUI) 
 {
-	CString CashType;
-
-	m_CashType->GetSelString(CashType);
-	pCmdUI->Enable(m_Portfolio->GetCurSel() >= 0 && (CashType == "COUPON PAY") ? TRUE : FALSE);
+	pCmdUI->Enable(m_Portfolio.GetCurSel() >= 0 && (m_CashType.GetData() == "COUPON PAY") ? TRUE : FALSE);
 }
 
 void CPayment::OnPayLoadCoupon() 
@@ -708,10 +675,7 @@ void CPayment::OnPayLoadCdsCoupon()
 
 void CPayment::OnUpdatePayLoadCdsCoupon(CCmdUI* pCmdUI) 
 {
-	CString CashType;
-
-	m_CashType->GetSelString(CashType);
-	pCmdUI->Enable(m_Portfolio->GetCurSel() >= 0 && m_CP->GetCurSel() >= 0 && CashType == "COUPON PAY" ? TRUE : FALSE);	
+	pCmdUI->Enable(m_Portfolio.GetCurSel() >= 0 && m_CP.GetCurSel() >= 0 && m_CashType.GetData() == "COUPON PAY" ? TRUE : FALSE);	
 }
 
 void CPayment::OnSelchangePayCashtypeCombo() 
@@ -719,7 +683,7 @@ void CPayment::OnSelchangePayCashtypeCombo()
 	CString Type;
 	BOOL bEnable;
 
-	m_CashType->GetSelString(Type);
+	Type = m_CashType.GetData();
 	if(Type == "COUPON PAY" || Type == "SWAP INT")
 	{
 		m_AssetCode.EnableWindow(FALSE);
@@ -732,7 +696,7 @@ void CPayment::OnSelchangePayCashtypeCombo()
 	if(Type != "COUPON PAY" && Type != "SWAP INT")
 		m_AssetCode.EnableWindow(bEnable);
 	m_Fxrate.EnableWindow(bEnable);
-	m_ToAccount->EnableWindow(bEnable);
+	m_ToAccount.EnableWindow(bEnable);
 }
 
 void CPayment::OnPayLoadIrsCoupon()
@@ -742,8 +706,5 @@ void CPayment::OnPayLoadIrsCoupon()
 
 void CPayment::OnUpdatePayLoadIrsCoupon(CCmdUI *pCmdUI)
 {
-	CString CashType;
-
-	m_CashType->GetSelString(CashType);
-	pCmdUI->Enable(m_Portfolio->GetCurSel() >= 0 && m_CP->GetCurSel() >= 0 && CashType == "SWAP INT" ? TRUE : FALSE);	
+	pCmdUI->Enable(m_Portfolio.GetCurSel() >= 0 && m_CP.GetCurSel() >= 0 && m_CashType.GetData() == "SWAP INT" ? TRUE : FALSE);	
 }
