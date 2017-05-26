@@ -194,6 +194,7 @@
 #define IDD_DIALOG1                     459
 #define IDD_FUTURE_COMM_SCHEDULE_DIALOG 459
 #define IDD_FUTURE_FEES_DIALOG          461
+#define IDD_FXCAT_DIALOG                463
 #define IDC_ACCOUNT_COMBO               701
 #define IDC_ACCOUNT_GROUP_EDIT          702
 #define IDC_ACCOUNT_COLLATERAL_CHECK    703
@@ -746,6 +747,17 @@
 #define IDC_USER                        1691
 #define IDC_PASSWORD                    1692
 #define IDC_HOST                        1693
+#define IDC_FXCAT_TRADEDATE_EDIT        1694
+#define IDC_FXCAT_TICKET_EDIT           1695
+#define IDC_FXCAT_FXRATE_EDIT           1696
+#define IDC_FXCAT_NOMAMOUNT_EDIT        1697
+#define IDC_CURRENCY_COMBO              1698
+#define IDC_FXCAT_CURRENCY_COMBO        1698
+#define IDC_FXCAT_TRADER_COMBO          1699
+#define IDC_FXCAT_CATEGORY_COMBO        1700
+#define IDC_FXCAT_LOAD_BUTTON           1701
+#define IDC_FXCAT_UPDATE_BUTTON         1702
+#define IDC_FXCAT_LIST                  1703
 #define IDC_COUNTRY_NEWCURRENCY_COMBO   1711
 #define IDC_COUNTRY_COUNTRY_EDIT        1712
 #define IDC_COUNTRY_CODE_EDIT           1713
@@ -2243,7 +2255,9 @@
 #define ID_CONFIRM_FIND_TICKET          33100
 #define ID_DAILY_QUICKSWAPPRICE         33100
 #define ID_CONFIRM_UPDATE               33101
+#define ID_PROCESS_FXTICKETCATEGORY     33101
 #define ID_CONFIRM_DELETE               33102
+#define ID_PROCESS_FXCATEGORY           33102
 #define ID_CONFIRM_CLEAR_SCREEN         33103
 #define ID_CONFIRM_OTHERFEE             33104
 #define ID_BLOCK_FIND_ASSET             33111
@@ -2306,9 +2320,9 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        463
-#define _APS_NEXT_COMMAND_VALUE         33101
-#define _APS_NEXT_CONTROL_VALUE         1694
+#define _APS_NEXT_RESOURCE_VALUE        465
+#define _APS_NEXT_COMMAND_VALUE         33103
+#define _APS_NEXT_CONTROL_VALUE         1704
 #define _APS_NEXT_SYMED_VALUE           310
 #endif
 #endif
