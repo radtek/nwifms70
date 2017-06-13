@@ -30,79 +30,9 @@ CTicketEntry::CTicketEntry()
 	: CFormView(CTicketEntry::IDD)
 {
 	//{{AFX_DATA_INIT(CTicketEntry)
-	m_Listed = NULL;
-	m_EuroOpt = NULL;
-	m_Trs = NULL;
-	m_IPO = NULL;
-	m_WI = NULL;
-	m_OptAuto = NULL;
-	m_Funded = NULL;
-	m_ShortSale = NULL;
-	m_CSPBShort = NULL;
-	m_ETrade = NULL;
-
-    m_TransType = NULL;
-    m_CP = NULL;
-    m_Currency = NULL;
-	m_RepoCP = NULL;
-	m_RateBasis = NULL;
-	m_FloatRateBasis = NULL;
-	m_Portfolio = NULL;
-	m_AssignCP = NULL;
-	m_MarginCurrency = NULL;
-	m_AAFReason = NULL;
-	m_BestExecution = NULL;
-
 	m_bAllocValid = TRUE;
 	m_bLoaded = FALSE;
 	//}}AFX_DATA_INIT
-}
-
-CTicketEntry::~CTicketEntry()
-{
-	if(m_Listed)
-		delete m_Listed;
-	if(m_EuroOpt)
-		delete m_EuroOpt;
-	if(m_Trs)
-		delete m_Trs;
-	if(m_IPO)
-		delete m_IPO;
-	if(m_WI)
-		delete m_WI;
-	if(m_OptAuto)
-		delete m_OptAuto;
-	if(m_Funded)
-		delete m_Funded;
-	if(m_ShortSale)
-		delete m_ShortSale;
-	if(m_CSPBShort)
-		delete m_CSPBShort;
-	if(m_ETrade)
-		delete m_ETrade;
-
-    if(m_TransType)
-		delete m_TransType;
-    if(m_CP)
-		delete m_CP;
-    if(m_Currency)
-		delete m_Currency;
-	if(m_RepoCP)
-		delete m_RepoCP;
-	if(m_RateBasis)
-		delete m_RateBasis;
-	if(m_FloatRateBasis)
-		delete m_FloatRateBasis;
-	if(m_Portfolio)
-		delete m_Portfolio;
-	if(m_AssignCP)
-		delete m_AssignCP;
-	if(m_MarginCurrency)
-		delete m_MarginCurrency;
-	if(m_AAFReason)
-		delete m_AAFReason;
-	if(m_BestExecution)
-		delete m_BestExecution;
 }
 
 void CTicketEntry::DoDataExchange(CDataExchange* pDX)
@@ -209,31 +139,29 @@ BOOL CTicketEntry::AllocIsOK()
 			Text = "No change is allowed because the ticket has been approved";
 	}
 
-	m_Portfolio->GetSelString(Data);
+	Data = m_Portfolio.GetData();
 	if(Data.IsEmpty())
 		Text = "Must select a portfolio";
 
-	m_AllocAmount.GetWindowText(Nom);
+	Nom = m_AllocAmount.GetData();
 	if(m_Data.AllocCheckSum(Data, atof(QData.RemoveComma(Nom))) > 0)
 		Text = "Sum of the shares in each portfolios must be equal to the Nominal Amount";
 
-	m_TransType->GetSelString(TransType);
+	TransType = m_TransType.GetData();
 	if(TransType != FOREX && TransType != INTSWAP && m_Price.GetWindowTextLength() == 0)		
 		Text = "Price must be entered";
 
 	if(m_DownPymnt.GetWindowTextLength() == 0)
 		Text = "The Percentage of down payment must be entered";
 
-	m_RepoCP->GetSelString(Data);
+	Data = m_RepoCP.GetData();
 	if(!Data.IsEmpty())
 	{
-		m_DownPymnt.GetWindowText(Data);
-		if(atof(QData.RemoveComma(Data)) == 100)
+		if(atof(QData.RemoveComma(m_DownPymnt.GetData())) == 100)
 			Text = "Repo source has been entered. Down payment must be less than 100%.";
 	}
 
-	m_VAR.GetWindowText(Data);
-	if(fabs(atof(QData.RemoveComma(Data))) == 0)
+	if(fabs(atof(QData.RemoveComma(m_VAR.GetData()))) == 0)
 		Text = "VAR cannot be zero";
 
 	if(m_AllocArray.GetSize() == m_AllocSS.GetSheetRows() && m_AllocArray.GetSize() > 0)
@@ -258,7 +186,7 @@ BOOL CTicketEntry::AllocIsOK()
 
 void CTicketEntry::EnableAlloc()
 {
-	m_Portfolio->EnableWindow(!m_Data.GetBlotter());
+	m_Portfolio.EnableWindow(!m_Data.GetBlotter());
 	m_AllocAmount.SetReadOnly(m_Data.GetBlotter()); // If blotter, read only
 //	m_Link.SetReadOnly(m_Data.GetBlotter());
 //	m_AssignCP->EnableWindow(m_Data.GetBlotter());
@@ -266,19 +194,7 @@ void CTicketEntry::EnableAlloc()
 
 void CTicketEntry::EnableAllocCtrls()
 {
-	BOOL bEnable;
-	CString TransType, Data;
-
-	bEnable = m_Portfolio->GetCurSel() >= 0 ? TRUE : FALSE;
-
-	m_AllocAmount.EnableWindow(bEnable);
-	
-	m_TransType->GetSelString(TransType);
-
-/*	if(!(TransType == SECURITIES || TransType == CDS || TransType == CALL || TransType == PUT) && bEnable)
-		m_Link.SetReadOnly();
-	else
-		m_Link.SetReadOnly(0); */
+	m_AllocAmount.EnableWindow(m_Portfolio.GetCurSel() >= 0 ? TRUE : FALSE);
 }
 
 void CTicketEntry::EnableCtrls()
@@ -315,18 +231,18 @@ void CTicketEntry::EnableCtrls()
 	m_OptID.ShowWindow(SW_HIDE);
 	GetDlgItem(IDC_ENTRY_MARGIN_STATIC)->ShowWindow(SW_HIDE);
 	m_Margin.ShowWindow(SW_HIDE);
-	m_MarginCurrency->ShowWindow(SW_HIDE);
+	m_MarginCurrency.ShowWindow(SW_HIDE);
 	m_MarginAmount.ShowWindow(SW_HIDE);
 	GetDlgItem(IDC_ENTRY_SWAP_TICKET_STATIC)->ShowWindow(SW_HIDE);
 	m_SwapTicket.ShowWindow(SW_HIDE);
 	GetDlgItem(IDC_ENTRY_LEVSOURCE_STATIC)->ShowWindow(SW_HIDE);
-	m_RepoCP->ShowWindow(SW_HIDE);
+	m_RepoCP.ShowWindow(SW_HIDE);
 	GetDlgItem(IDC_ENTRY_SWMATURITY_STATIC)->ShowWindow(SW_HIDE);
 	m_SWMaturity.ShowWindow(SW_HIDE);
 	GetDlgItem(IDC_ENTRY_FLOAT_RATE_STATIC)->ShowWindow(SW_HIDE);
 	m_FloatRate.ShowWindow(SW_HIDE);
 	GetDlgItem(IDC_ENTRY_FLOAT_RATE_BASIS_STATIC)->ShowWindow(SW_HIDE);
-	m_FloatRateBasis->ShowWindow(SW_HIDE);
+	m_FloatRateBasis.ShowWindow(SW_HIDE);
 	GetDlgItem(IDC_ENTRY_FLOAT_MATURITY_STATIC)->ShowWindow(SW_HIDE);
 	m_FloatMaturity.ShowWindow(SW_HIDE);
 	GetDlgItem(IDC_ENTRY_SWAP_TICKET_STATIC)->ShowWindow(SW_HIDE);
@@ -336,21 +252,21 @@ void CTicketEntry::EnableCtrls()
 
 	EnableRepoCtrls(FALSE);
 
-	m_Listed->ShowWindow(SW_HIDE);
-	m_EuroOpt->ShowWindow(SW_HIDE);
+	m_Listed.ShowWindow(SW_HIDE);
+	m_EuroOpt.ShowWindow(SW_HIDE);
 	m_Binary.ShowWindow(SW_HIDE);
-	m_IPO->ShowWindow(SW_HIDE);
-	m_Trs->ShowWindow(SW_HIDE);
+	m_IPO.ShowWindow(SW_HIDE);
+	m_Trs.ShowWindow(SW_HIDE);
 	
-	m_RepoCP->GetSelString(RepoCP);
-	m_TransType->GetSelString(TransType);
-	m_Dir.GetSelString(Dir);
+	RepoCP = m_RepoCP.GetData();
+	TransType = m_TransType.GetData();
+	Dir = m_Dir.GetData();
 	GetData().DefineTransType(TransType, Dir);
 
 	if(TransType == SECURITIES || TransType == CDS || TransType == FOREX || TransType == CALL || TransType == PUT)
-		m_AssignCP->EnableWindow(TRUE);
+		m_AssignCP.EnableWindow(TRUE);
 	else
-		m_AssignCP->EnableWindow(FALSE);
+		m_AssignCP.EnableWindow(FALSE);
 
 	if(TransType == INTSWAP || TransType == CASH)
 	{
@@ -377,7 +293,7 @@ void CTicketEntry::EnableCtrls()
 	{
 		GetDlgItem(IDC_ENTRY_MARGIN_STATIC)->ShowWindow(SW_SHOW);
 		m_Margin.ShowWindow(SW_SHOW);
-		m_MarginCurrency->ShowWindow(SW_SHOW);
+		m_MarginCurrency.ShowWindow(SW_SHOW);
 		m_MarginAmount.ShowWindow(SW_SHOW);
 		m_Price.ShowWindow(SW_SHOW);
 	}
@@ -391,13 +307,13 @@ void CTicketEntry::EnableCtrls()
 	if(TransType == SECURITIES)
 	{
 		GetDlgItem(IDC_ENTRY_LEVSOURCE_STATIC)->ShowWindow(SW_SHOW);
-		m_RepoCP->ShowWindow(SW_SHOW);
-		m_IPO->ShowWindow(SW_SHOW);
+		m_RepoCP.ShowWindow(SW_SHOW);
+		m_IPO.ShowWindow(SW_SHOW);
 		OnSelchangeLevsourceCombo();
 	}
 	
 	if(TransType == SECURITIES || TransType == REPO || TransType == LEVERAGE)
-		m_Trs->ShowWindow(SW_SHOW);
+		m_Trs.ShowWindow(SW_SHOW);
 
 	if(TransType == SECURITIES || TransType == CDS || TransType == CALL || TransType == PUT)
 	{
@@ -419,8 +335,8 @@ void CTicketEntry::EnableCtrls()
 		m_Strike.ShowWindow(SW_SHOW);
 		GetDlgItem(IDC_ENTRY_EXPIRATION_STATIC)->ShowWindow(SW_SHOW);
 		m_OptExp.ShowWindow(SW_SHOW);
-		m_Listed->ShowWindow(SW_SHOW);
-		m_EuroOpt->ShowWindow(SW_SHOW);
+		m_Listed.ShowWindow(SW_SHOW);
+		m_EuroOpt.ShowWindow(SW_SHOW);
 		m_Binary.ShowWindow(SW_SHOW);
 		GetDlgItem(IDC_ENTRY_OPT_TICKER_STATIC)->ShowWindow(SW_SHOW);
 		m_OptTicker.ShowWindow(SW_SHOW);
@@ -437,40 +353,40 @@ void CTicketEntry::EnableCtrls()
 		GetDlgItem(IDC_ENTRY_FLOAT_RATE_STATIC)->ShowWindow(SW_SHOW);
 		m_FloatRate.ShowWindow(SW_SHOW);
 		GetDlgItem(IDC_ENTRY_FLOAT_RATE_BASIS_STATIC)->ShowWindow(SW_SHOW);
-		m_FloatRateBasis->ShowWindow(SW_SHOW);
+		m_FloatRateBasis.ShowWindow(SW_SHOW);
 		GetDlgItem(IDC_ENTRY_FLOAT_MATURITY_STATIC)->ShowWindow(SW_SHOW);
 		m_FloatMaturity.ShowWindow(SW_SHOW);
 	}
 
 	if(m_Data.GetBlotter())
 	{
-		m_TransType->EnableWindow(FALSE);
+		m_TransType.EnableWindow(FALSE);
 		m_Dir.EnableWindow(FALSE);
-		m_CP->EnableWindow(FALSE);
-		m_Currency->EnableWindow(FALSE);
-		m_FloatRateBasis->EnableWindow(FALSE);
-		m_IPO->EnableWindow(FALSE);
-		m_Listed->EnableWindow(FALSE);
-		m_EuroOpt->EnableWindow(FALSE);
+		m_CP.EnableWindow(FALSE);
+		m_Currency.EnableWindow(FALSE);
+		m_FloatRateBasis.EnableWindow(FALSE);
+		m_IPO.EnableWindow(FALSE);
+		m_Listed.EnableWindow(FALSE);
+		m_EuroOpt.EnableWindow(FALSE);
 		m_Binary.EnableWindow(FALSE);
 	}
 	else
 	{
-		m_TransType->EnableWindow(TRUE);
+		m_TransType.EnableWindow(TRUE);
 		m_Dir.EnableWindow(TRUE);
-		m_CP->EnableWindow(TRUE);
-		m_Currency->EnableWindow(TRUE);
-		m_FloatRateBasis->EnableWindow(TRUE);
-		m_IPO->EnableWindow(TRUE);
-		m_Listed->EnableWindow(TRUE);
-		m_EuroOpt->EnableWindow(TRUE);
+		m_CP.EnableWindow(TRUE);
+		m_Currency.EnableWindow(TRUE);
+		m_FloatRateBasis.EnableWindow(TRUE);
+		m_IPO.EnableWindow(TRUE);
+		m_Listed.EnableWindow(TRUE);
+		m_EuroOpt.EnableWindow(TRUE);
 		m_Binary.EnableWindow(TRUE);
 	}
 
 	if(!(!RepoCP.IsEmpty() || TransType == REPO))
 	{
 		m_DownPymnt.EnableWindow(FALSE);
-		m_DownPymnt.SetWindowText("100");
+		m_DownPymnt.SetData("100");
 	}
 	else
 		m_DownPymnt.EnableWindow(TRUE);
@@ -478,25 +394,25 @@ void CTicketEntry::EnableCtrls()
 
 void CTicketEntry::EnableRepoCtrls(BOOL bEnable)
 {
-	m_Trs->ShowWindow(bEnable ? SW_SHOW : SW_HIDE);
+	m_Trs.ShowWindow(bEnable ? SW_SHOW : SW_HIDE);
 	GetDlgItem(IDC_ENTRY_REPORATE_STATIC)->ShowWindow(bEnable ? SW_SHOW : SW_HIDE);
 	m_Rate.ShowWindow(bEnable ? SW_SHOW : SW_HIDE);
 	GetDlgItem(IDC_ENTRY_RATE_BASIS_STATIC)->ShowWindow(bEnable ? SW_SHOW : SW_HIDE);
-	m_RateBasis->ShowWindow(bEnable ? SW_SHOW : SW_HIDE);
+	m_RateBasis.ShowWindow(bEnable ? SW_SHOW : SW_HIDE);
 	GetDlgItem(IDC_ENTRY_MATURITY_STATIC)->ShowWindow(bEnable ? SW_SHOW : SW_HIDE);
 	m_Maturity.ShowWindow(bEnable ? SW_SHOW : SW_HIDE);
 
 	if(m_Data.GetBlotter())
 	{
-		m_RepoCP->EnableWindow(FALSE);
-		m_RateBasis->EnableWindow(FALSE);
-		m_Trs->EnableWindow(FALSE);
+		m_RepoCP.EnableWindow(FALSE);
+		m_RateBasis.EnableWindow(FALSE);
+		m_Trs.EnableWindow(FALSE);
 	}
 	else
 	{
-		m_RepoCP->EnableWindow(TRUE);
-		m_RateBasis->EnableWindow(TRUE);
-		m_Trs->EnableWindow(TRUE);
+		m_RepoCP.EnableWindow(TRUE);
+		m_RateBasis.EnableWindow(TRUE);
+		m_Trs.EnableWindow(TRUE);
 	}	
 }
 
@@ -517,27 +433,26 @@ void CTicketEntry::InitControls()
 	m_AllocSS.LockSheet();
 	m_AllocSS.SetSheetRows(0);
 
-	m_Trs = new CCheckBox(this, IDC_ENTRY_DEAL_CHECK, Y);
-	m_IPO = new CCheckBox(this, IDC_ENTRY_IPO_CHECK, Y);
-	m_Listed = new CCheckBox(this, IDC_ENTRY_LISTED_CHECK, Y);
-	m_EuroOpt = new CCheckBox(this, IDC_ENTRY_EUROOPT_CHECK, Y);
-	m_WI = new CCheckBox(this, IDC_ENTRY_WI_CHECK, Y);
-	m_OptAuto = new CCheckBox(this, IDC_ENTRY_AUTO_CHECK, Y);
-	m_Funded = new CCheckBox(this, IDC_ENTRY_FUNDED_CHECK, Y);
-	m_ShortSale = new CCheckBox(this, IDC_ENTRY_SHORT_CHECK, Y);
-	m_CSPBShort = new CCheckBox(this, IDC_ENTRY_CSPBSHORT_CHECK, Y);
-	m_ETrade = new CCheckBox(this, IDC_ENTRY_ETRADE_CHECK, Y);
+	m_Trs.Setup(this, IDC_ENTRY_DEAL_CHECK, Y);
+	m_IPO.Setup(this, IDC_ENTRY_IPO_CHECK, Y);
+	m_Listed.Setup(this, IDC_ENTRY_LISTED_CHECK, Y);
+	m_EuroOpt.Setup(this, IDC_ENTRY_EUROOPT_CHECK, Y);
+	m_WI.Setup(this, IDC_ENTRY_WI_CHECK, Y);
+	m_OptAuto.Setup(this, IDC_ENTRY_AUTO_CHECK, Y);
+	m_Funded.Setup(this, IDC_ENTRY_FUNDED_CHECK, Y);
+	m_ShortSale.Setup(this, IDC_ENTRY_SHORT_CHECK, Y);
+	m_CSPBShort.Setup(this, IDC_ENTRY_CSPBSHORT_CHECK, Y);
 
-    m_TransType = new COptComboBox(this, IDC_ENTRY_TRANSTYPE_COMBO);
-    m_CP = new COptComboBox(this, IDC_ENTRY_COUNTERPARTY_COMBO);
-    m_Currency = new COptComboBox(this, IDC_ENTRY_CURRENCY_COMBO);
-	m_RepoCP = new COptComboBox(this, IDC_ENTRY_LEVSOURCE_COMBO, TRUE);
-	m_RateBasis = new COptComboBox(this, IDC_ENTRY_RATE_BASIS_COMBO, TRUE);
-	m_FloatRateBasis = new COptComboBox(this, IDC_ENTRY_FLOAT_RATE_BASIS_COMBO, TRUE);
-	m_Portfolio = new COptComboBox(this, IDC_ENTRY_PORTFOLIO_COMBO);
-	m_MarginCurrency = new COptComboBox(this, IDC_ENTRY_MARGIN_CURRENCY_COMBO, TRUE);
-	m_AAFReason = new COptComboBox(this, IDC_ENTRY_AAF_COMBO, TRUE);
-	m_BestExecution = new COptComboBox(this, IDC_ENTRY_BESTEXECUTION_COMBO);
+    m_TransType.Setup(this, IDC_ENTRY_TRANSTYPE_COMBO);
+    m_CP.Setup(this, IDC_ENTRY_COUNTERPARTY_COMBO);
+    m_Currency.Setup(this, IDC_ENTRY_CURRENCY_COMBO);
+	m_RepoCP.Setup(this, IDC_ENTRY_LEVSOURCE_COMBO, TRUE);
+	m_RateBasis.Setup(this, IDC_ENTRY_RATE_BASIS_COMBO, TRUE);
+	m_FloatRateBasis.Setup(this, IDC_ENTRY_FLOAT_RATE_BASIS_COMBO, TRUE);
+	m_Portfolio.Setup(this, IDC_ENTRY_PORTFOLIO_COMBO);
+	m_MarginCurrency.Setup(this, IDC_ENTRY_MARGIN_CURRENCY_COMBO, TRUE);
+	m_AAFReason.Setup(this, IDC_ENTRY_AAF_COMBO, TRUE);
+	m_BestExecution.Setup(this, IDC_ENTRY_BESTEXECUTION_COMBO);
 
 	m_Ticket.Setup(this, IDC_ENTRY_TICKET_EDIT);
 	m_SwapTicket.Setup(this, IDC_ENTRY_SWAP_TICKET_EDIT);
@@ -578,6 +493,7 @@ void CTicketEntry::InitControls()
 	m_Dir.Setup(this, IDC_ENTRY_TRANSDIR_COMBO, 2);
 	m_Trader.Setup(this, IDC_ENTRY_TRADER_COMBO, 2);
 	m_AAMethod.Setup(this, IDC_ENTRY_AA_COMBO, 6, TRUE);
+	m_ETrade.Setup(this, IDC_ENTRY_ETRADE_COMBO, 2, TRUE);
 	m_OptSet.Setup(this, IDC_ENTRY_OPTSET_COMBO, 3, TRUE);
 	m_OptSet2.Setup(this, IDC_ENTRY_OPTSET2_COMBO, 3, TRUE);
 	m_OptID.Setup(this, IDC_ENTRY_BLMID_EDIT);
@@ -601,7 +517,7 @@ void CTicketEntry::InitControls()
 	m_Price.Setup(this, IDC_ENTRY_PRICE_EDIT);
 	m_DownPymnt.Setup(this, IDC_ENTRY_DOWNPYMNT_EDIT);
 	m_DV01.Setup(this, IDC_ENTRY_DV01_EDIT);
-	m_AssignCP = new COptComboBox(this, IDC_ENTRY_ASSIGNCP_COMBO, TRUE);
+	m_AssignCP.Setup(this, IDC_ENTRY_ASSIGNCP_COMBO, TRUE);
 
 	CRawTicketRec *pTicket;
 	pTicket = &m_Data.GetRawTicket();
@@ -609,58 +525,58 @@ void CTicketEntry::InitControls()
 	m_Data.Add(&m_Trader, &pTicket->GetTrader());
 	m_Data.Add(&m_TradeDate, &pTicket->GetTradeDate());
 	m_Data.Add(&m_ExecTime, &pTicket->GetExecTime());
-	m_Data.Add(m_TransType, &pTicket->GetTransType());
+	m_Data.Add(&m_TransType, &pTicket->GetTransType());
 	m_Data.Add(&m_Dir, &pTicket->GetDir());
 	m_Data.Add(&m_ValueDate, &pTicket->GetValueDate());
 	m_Data.Add(&m_Amount, &pTicket->GetNomAmount());
 	m_Data.Add(&m_Strike, &pTicket->GetStrike());
 	m_Data.Add(&m_OptExp, &pTicket->GetOptExp());
-	m_Data.Add(m_Listed, &pTicket->GetListed());
+	m_Data.Add(&m_Listed, &pTicket->GetListed());
 	m_Data.Add(&m_OptTicker, &pTicket->GetOptTicker());
 	m_Data.Add(&m_OptSet, &pTicket->GetOptSetCode());
 	m_Data.Add(&m_OptSet2, &pTicket->GetOptSetCode2());
 	m_Data.Add(&m_OptID, &pTicket->GetOptID());
-	m_Data.Add(m_EuroOpt, &pTicket->GetEuroOpt());
-	m_Data.Add(m_OptAuto, &pTicket->GetOptAuto());
-	m_Data.Add(m_CP, &pTicket->GetCP());
-	m_Data.Add(m_Currency, &pTicket->GetCurrency());
+	m_Data.Add(&m_EuroOpt, &pTicket->GetEuroOpt());
+	m_Data.Add(&m_OptAuto, &pTicket->GetOptAuto());
+	m_Data.Add(&m_CP, &pTicket->GetCP());
+	m_Data.Add(&m_Currency, &pTicket->GetCurrency());
 	m_Data.Add(&m_FxRate, &pTicket->GetFxRate());
 	m_Data.Add(&m_Asset, &pTicket->GetAsset());
 	m_Data.Add(&m_AssetDesc, &pTicket->GetAssetDesc());
 	m_Data.Add(&m_AssetCurrency, &pTicket->GetAssetCurr());
-	m_Data.Add(m_IPO, &pTicket->GetIPO());
-	m_Data.Add(m_Trs, &pTicket->GetTRS());
-	m_Data.Add(m_RepoCP, &pTicket->GetRepoCP());
+	m_Data.Add(&m_IPO, &pTicket->GetIPO());
+	m_Data.Add(&m_Trs, &pTicket->GetTRS());
+	m_Data.Add(&m_RepoCP, &pTicket->GetRepoCP());
 	m_Data.Add(&m_Rate, &pTicket->GetRate());
-	m_Data.Add(m_RateBasis, &pTicket->GetRateBasis());
+	m_Data.Add(&m_RateBasis, &pTicket->GetRateBasis());
 	m_Data.Add(&m_Maturity, &pTicket->GetMaturity());
 	m_Data.Add(&m_Note, &pTicket->GetNote());
 	m_Data.Add(&m_Note2, &pTicket->GetNote2());
 	m_Data.Add(&m_SWBooking, &pTicket->GetSWBooking());
 	m_Data.Add(&m_SWMaturity, &pTicket->GetSWMaturity());
 	m_Data.Add(&m_FloatRate, &pTicket->GetSWFloatRate());
-	m_Data.Add(m_FloatRateBasis, &pTicket->GetSWFloatBasis());
+	m_Data.Add(&m_FloatRateBasis, &pTicket->GetSWFloatBasis());
 	m_Data.Add(&m_FloatMaturity, &pTicket->GetSWFloatMaturity());
-	m_Data.Add(m_WI, &pTicket->GetWI());
+	m_Data.Add(&m_WI, &pTicket->GetWI());
 	m_Data.Add(&m_SwapTicket, &pTicket->GetSwapTicket());
 	m_Data.Add(&m_DeliveryDate, &pTicket->GetDeliveryDate());
 	m_Data.Add(&m_Margin, &pTicket->GetMargin());
-	m_Data.Add(m_MarginCurrency, &pTicket->GetMarginCurrency());
+	m_Data.Add(&m_MarginCurrency, &pTicket->GetMarginCurrency());
 	m_Data.Add(&m_MarginAmount, &pTicket->GetMarginAmount());
-	m_Data.Add(m_Funded, &pTicket->GetFunded());
+	m_Data.Add(&m_Funded, &pTicket->GetFunded());
 	m_Data.Add(&m_Binary, &pTicket->GetBinary());
 	m_Data.Add(&m_AAMethod, &pTicket->GetAAMethod());
-	m_Data.Add(m_AAFReason, &pTicket->GetAAFReason());
-	m_Data.Add(m_BestExecution, &pTicket->GetBestExecution());
-	m_Data.Add(m_ShortSale, &pTicket->GetShortSale());
-	m_Data.Add(m_CSPBShort, &pTicket->GetCSPBShort());
-	m_Data.Add(m_ETrade, &pTicket->GetETrade());
+	m_Data.Add(&m_AAFReason, &pTicket->GetAAFReason());
+	m_Data.Add(&m_BestExecution, &pTicket->GetBestExecution());
+	m_Data.Add(&m_ShortSale, &pTicket->GetShortSale());
+	m_Data.Add(&m_CSPBShort, &pTicket->GetCSPBShort());
+	m_Data.Add(&m_ETrade, &pTicket->GetETrade());
 	m_Data.Add(&m_Price, &pTicket->GetPrice());
 	m_Data.Add(&m_DownPymnt, &pTicket->GetDownPymnt());
 	m_Data.Add(&m_BrokerFee, &pTicket->GetBrokerFee());
 	m_Data.Add(&m_OtherFee, &pTicket->GetOtherFee());
 	m_Data.Add(&m_SoftDollar, &pTicket->GetSoftDollar());
-	m_Data.Add(m_AssignCP, &pTicket->GetAssignCP());
+	m_Data.Add(&m_AssignCP, &pTicket->GetAssignCP());
 	m_Data.Add(&m_DV01, &pTicket->GetDV01());
 	m_Data.Add(&m_VAR, &pTicket->GetVAR());
 	m_Data.Add(&m_UnWindTicket, &pTicket->GetUnWindTicket());
@@ -685,7 +601,7 @@ void CTicketEntry::InitControls()
 
 	CRawInvRec *pInv;
 	pInv = &m_Data.GetRawInv();
-	m_Data.GetSRowCtrl().Add(m_Portfolio, &pInv->GetPortfolio());
+	m_Data.GetSRowCtrl().Add(&m_Portfolio, &pInv->GetPortfolio());
 	m_Data.GetSRowCtrl().Add(&m_AllocAmount, &pInv->GetNomAmount());
 	m_Data.GetSRowCtrl().Add(&m_Data.GetCustodian());
 }
@@ -700,16 +616,16 @@ BOOL CTicketEntry::LoadExistingTickets(CString TransType)
 	int i, j;
 
 	OraLoader = GetData().GetOraLoader();
-	m_Trader.GetSelString(Trader);
-	m_Asset.GetWindowText(Asset);
-	m_Dir.GetSelString(Dir);
-	m_CP->GetSelString(CP);
-	m_Currency->GetSelString(Currency);
-	m_Amount.GetWindowText(Nominal);
-	m_Price.GetWindowText(Price);
-	m_FxRate.GetWindowText(Fx);
-	m_TradeDate.GetWindowText(TradeDate);
-	m_ValueDate.GetWindowText(ValueDate);
+	Trader = m_Trader.GetData();
+	Asset = m_Asset.GetData();
+	Dir = m_Dir.GetData();
+	CP = m_CP.GetData();
+	Currency = m_Currency.GetData();
+	Nominal = m_Amount.GetData();
+	Price = m_Price.GetData();
+	Fx = m_FxRate.GetData();
+	TradeDate = m_TradeDate.GetData();
+	ValueDate = m_ValueDate.GetData();
 
 	sTransType = QData.GetQueryText(TransType);
 	Trader = QData.GetQueryText(Trader);
@@ -727,23 +643,23 @@ BOOL CTicketEntry::LoadExistingTickets(CString TransType)
 
 	if(TransType == REPO || TransType == LEVERAGE || TransType == INTSWAP)
 	{
-		m_Rate.GetWindowText(Rate);
-		m_Maturity.GetWindowText(Maturity);
+		Rate = m_Rate.GetData();
+		Maturity = m_Maturity.GetData();
 		if(!Rate.IsEmpty())
 			Rate = QData.GetQueryNumber(Rate);
 		if(!Maturity.IsEmpty())
 			Maturity = QData.GetQueryDate(Maturity);
 		
 		if(TransType == INTSWAP)
-			m_FloatRate.GetWindowText(FloatRate);
+			FloatRate = m_FloatRate.GetData();
 		if(!FloatRate.IsEmpty())
 			FloatRate = QData.GetQueryNumber(FloatRate);
 	}
 	else
 		if(TransType == CALL || TransType == PUT)
 		{
-			m_Strike.GetWindowText(Strike);
-			m_OptExp.GetWindowText(Maturity);
+			Strike = m_Strike.GetData();
+			Maturity = m_OptExp.GetData();
 			if(!Strike.IsEmpty())
 				Strike = QData.GetQueryNumber(Strike);
 			if(!Maturity.IsEmpty())
@@ -874,7 +790,7 @@ BOOL CTicketEntry::IsOK(BOOL bCopy)
 	COraLoader OraLoader;
 
 	OraLoader.SetDB(&theDB);
-	m_TransType->GetSelString(TransType);
+	TransType = m_TransType.GetData();
 
 	if(m_Data.GetSRowCtrl().GetSS()->GetSheetRows() <= 0)
 		Text = "Invalid Ticket, Must enter Allocation";
@@ -902,11 +818,11 @@ BOOL CTicketEntry::IsOK(BOOL bCopy)
 	if(m_ExecTime.GetData().IsEmpty())
 		Text = "Invalid Exection Time.  Must enter Exection Time.";
 
-	m_Dir.GetSelString(Data);
+	Data = m_Dir.GetData();
 	if(Data.IsEmpty())
 		Text = "Invalid Transaction Direction.  Must enter Transaction direction.";
 
-	m_Amount.GetWindowText(Amount);
+	Amount = m_Amount.GetData();
 	dNom = atof(QData.RemoveComma(Amount));
 
 	if(dNom <= 0)
@@ -921,7 +837,7 @@ BOOL CTicketEntry::IsOK(BOOL bCopy)
 			Text = "Invalid number of contracts (Fraction of a contract) ";
 	}
 
-	m_CP->GetSelString(Data);
+	Data = m_CP.GetData();
 	if(Data.IsEmpty())
 		Text = "Invalid Counterparty.  Must enter a couterparty.";
 
@@ -956,18 +872,18 @@ BOOL CTicketEntry::IsOK(BOOL bCopy)
 	if(TransType != FOREX && m_Margin.GetWindowTextLength() <= 0 && m_MarginAmount.GetWindowTextLength() <= 0)
 		Text = "You must enter Margin percentage or Margin Amount";
 
-	if(m_BestExecution->GetCurSel() < 0)
+	if(m_BestExecution.GetCurSel() < 0)
 		Text = "You must choose Best Execution Method";
 
 	if(m_AAMethod.GetCurSel() < 0)
 	{
-		if(m_AAFReason->GetCurSel() < 0)
+		if(m_AAFReason.GetCurSel() < 0)
 			Text = "Must choose a reason for not Auto allocation";
 	}
 	else
 		for(i = 1; i <= m_AllocSS.GetSheetRows() && m_AllocArray.GetSize(); i ++)
 		{
-			if(m_AllocArray.GetAt(i - 1)->GetAt(1) != m_AllocSS.GetSheetText(2, i) && m_AAFReason->GetCurSel() < 0)
+			if(m_AllocArray.GetAt(i - 1)->GetAt(1) != m_AllocSS.GetSheetText(2, i) && m_AAFReason.GetCurSel() < 0)
 			{
 				Text = "Auto Allocation Method is violated, You must select AAF Reason";
 				break;
@@ -1027,24 +943,23 @@ void CTicketEntry::UpdateAlloc(int Action)
 	CQData QData;
 	double NomAmount, AllocAmount;
 
-	m_Amount.GetWindowText(Text);
-	m_dNomAmount = atof(QData.RemoveComma(Text));
+	m_dNomAmount = atof(QData.RemoveComma(m_Amount.GetData()));
 
 	switch(Action)
 	{
 		case 0: // Update After Load
 			NomAmount = m_Data.ComputeAllocAmount();
-//			m_SoftDAmount.SetWindowText(QData.WriteNumber(m_Data.GetSoftDollar()));
-//			m_OtherFee.SetWindowText(QData.WriteNumber(m_Data.GetOtherFee()));
-//			m_VAR.SetWindowText(QData.WriteNumber(m_Data.GetVAR()));
+//			m_SoftDAmount.SetData(QData.WriteNumber(m_Data.GetSoftDollar()));
+//			m_OtherFee.SetData(QData.WriteNumber(m_Data.GetOtherFee()));
+//			m_VAR.SetData(QData.WriteNumber(m_Data.GetVAR()));
 			break;
 		case 1: // Add New 
 		case 3: // Delete
 			NomAmount = m_Data.ComputeAllocAmount();
 			break;
 		case 2: // Update
-			m_Portfolio->GetSelString(Port);
-			m_AllocAmount.GetWindowText(Text);
+			Port = m_Portfolio.GetData();
+			Text = m_AllocAmount.GetData();
 			AllocAmount = atof(QData.RemoveComma(Text));
 			if(Port.IsEmpty())
 				MessageBox("Cannot get portfolio");
@@ -1071,7 +986,6 @@ BOOL CTicketEntry::UpdateData(BOOL bSaveandValid)
 	else
 	{
 		BeginWaitCursor();
-		CQData QData;
 		COraLoader OraLoader;
 
 		OraLoader = m_Data.GetOraLoader();
@@ -1081,28 +995,29 @@ BOOL CTicketEntry::UpdateData(BOOL bSaveandValid)
 		if(!m_bLoaded)
 		{
 			GetData().LoadSupportData();
-			GetData().GetPortfolioArr().CopyToComboBox(*m_Portfolio); /* Portfolio */
-			QData.CopyDBRecArrayToComboBox(GetData().GetCurrencyArr(), *m_Currency, 0, FALSE);	/* Currency */
-			GetData().GetCurrencyArr().CopyToComboBox(*m_MarginCurrency); /* Margin Currency */
-			GetData().GetRateBasisArr().CopyToComboBox(*m_RateBasis); /* RateBasis */
-			GetData().GetRateBasisArr().CopyToComboBox(*m_FloatRateBasis); /* FloatRateBasis */
-			QData.CopyKeyDBListKeyToComboBox(GetData().GetContactList(), *m_CP, FALSE); /* Counterparty */
-			QData.CopyKeyDBListKeyToComboBox(GetData().GetContactList(), *m_RepoCP, FALSE); /* Repo Counterparty */
-			QData.CopyKeyDBListKeyToComboBox(GetData().GetContactList(), *m_AssignCP); /* Giveup Counterparty */
-			GetData().GetTransTypeArr().CopyToComboBox(*m_TransType); /* Trans Type */
-			GetData().GetBestExecutionArr().CopyToComboBox(*m_BestExecution);
+			GetData().GetPortfolioArr().CopyToComboBox(m_Portfolio); /* Portfolio */
+			GetData().GetCurrencyArr().CopyToComboBox(m_Currency);	/* Currency */
+			GetData().GetCurrencyArr().CopyToComboBox(m_MarginCurrency); /* Margin Currency */
+			GetData().GetRateBasisArr().CopyToComboBox(m_RateBasis); /* RateBasis */
+			GetData().GetRateBasisArr().CopyToComboBox(m_FloatRateBasis); /* FloatRateBasis */
+			GetData().GetContactList().CopyKeyToComboBox(m_CP); /* Counterparty */
+			GetData().GetContactList().CopyKeyToComboBox(m_RepoCP); /* Repo Counterparty */
+			GetData().GetContactList().CopyKeyToComboBox(m_AssignCP); /* Giveup Counterparty */
+			GetData().GetTransTypeArr().CopyToComboBox(m_TransType); /* Trans Type */
+			GetData().GetBestExecutionArr().CopyToComboBox(m_BestExecution);
 			
 			GetData().GetTransDirArr().CopyToMCComboBox(m_Dir);	/* TransDir */
 			GetData().GetTraderArr().CopyToMCComboBox(m_Trader); /* Trader */
 			GetData().GetOptSetArr().CopyToMCComboBox(m_OptSet);
 			GetData().GetOptSetArr().CopyToMCComboBox(m_OptSet2);
+			GetData().GetETradeTypeArr().CopyToMCComboBox(m_ETrade);
 			OraLoader.Open("SELECT AA_METHOD, AA_DESC, RATIO_A, RATIO_B, RATIO_C, RATIO_D FROM SEMAM.NW_AA_METHOD_V ORDER BY 1");
 			m_AAMethod.ResetContent();
 			OraLoader.LoadMCComboBox(m_AAMethod);
 
 			OraLoader.Open("SELECT AA_REASON FROM SEMAM.NW_AA_REASON ORDER BY 1");
-			m_AAFReason->ResetContent();
-			OraLoader.LoadComboBox(*m_AAFReason);
+			m_AAFReason.ResetContent();
+			OraLoader.LoadComboBox(m_AAFReason);
 			m_bLoaded = TRUE;
 		}
 		EndWaitCursor();
@@ -1129,7 +1044,7 @@ void CTicketEntry::UpdateLink()
 {
 	CString TransType, Asset;
 
-	m_TransType->GetSelString(TransType);
+	TransType = m_TransType.GetData();
 	if((TransType == CDS || TransType == SECURITIES || TransType == CALL || TransType == PUT) && 
 		!m_UnWindTicket.GetData().IsEmpty())
 	{	
@@ -1137,7 +1052,7 @@ void CTicketEntry::UpdateLink()
 		CQData QData;
 		CString Ticket;
 
-		m_Asset.GetWindowText(Asset);
+		Asset = m_Asset.GetData();
 		Ticket = m_UnWindTicket.GetData();
 		OraLoader = GetData().GetOraLoader();
 
@@ -1154,10 +1069,10 @@ void CTicketEntry::UpdateRatio()
 	COraLoader OraLoader;
 	CQData QData;
 
-	m_Ratio.SetWindowText(":");
-	m_TransType->GetSelString(TransType);
 	OraLoader = GetData().GetOraLoader();
-	m_Asset.GetWindowText(Asset);
+	m_Ratio.SetData(":");
+	TransType = m_TransType.GetData();
+	Asset = m_Asset.GetData();
 	Ticket = m_UnWindTicket.GetData();
 	if(Ticket.IsEmpty())
 	{
@@ -1186,11 +1101,11 @@ void CTicketEntry::UpdateTradeDates(BOOL bEuroBond)
 {
 	CString Date, TransType;
 
-	m_TransType->GetSelString(TransType);
+	TransType = m_TransType.GetData();
 
 	m_TradeDate.SetData(GetData().GetOraLoader().Today(Date));
 
-	m_ValueDate.SetData(GetData().GetOraLoader().GetValueDate(Date, TransType, m_Listed->GetCheck(), m_Future == "F" ? TRUE : FALSE));
+	m_ValueDate.SetData(GetData().GetOraLoader().GetValueDate(Date, TransType, m_Listed.GetCheck(), m_Future == "F" ? TRUE : FALSE));
 	
 	if(bEuroBond)
 		m_ValueDate.SetData(GetData().GetPlus2Date());
@@ -1200,12 +1115,12 @@ int CTicketEntry::VerifyRisk(CString &Text)
 {
 	CString Method, Asset, TransType, Dir, Currency, ValueDate, Nominal, Price, Fxrate;
 
-	m_AAMethod.GetSelString(Method);
+	Method = m_AAMethod.GetData();
 
-	if(Method != "BNAMTR"||m_Trs->GetCheck())
+	if(Method != "BNAMTR"||m_Trs.GetCheck())
 		return 0;
 
-	m_Asset.GetWindowTextA(Asset);
+	Asset = m_Asset.GetData();
 	if(Asset != m_Risk.GetAsset())
 	{
 		if(m_Ticket.GetData().IsEmpty())
@@ -1214,13 +1129,13 @@ int CTicketEntry::VerifyRisk(CString &Text)
 			m_Risk.LoadRisk(Asset, m_Ticket.GetData());
 	}
 
-	m_TransType->GetSelString(TransType);
-	m_Dir.GetSelString(Dir);
-	m_Currency->GetSelString(Currency);
+	TransType = m_TransType.GetData();
+	Dir = m_Dir.GetData();
+	Currency = m_Currency.GetData();
 	ValueDate = m_ValueDate.GetData();
-	m_Amount.GetWindowText(Nominal);
-	m_Price.GetWindowText(Price);
-	m_FxRate.GetWindowText(Fxrate);
+	Nominal = m_Amount.GetData();
+	Price = m_Price.GetData();
+	Fxrate = m_FxRate.GetData();
 		
 	if(Dir == S)
 		Nominal = "-" + Nominal;
@@ -1274,13 +1189,14 @@ void CTicketEntry::OnSelchangeTranstypeCombo()
 {
 	OnSelchangeTransdirCombo();
 	OnListedCheck();
-	m_DownPymnt.SetWindowText("100");
+	m_DownPymnt.SetData("100");
 	
 	CString TransType;
-	m_TransType->GetSelString(TransType);
+	
+	TransType = m_TransType.GetData();
 
 	if(TransType != CALL && TransType != PUT)
-		m_OptTicker.SetWindowText(EMPTYSTRING);
+		m_OptTicker.SetData(EMPTYSTRING);
 
 	UpdateTradeDates();
 
@@ -1291,23 +1207,23 @@ void CTicketEntry::OnSelchangeTransdirCombo()
 {
 	CString TransType, Dir;
 	
-	m_TransType->GetSelString(TransType);
-	m_Dir.GetSelString(Dir);
+	TransType = m_TransType.GetData();
+	Dir = m_Dir.GetData();
 	GetData().DefineTransType(TransType, Dir);
 	if(TransType.IsEmpty())
 		return;
 
 	if(TransType == REPO || TransType == LEVERAGE || TransType == BORROW || TransType == LEND)
 	{
-		if(m_RateBasis->GetCurSel() < 0)		
-			m_RateBasis->SelectString(-1, "A/360");
+		if(m_RateBasis.GetCurSel() < 0)		
+			m_RateBasis.SelectString(-1, "A/360");
 	}
 
 	if(Dir == P)
-		m_ShortSale->SetWindowText("CShort");
+		m_ShortSale.SetWindowText("CShort");
 	else
 		if(Dir == S)
-			m_ShortSale->SetWindowText("SShort");
+			m_ShortSale.SetWindowText("SShort");
 
 	EnableCtrls();
 	
@@ -1318,21 +1234,21 @@ void CTicketEntry::OnSelchangeCurrencyCombo()
 {	
 	CString Text;
 	
-	m_Currency->GetSelString(Text);
+	Text = m_Currency.GetData();
 	if(Text.IsEmpty())
 		return;
 	
 	if(Text == "USD")
 	{
-		m_FxRate.SetWindowText("1");
+		m_FxRate.SetData("1");
 		return;
 	}
 	
 	CString Fxrate;
 
-	m_FxRate.GetWindowText(Fxrate);
+	Fxrate = m_FxRate.GetData();
 	if(Fxrate == "1")
-		m_FxRate.SetWindowText(EMPTYSTRING);
+		m_FxRate.SetData(EMPTYSTRING);
 
 	ProcessVerifyRisk();
 }
@@ -1344,14 +1260,14 @@ void CTicketEntry::OnEntryFindAsset()
 	BOOL bChange = FALSE, bValueDateChangable = TRUE;
 	CQData QData;
 
-	TransType = m_TransType->GetSelString(TransType);
+	TransType = m_TransType.GetData();
 	
 	m_Try = 1;
 
 	Dlg.m_pData = &GetData();
-	m_Asset.GetWindowText(Dlg.m_FindData.GetRec().GetAsset());
-	m_AssetDesc.GetWindowText(Dlg.m_FindData.GetRec().GetDesc());
-	m_OptTicker.GetWindowText(Dlg.m_FindData.GetRec().GetOptTicker());
+	Dlg.m_FindData.GetRec().GetAsset() = m_Asset.GetData();
+	Dlg.m_FindData.GetRec().GetDesc() = m_AssetDesc.GetData();
+	Dlg.m_FindData.GetRec().GetOptTicker() =  m_OptTicker.GetData();
 	Dlg.m_bTicket = TRUE;
 
 	if(Dlg.DoModal() == IDOK)
@@ -1360,45 +1276,44 @@ void CTicketEntry::OnEntryFindAsset()
 
 		pTicket = &m_Data.GetRawTicket();
 		pTicket->FromAssetRec(Dlg.m_FindData.GetRec());
-		m_Asset.SetWindowText(pTicket->GetAsset());
-		m_AssetDesc.SetWindowText(pTicket->GetAssetDesc());
-		m_AssetCurrency.SetWindowText(pTicket->GetAssetCurr());
-		m_Trader.SelectString(0, Dlg.m_FindData.GetTrader());
+		m_Asset.SetData(pTicket->GetAsset());
+		m_AssetDesc.SetData(pTicket->GetAssetDesc());
+		m_AssetCurrency.SetData(pTicket->GetAssetCurr());
+		m_Trader.SetData(Dlg.m_FindData.GetTrader());
 		m_Data.GetCustodian() = Dlg.m_FindData.GetCustodian();
+		if(!Dlg.m_FindData.GetTransType().IsEmpty())
+			TransType = Dlg.m_FindData.GetTransType();
 
 		m_Future = Dlg.m_Future;
 		CString Currency, Fxrate;
 
-		m_Currency->GetSelString(Currency);
+		Currency = m_Currency.GetData();
 
 		if(Currency.IsEmpty() || 
 			(Currency != pTicket->GetAssetCurr() &&
 			MessageBox("Note: Trading Currency is Different from Asset Currency! Do you want to synchonize them ?", 
 						"Warning", MB_YESNO) == IDYES))
 		{
-			m_Currency->SelectString(-1, pTicket->GetAssetCurr());
+			m_Currency.SetData(pTicket->GetAssetCurr());
 		}
 
-		m_Currency->GetSelString(Currency);
+		Currency = m_Currency.GetData();
 		if(m_FxRate.GetWindowTextLength() == 0)
-			m_FxRate.SetWindowText(Currency == USD ? "1" : EMPTYSTRING);
+			m_FxRate.SetData(Currency == USD ? "1" : EMPTYSTRING);
 		
-		m_MarginCurrency->SelectString(-1, Currency);
-		m_FxRate.GetWindowText(Fxrate);
+		m_MarginCurrency.SetData(Currency);
+		Fxrate = m_FxRate.GetData();
 		if(Currency != USD && Fxrate == "1")
-			m_FxRate.SetWindowText(EMPTYSTRING);
+			m_FxRate.SetData(EMPTYSTRING);
 
 		if(TransType == CALL || TransType == PUT)
 		{
-			if(pTicket->GetAssetClass().Find("CURRENCY", 0) >= 0)
-				m_EuroOpt->SetCheck(1);
-			else
-				m_EuroOpt->SetCheck(0);
+			m_EuroOpt.SetCheck(pTicket->GetAssetClass().Find("CURRENCY", 0) >= 0 ? 1 : 0);
 		}
 		
 		if(Dlg.m_nActionID == FINDACTION_UNWIND || Dlg.m_nActionID == FINDACTION_OPTEX)
 		{
-			m_Amount.GetWindowText(Text);
+			Text = m_Amount.GetData();
 			if(Dlg.m_FindData.GetNominal() != Text && m_Amount.GetWindowTextLength() > 0)
 			{
 				if(MessageBox("Do you want to change current nom_amount (Y/N)?", "Ticket Entry", MB_YESNO) == IDYES)
@@ -1409,10 +1324,7 @@ void CTicketEntry::OnEntryFindAsset()
 		m_dParValue = atoi(QData.RemoveComma(Dlg.m_FindData.GetRec().GetPar()));
 
 		if(!Dlg.m_FindData.GetTransType().IsEmpty())
-		{
-			TransType = Dlg.m_FindData.GetTransType();
-			m_TransType->SelectString(0, TransType);
-		}
+			m_TransType.SetData(Dlg.m_FindData.GetTransType());
 
 		Dir = Dlg.m_FindData.GetDir();
 		if(TransType == SECURITIES && Dlg.m_FindData.GetRec().GetClass() == "CURRENCY FWDS")
@@ -1424,18 +1336,18 @@ void CTicketEntry::OnEntryFindAsset()
 				if(TransType == CDS || TransType == SECURITIES || TransType == CALL || TransType == PUT)
 				{
 					m_Dir.SelectString(0, Dir);
-					m_TransType->SelectString(0, TransType);
-					m_AssignCP->SelectString(0, Dlg.m_FindData.GetAssignCP());
+					m_TransType.SetData(TransType);
+					m_AssignCP.SetData(Dlg.m_FindData.GetAssignCP());
 					
 					if(TransType == CALL ||	TransType == PUT)
 					{
-						m_Strike.SetWindowText(Dlg.m_FindData.GetStrike());
+						m_Strike.SetData(Dlg.m_FindData.GetStrike());
 						m_OptExp.SetData(Dlg.m_FindData.GetRec().GetMaturity());
-						m_OptTicker.SetWindowText(Dlg.m_FindData.GetOptTick());
-						m_OptID.SetWindowText(Dlg.m_FindData.GetOptID());
-						m_OptSet.SelectString(0, Dlg.m_FindData.GetOptSetCode());
-						m_DeliveryDate.SetWindowText(Dlg.m_FindData.GetDeliveryDate());
-						m_Listed->SetCheck(Dlg.m_OptListed);
+						m_OptTicker.SetData(Dlg.m_FindData.GetOptTick());
+						m_OptID.SetData(Dlg.m_FindData.GetOptID());
+						m_OptSet.SetData(Dlg.m_FindData.GetOptSetCode());
+						m_DeliveryDate.SetData(Dlg.m_FindData.GetDeliveryDate());
+						m_Listed.SetCheck(Dlg.m_OptListed);
 					}
 				}
 
@@ -1445,20 +1357,20 @@ void CTicketEntry::OnEntryFindAsset()
 				{
 					m_Dir.SelectString(0, Dir == P ? S : P);
 					if(bChange)
-						m_Amount.SetWindowText(Dlg.m_FindData.GetNominal());
-					m_TransType->SelectString(0, TransType);
-					m_AssignCP->SelectString(0, Dlg.m_FindData.GetAssignCP());
+						m_Amount.SetData(Dlg.m_FindData.GetNominal());
+					m_TransType.SetData(TransType);
+					m_AssignCP.SetData(Dlg.m_FindData.GetAssignCP());
 				
 					if(TransType == CALL || TransType == PUT)
 					{
-						m_Strike.SetWindowText(Dlg.m_FindData.GetStrike());
-						m_OptExp.SetWindowText(Dlg.m_FindData.GetRec().GetMaturity());
-						m_OptTicker.SetWindowText(Dlg.m_FindData.GetOptTick());
-						m_OptID.SetWindowTextA(Dlg.m_FindData.GetOptID());
-						m_DeliveryDate.SetWindowText(Dlg.m_FindData.GetDeliveryDate());
-						m_OptSet.SelectString(0, Dlg.m_FindData.GetOptSetCode());
+						m_Strike.SetData(Dlg.m_FindData.GetStrike());
+						m_OptExp.SetData(Dlg.m_FindData.GetRec().GetMaturity());
+						m_OptTicker.SetData(Dlg.m_FindData.GetOptTick());
+						m_OptID.SetData(Dlg.m_FindData.GetOptID());
+						m_DeliveryDate.SetData(Dlg.m_FindData.GetDeliveryDate());
+						m_OptSet.SetData(Dlg.m_FindData.GetOptSetCode());
 						m_UnWindTicket.SetData(Dlg.m_FindData.GetTicket());
-						m_Listed->SetCheck(Dlg.m_OptListed);
+						m_Listed.SetCheck(Dlg.m_OptListed);
 					}
 				}
 				break;
@@ -1468,26 +1380,26 @@ void CTicketEntry::OnEntryFindAsset()
 					if(Dir == P) // We bought options
 					{
 						if(TransType == CALL)
-							m_Dir.SelectString(0, P);
+							m_Dir.SetData(P);
 						else
 							if(TransType == PUT)
-								m_Dir.SelectString(0, S);
+								m_Dir.SetData(S);
 					}
 					else
 					{
 						if(TransType == CALL)
-							m_Dir.SelectString(0, S);
+							m_Dir.SetData(S);
 						else
 							if(TransType == PUT)
-								m_Dir.SelectString(0, P);
+								m_Dir.SetData(P);
 					}
 					
 					if(bChange)
-						m_Amount.SetWindowText(Dlg.m_FindData.GetNominal());
-					m_TransType->SelectString(0, SECURITIES);
-					m_Price.SetWindowText(Dlg.m_FindData.GetStrike());
+						m_Amount.SetData(Dlg.m_FindData.GetNominal());
+					m_TransType.SetData(SECURITIES);
+					m_Price.SetData(Dlg.m_FindData.GetStrike());
 					m_UnWindTicket.SetData(Dlg.m_FindData.GetTicket());
-					m_AssignCP->SelectString(0, Dlg.m_FindData.GetAssignCP());
+					m_AssignCP.SetData(Dlg.m_FindData.GetAssignCP());
 				}
 				break;
 			default:
@@ -1500,13 +1412,13 @@ void CTicketEntry::OnEntryFindAsset()
 	else
 		m_ValueDate.SetData(Dlg.m_FindData.GetRec().GetMaturity());
 
-	m_Asset.GetWindowText(Text);
+	Text = m_Asset.GetData();
 
 	if(TransType == FOREX && Text == "NEW ASSET")
 	{
-		m_Asset.SetWindowText("");
-		m_AssetDesc.SetWindowText("");
-		m_AssetCurrency.SetWindowText(NULL);
+		m_Asset.SetData("");
+		m_AssetDesc.SetData("");
+		m_AssetCurrency.SetData(NULL);
 	}
 
 	EnableCtrls();
@@ -1592,9 +1504,9 @@ void CTicketEntry::OnEntryRefresh()
 	m_Data.Refresh();
 	m_TradeDate.SetData(GetData().GetDate());
 	m_ValueDate.SetData(GetData().GetPlus3Date());
-	m_TransType->SelectString(-1, SECURITIES);
-	m_FxRate.SetWindowText("1");
-	m_Currency->SetCurSel(m_Currency->FindString(-1, USD));
+	m_TransType.SetData(SECURITIES);
+	m_FxRate.SetData("1");
+	m_Currency.SetCurSel(m_Currency.FindString(-1, USD));
 
 	m_SS.SheetAutoFit();
 
@@ -1622,7 +1534,7 @@ void CTicketEntry::OnUpdateEntryFindAsset(CCmdUI* pCmdUI)
 {
 	CString TransType;
 
-	m_TransType->GetSelString(TransType);
+	TransType = m_TransType.GetData();
 	pCmdUI->Enable(m_Data.GetBlotter() || TransType == CASH || TransType == INTSWAP ? FALSE : TRUE);
 }
 
@@ -1644,26 +1556,26 @@ void CTicketEntry::OnListedCheck()
 	if(Date != GetData().GetDate()) // Automatic change dates only when entry date is today
 		return;
 
-	m_TransType->GetSelString(TransType);
+	TransType = m_TransType.GetData();
 
-	m_ValueDate.SetData(GetData().GetOraLoader().GetValueDate(Date, TransType, m_Listed->GetCheck(), m_Future == "F" ? TRUE : FALSE));
+	m_ValueDate.SetData(GetData().GetOraLoader().GetValueDate(Date, TransType, m_Listed.GetCheck(), m_Future == "F" ? TRUE : FALSE));
 }
 
 void CTicketEntry::OnSetfocusAssetEdit() 
 {
 	CString TransType;
 
-	m_TransType->GetSelString(TransType);
+	TransType = m_TransType.GetData();
 	if((TransType == FOREX && m_Try) || m_Asset.GetWindowTextLength() > 0)
 		return;
 
-	m_Asset.SetWindowText(NEWASSET);	
+	m_Asset.SetData(NEWASSET);	
 	OnEntryFindAsset();	
 }
 
 void CTicketEntry::OnSelchangeLevsourceCombo() 
 {
-	EnableRepoCtrls(m_RepoCP->GetCurSel() >= 0 ? TRUE : FALSE);
+	EnableRepoCtrls(m_RepoCP.GetCurSel() >= 0 ? TRUE : FALSE);
 }
 
 void CTicketEntry::OnEntryCopyTicket() 
@@ -1676,11 +1588,11 @@ void CTicketEntry::OnEntryCopyTicket()
 	m_SS.SetFocus();
 	GetData().GetOraLoader().GenerateUniqueID(TICKETNUM, Ticket);
 	m_Ticket.SetData(Ticket);
-	m_ExecTime.SetWindowText(EMPTYSTRING);
-	m_Price.SetWindowTextA(EMPTYSTRING);
-	m_Amount.SetWindowTextA("0");
-	m_BestExecution->SetCurSel(-1);
-	m_UnWindTicket.SetWindowText(EMPTYSTRING);
+	m_ExecTime.SetData(EMPTYSTRING);
+	m_Price.SetData(EMPTYSTRING);
+	m_Amount.SetData("0");
+	m_BestExecution.SetCurSel(-1);
+	m_UnWindTicket.SetData(EMPTYSTRING);
 	m_Data.SetKey(EMPTYSTRING);
 
 	UpdateData(TRUE);
@@ -1709,9 +1621,9 @@ void CTicketEntry::OnEntryBrokerfee()
 {
 	CBrokerFee BrFee;
 
-	m_Amount.GetWindowText(BrFee.m_sAmount);
+	BrFee.m_sAmount = m_Amount.GetData();
 	if(BrFee.DoModal() == IDOK)
-		m_BrokerFee.SetWindowText(BrFee.m_Total);
+		m_BrokerFee.SetData(BrFee.m_Total);
 }
 
 void CTicketEntry::OnEntryUpdateAllocation() 
@@ -1754,23 +1666,23 @@ void CTicketEntry::OnDblClickEntryAllocationList(long Col, long Row)
 		double VAR;
 		CQData QData;
 
-		m_Portfolio->GetSelString(Portfolio);
-		m_VAR.GetWindowText(Text);
-		m_AllocAmount.GetWindowText(AllocNom);
+		Portfolio = m_Portfolio.GetData();
+		Text = m_VAR.GetData();
+		AllocNom = m_AllocAmount.GetData();
 		VAR = atof(QData.RemoveComma(m_Data.GetRawTicket().Alloc(Text, Text, AllocNom)));
 		if(m_Data.LoadVARs(Rec, Portfolio, m_Data.GetRawTicket().GetAssetCategory(), VAR) > 0)
 		{
-			m_PrevVAR.SetWindowText(Rec.GetAt(0));
-			m_CurrVAR.SetWindowText(Rec.GetAt(1));
-			m_VARLimit.SetWindowText(Rec.GetAt(2));
-			m_VARStatus.SetWindowText(Rec.GetAt(3));
+			m_PrevVAR.SetData(Rec.GetAt(0));
+			m_CurrVAR.SetData(Rec.GetAt(1));
+			m_VARLimit.SetData(Rec.GetAt(2));
+			m_VARStatus.SetData(Rec.GetAt(3));
 		}
 		else
 		{
-			m_PrevVAR.SetWindowText(EMPTYSTRING);
-			m_CurrVAR.SetWindowText(EMPTYSTRING);
-			m_VARLimit.SetWindowText(EMPTYSTRING);
-			m_VARStatus.SetWindowText(EMPTYSTRING);
+			m_PrevVAR.SetData(EMPTYSTRING);
+			m_CurrVAR.SetData(EMPTYSTRING);
+			m_VARLimit.SetData(EMPTYSTRING);
+			m_VARStatus.SetData(EMPTYSTRING);
 		}
 	}
 	EnableAllocCtrls();
@@ -1786,8 +1698,8 @@ void CTicketEntry::OnKillfocusAllocNomamountEdit()
 	CString Port, Text;
 	CQData QData;
 
-	m_Portfolio->GetSelString(Port);
-	m_AllocAmount.GetWindowText(Text);
+	Port = m_Portfolio.GetData();
+	Text = m_AllocAmount.GetData();
 	if(Port.IsEmpty() || Text.IsEmpty())
 		return;
 
@@ -1803,7 +1715,7 @@ void CTicketEntry::OnKillfocusDownpymntEdit()
 	CString Text;
 	CQData QData;
 
-	m_DownPymnt.GetWindowText(Text);
+	Text = m_DownPymnt.GetData();
 	if(Text.IsEmpty())
 		return;
 
@@ -1821,14 +1733,14 @@ void CTicketEntry::OnSelchangeEntryPortfolioCombo()
 {
 	CString Port;
 	
-	m_Portfolio->GetSelString(Port);
+	Port = m_Portfolio.GetData();
 	if(Port.IsEmpty())
 		return;
 
 	if(m_Data.FindPortfolio(Port))
 	{
 		MessageBox("Duplicated portfolio selection");
-		m_Portfolio->SetCurSel(-1);
+		m_Portfolio.SetCurSel(-1);
 	}
 
 	EnableAllocCtrls();
@@ -1859,7 +1771,7 @@ void CTicketEntry::OnUpdateEntryOptionExp(CCmdUI* pCmdUI)
 {
 	CString TransType;
 
-	m_TransType->GetSelString(TransType);
+	TransType = m_TransType.GetData();
 	pCmdUI->Enable(TransType == PUT || TransType == CALL ? TRUE : FALSE);
 }
 
@@ -1867,7 +1779,7 @@ void CTicketEntry::OnUpdateEntryContractConvertor(CCmdUI* pCmdUI)
 {
 	CString TransType;
 
-	m_TransType->GetSelString(TransType);
+	TransType = m_TransType.GetData();
 	pCmdUI->Enable(TransType == CALL || TransType == PUT || (TransType == SECURITIES && m_Future == "F") ? TRUE : FALSE);
 }
 
@@ -1877,7 +1789,7 @@ void CTicketEntry::OnEntryContractConvertor()
 	int Status;
 
 	m_Asset.SetFocus();
-	m_Asset.GetWindowText(Dlg.m_AssetStr);
+	Dlg.m_AssetStr = m_Asset.GetData();
 	Dlg.m_OraLoader.SetDB(GetData().GetOraLoader().GetDB());
 	Status = Dlg.DoModal();
 	
@@ -1887,10 +1799,10 @@ void CTicketEntry::OnEntryContractConvertor()
 	switch(m_nNomID)
 	{
 		case IDC_ENTRY_AMOUNT_EDIT:
-			m_Amount.SetWindowText(Dlg.m_NominalStr);
+			m_Amount.SetData(Dlg.m_NominalStr);
 			break;
 		case IDC_ENTRY_ALLOC_NOMAMOUNT_EDIT:
-			m_AllocAmount.SetWindowText(Dlg.m_NominalStr);
+			m_AllocAmount.SetData(Dlg.m_NominalStr);
 			break;
 		default:
 			break;
@@ -1901,7 +1813,7 @@ void CTicketEntry::OnSetfocusAmountEdit()
 {
 	CString TransType;
 
-	m_TransType->GetSelString(TransType);
+	TransType = m_TransType.GetData();
 
 	m_nNomID = IDC_ENTRY_AMOUNT_EDIT;
 
@@ -1918,7 +1830,7 @@ void CTicketEntry::OnSetfocusAllocNomamountEdit()
 {
 	CString TransType;
 
-	m_TransType->GetSelString(TransType);
+	TransType = m_TransType.GetData();
 
 	m_nNomID = IDC_ENTRY_ALLOC_NOMAMOUNT_EDIT;
 
@@ -1936,18 +1848,18 @@ void CTicketEntry::OnEntryDealCheck()
 	BOOL bChecked;
 	CString Text;
 
-	bChecked = m_Trs->GetCheck();
+	bChecked = m_Trs.GetCheck();
 	m_DownPymnt.EnableWindow(bChecked);
 	
-	m_DownPymnt.GetWindowText(Text);
+	Text = m_DownPymnt.GetData();
 	if(bChecked)
 	{
 		if(Text == "100")
-			m_DownPymnt.SetWindowText("0");
+			m_DownPymnt.SetData("0");
 	}
 	else
 		if(Text == "0")
-			m_DownPymnt.SetWindowText("100");
+			m_DownPymnt.SetData("100");
 }
 
 void CTicketEntry::OnKillfocusAmountEdit() 
@@ -1955,8 +1867,8 @@ void CTicketEntry::OnKillfocusAmountEdit()
 	if(m_Amount.GetWindowTextLength() > 0 && 
 		m_Data.GetRawTicket().GetAssetCategory() == "G20 FX ALPHA")
 	{
-		m_AAMethod.SelectString(0, "EMCF_B");
-		m_Trader.SelectString(0, "IM");
+		m_AAMethod.SetData("EMCF_B");
+		m_Trader.SetData("IM");
 		OnCbnSelchangeEntryAaCombo();
 	}
 
@@ -1971,16 +1883,16 @@ void CTicketEntry::OnEnChangeEntryAmountEdit()
 	CString AAMethod, Nom;
 	CQData QData;
 
-	if(m_AAFReason->GetCurSel() >= 0 && MessageBox("Do you want to change current manual allocation ?", "Ticket Entry", MB_YESNO) == IDNO)
+	if(m_AAFReason.GetCurSel() >= 0 && MessageBox("Do you want to change current manual allocation ?", "Ticket Entry", MB_YESNO) == IDNO)
 		return;
 
-	m_Amount.GetWindowText(Nom);
+	Nom = m_Amount.GetData();
 	QData.RemoveComma(Nom);
 	m_AAMethod.GetSelString(AAMethod);
 	if(m_sAAMethod == AAMethod && atof(Nom) == m_dNomAmount)
 		return;
 	
-	m_AAFReason->SetCurSel(-1);
+	m_AAFReason.SetCurSel(-1);
 	m_AllocSS.ClearSheet();
 
 	if(m_Amount.GetModify())
@@ -2001,40 +1913,38 @@ void CTicketEntry::OnEntryRepoprice()
 	CRepoPrice Dlg;
 	CString	ValueDate, RateBasis, Formula;
 	
-	m_Asset.GetWindowText(Dlg.m_Asset);
+	Dlg.m_Asset = m_Asset.GetData();
 	if(Dlg.m_Asset.IsEmpty() || Dlg.m_Asset == "NEW ASSET")
 		return;
 
-	m_Margin.GetWindowText(Dlg.m_HairCut);
+	Dlg.m_HairCut = m_Margin.GetData();
 	if(Dlg.m_HairCut.IsEmpty())
 	{
-		if(m_Trs->GetCheck())
+		if(m_Trs.GetCheck())
 			Dlg.m_HairCut = "0";
 		else
 			Dlg.m_HairCut = "10";
 	}
 	
-	m_Price.GetWindowText(Dlg.m_NWINetPrice);
+	Dlg.m_NWINetPrice = m_Price.GetData();
 	ValueDate = m_ValueDate.GetData();
-	m_RateBasis->GetSelString(RateBasis); // Lev Rate Basis
-	Dlg.m_Val.Setup(GetData().GetOraLoader(), REPO, P, Dlg.m_Asset, ValueDate, ValueDate, 
-					"0", "0", "1", RateBasis, "1", Formula);
+	RateBasis = m_RateBasis.GetData(); // Lev Rate Basis
+	Dlg.m_Val.Setup(GetData().GetOraLoader(), REPO, P, Dlg.m_Asset, ValueDate, ValueDate, "0", "0", "1", RateBasis, "1", Formula);
 					
 	if(Dlg.DoModal() == IDOK)
 	{
-		m_Price.SetWindowText(Dlg.m_NWINetPrice);
-		m_Margin.SetWindowText(Dlg.m_HairCut);
+		m_Price.SetData(Dlg.m_NWINetPrice);
+		m_Margin.SetData(Dlg.m_HairCut);
 	}
 }
 
 void CTicketEntry::OnUpdateEntryRepoprice(CCmdUI* pCmdUI)
 {
-	CString TransType, Asset;
+	CString Asset;
 
-	m_Asset.GetWindowText(Asset);
-	m_TransType->GetSelString(TransType);
+	Asset = m_Asset.GetData();
 
-	pCmdUI->Enable(TransType == REPO && (!Asset.IsEmpty() && Asset != "NEW ASSET"));
+	pCmdUI->Enable(m_TransType.GetData() == REPO && (!Asset.IsEmpty() && Asset != "NEW ASSET"));
 }
 
 void CTicketEntry::OnChangeAssetEdit()
@@ -2042,8 +1952,8 @@ void CTicketEntry::OnChangeAssetEdit()
 	CString Asset, TransType;
 	CRawTicketRec *pTicket;
 
-	m_Asset.GetWindowText(Asset);
-	m_TransType->GetSelString(TransType);
+	Asset = m_Asset.GetData();
+	TransType = m_TransType.GetData();
 
 	pTicket = &m_Data.GetRawTicket();
 
@@ -2052,11 +1962,11 @@ void CTicketEntry::OnChangeAssetEdit()
 		if(m_Data.GetMargin(Asset))
 		{
 			if(strlen(pTicket->GetMarginCurrency()) > 0)
-				m_MarginCurrency->SelectString(-1, pTicket->GetMarginCurrency());
+				m_MarginCurrency.SetData(pTicket->GetMarginCurrency());
 			if(strlen(pTicket->GetMarginAmount()) > 0)
-				m_MarginAmount.SetWindowText(pTicket->GetMarginAmount());
+				m_MarginAmount.SetData(pTicket->GetMarginAmount());
 			if(strlen(pTicket->GetMargin()) > 0)
-				m_Margin.SetWindowText(pTicket->GetMargin());
+				m_Margin.SetData(pTicket->GetMargin());
 		}
 	}
 
@@ -2070,16 +1980,16 @@ void CTicketEntry::OnCbnSelchangeEntryAaCombo()
 	COraLoader OraLoader;
 	CString sMethod, sAmount, Ticket;
 
-	m_Amount.GetWindowText(sAmount);
-	m_AAMethod.GetSelString(sMethod);
+	sAmount = m_Amount.GetData();
+	sMethod = m_AAMethod.GetData();
 
 	if(m_AAMethod.GetCurSel() >= 0)
 	{
-		m_AAFReason->SetCurSel(-1);
-		m_AAFReason->EnableWindow(FALSE);
+		m_AAFReason.SetCurSel(-1);
+		m_AAFReason.EnableWindow(FALSE);
 	}
 	else
-		m_AAFReason->EnableWindow(TRUE);
+		m_AAFReason.EnableWindow(TRUE);
 
 	if(sAmount.IsEmpty() || sMethod.IsEmpty())
 		return;
@@ -2099,9 +2009,9 @@ void CTicketEntry::OnCbnSelchangeEntryAaCombo()
 		while(!OraLoader.IsEOF())
 		{
 			DBRec.RemoveAll();
-			m_Portfolio->SelectString(0, OraLoader.GetDBString(0));
+			m_Portfolio.SetData(OraLoader.GetDBString(0));
 			DBRec.Add(OraLoader.GetDBString(0));
-			m_AllocAmount.SetWindowText(OraLoader.GetDBString(1));
+			m_AllocAmount.SetData(OraLoader.GetDBString(1));
 			DBRec.Add(OraLoader.GetDBString(1));
 //			m_Link.SetData(OraLoader.GetDBString(2));
 			m_bAllocValid = FALSE;
@@ -2124,7 +2034,7 @@ void CTicketEntry::OnEnSetfocusEntryBinaryEdit()
 {
 	CString TransType;
 	
-	m_TransType->GetSelString(TransType);
+	TransType = m_TransType.GetData();
 	if((TransType == CALL || TransType == PUT))
 		m_nCurrID = IDC_ENTRY_BINARY_EDIT;
 }
@@ -2148,11 +2058,11 @@ void CTicketEntry::OnEntryFinditem()
 			{
 				CString Text;
 
-				m_Binary.GetWindowText(Text);
+				Text = m_Binary.GetData();
 				Text.MakeUpper();
 				Text = Text.SpanExcluding("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
 				Text = FindDlg.m_Key + Text;
-				m_Binary.SetWindowText(Text);
+				m_Binary.SetData(Text);
 			}
 		default:
 			return;

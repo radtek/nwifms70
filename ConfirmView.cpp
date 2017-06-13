@@ -31,111 +31,9 @@ CConfirmView::CConfirmView()
 	: CFormView(CConfirmView::IDD)
 {
 	//{{AFX_DATA_INIT(CConfirmView)
-	m_TRS = NULL;
-	m_IPO = NULL;
-	m_EuroOpt = NULL;
-	m_Listed = NULL;
-	m_DocRq = NULL;
-	m_DocRecvd = NULL;
-	m_WI = NULL;
-	m_Confirm = NULL;
-	m_OptAuto = NULL;
-	m_Funded = NULL;
-	m_ShortSale = NULL;
-	m_CSPBShort = NULL;
-	m_SecFee = NULL;
-	m_OrFee = NULL;
-	m_ETrade = NULL;
-
-	m_Portfolio = NULL;
-    m_TransType = NULL;
-    m_PFU = NULL;
-    m_Currency = NULL;
-    m_CP = NULL;
-    m_RateBasis = NULL;
-	m_Formula = NULL;
-	m_Custodian = NULL;
-    m_USDAcct = NULL;
-    m_FxAcct = NULL;
-	m_MarginCurrency = NULL;
-	m_BestExecution = NULL;
-
-	m_InvTrDesc = NULL;
-	m_InvAccount = NULL;
-	m_InvCurrency = NULL;
-	m_InvAssignCP = NULL;
-	
 	m_bInCurrMonth = FALSE;
 	m_bSameDate = FALSE;
 	//}}AFX_DATA_INIT
-}
-
-CConfirmView::~CConfirmView()
-{
-	if(m_TRS)
-		delete m_TRS;
-	if(m_IPO)
-		delete m_IPO;
-	if(m_EuroOpt)
-		delete m_EuroOpt;
-	if(m_Listed)
-		delete m_Listed;
-	if(m_DocRq)
-		delete m_DocRq;
-	if(m_DocRecvd)
-		delete m_DocRecvd;
-	if(m_WI)
-		delete m_WI;
-	if(m_Confirm)
-		delete m_Confirm;
-	if(m_OptAuto)
-		delete m_OptAuto;
-	if(m_Funded)
-		delete m_Funded;
-	if(m_ShortSale)
-		delete m_ShortSale;
-	if(m_CSPBShort)
-		delete m_CSPBShort;
-	if(m_SecFee)
-		delete m_SecFee;
-	if(m_OrFee)
-		delete m_OrFee;
-	if(m_ETrade)
-		delete m_ETrade;
-
-    if(m_Portfolio)
-		delete m_Portfolio;
-    if(m_TransType)
-		delete m_TransType;
-	if(m_PFU)
-		delete m_PFU;
-    if(m_Currency)
-		delete m_Currency;
-	if(m_CP)
-		delete m_CP;
-    if(m_RateBasis)
-		delete m_RateBasis;
-	if(m_Formula)
-		delete m_Formula;
-	if(m_Custodian)
-		delete m_Custodian;
-    if(m_USDAcct)
-		delete m_USDAcct;
-    if(m_FxAcct)
-		delete m_FxAcct;
-	if(m_MarginCurrency)
-		delete m_MarginCurrency;
-	if(m_BestExecution)
-		delete m_BestExecution;
-
-	if(m_InvTrDesc)
-		delete m_InvTrDesc;
-	if(m_InvAccount)
-		delete m_InvAccount;
-	if(m_InvCurrency)
-		delete m_InvCurrency;
-	if(m_InvAssignCP)
-		delete m_InvAssignCP;
 }
 
 void CConfirmView::DoDataExchange(CDataExchange* pDX)
@@ -218,13 +116,13 @@ void CConfirmView::ChangeShortLabel()
 {
 	CString Dir;
 
-	m_Dir.GetSelString(Dir);
+	Dir = m_Dir.GetData();
 
 	if(Dir == P)
-		m_ShortSale->SetWindowText("CShort");
+		m_ShortSale.SetWindowText("CShort");
 	else
 		if(Dir == S)
-			m_ShortSale->SetWindowText("SShort");
+			m_ShortSale.SetWindowText("SShort");
 }
 
 void CConfirmView::EnableCtrls()
@@ -236,7 +134,7 @@ void CConfirmView::EnableCtrls()
 	if(GetData().IsPowerUser() || m_Mode == FMS_SEARCH)
 		bReadOnly = FALSE;
 	else
-		if(m_CP->GetCurSel() >= 0)
+		if(m_CP.GetCurSel() >= 0)
 		{
 			if(m_bInCurrMonth && GetData().IsOperation() || GetData().IsGuest())
 				bReadOnly = FALSE;
@@ -249,17 +147,13 @@ void CConfirmView::EnableCtrls()
 	m_TradeDate.SetReadOnly(bReadOnly);
 	m_ValueDate.SetReadOnly(bReadOnly);
 	m_Trader.EnableWindow(!bReadOnly);
-	if(m_TransType)
-		m_TransType->SetReadOnly(bReadOnly);
+	m_TransType.SetReadOnly(bReadOnly);
 	m_Dir.EnableWindow(!bReadOnly);
 	m_Amount.SetReadOnly(bReadOnly);
-	if(m_Currency)
-		m_Currency->SetReadOnly(bReadOnly);
+	m_Currency.SetReadOnly(bReadOnly);
 	m_Fxrate.SetReadOnly(bReadOnly);
-	if(m_PFU)
-		m_PFU->SetReadOnly(bReadOnly);
-	if(m_CP)
-		m_CP->SetReadOnly(bReadOnly);
+	m_PFU.SetReadOnly(bReadOnly);
+	m_CP.SetReadOnly(bReadOnly);
 	m_CT.SetReadOnly(bReadOnly);
 
 	m_BrFee.SetReadOnly(bReadOnly);
@@ -268,11 +162,10 @@ void CConfirmView::EnableCtrls()
 	m_Seq.SetReadOnly(bReadOnly);
 	m_Asset.SetReadOnly(bReadOnly);
 	m_Price.SetReadOnly(bReadOnly);
-	if(m_Custodian)
-		m_Custodian->SetReadOnly(bReadOnly);
+	m_Custodian.SetReadOnly(bReadOnly);
 	
-	m_TransType->GetSelString(TransType);
-	m_Dir.GetSelString(Dir);
+	TransType = m_TransType.GetData();
+	Dir = m_Dir.GetData();
 	TransType = GetData().DefineTransType(TransType, Dir);
 
 	m_Strike.SetReadOnly(bReadOnly);
@@ -282,40 +175,24 @@ void CConfirmView::EnableCtrls()
 	m_SetConvention.SetReadOnly(bReadOnly);
 	m_OptID.SetReadOnly(bReadOnly);
 	m_Rate.SetReadOnly(bReadOnly);
-	if(m_RateBasis)
-		m_RateBasis->SetReadOnly(bReadOnly);
-	if(m_Formula)
-		m_Formula->SetReadOnly(bReadOnly);
+	m_RateBasis.SetReadOnly(bReadOnly);
+	m_Formula.SetReadOnly(bReadOnly);
 	m_Maturity.SetReadOnly(bReadOnly);
 	m_OriBooking.SetReadOnly(bReadOnly);
-	if(m_USDAcct)
-		m_USDAcct->SetReadOnly(bReadOnly);
-	if(m_FxAcct)
-		m_FxAcct->SetReadOnly(bReadOnly);
+	m_USDAcct.SetReadOnly(bReadOnly);
+	m_FxAcct.SetReadOnly(bReadOnly);
 	
-	if(m_EuroOpt)
-		m_EuroOpt->SetReadOnly(bReadOnly);
+	m_EuroOpt.SetReadOnly(bReadOnly);
 	m_Binary.SetReadOnly(bReadOnly);
-	if(m_OptAuto)
-		m_OptAuto->SetReadOnly(bReadOnly);
-
-	if(m_TRS)
-		m_TRS->SetReadOnly(bReadOnly);
-	if(m_IPO)
-		m_IPO->SetReadOnly(bReadOnly);
-	if(m_Listed)
-		m_Listed->SetReadOnly(bReadOnly);
-
-	if(m_ShortSale)
-		m_ShortSale->SetReadOnly(bReadOnly);
-	if(m_CSPBShort)
-		m_CSPBShort->SetReadOnly(bReadOnly);
-	if(m_WI)
-		m_WI->SetReadOnly(bReadOnly);
-	if(m_SecFee)
-		m_SecFee->SetReadOnly(bReadOnly);
-	if(m_Funded)
-		m_Funded->SetReadOnly(bReadOnly);
+	m_OptAuto.SetReadOnly(bReadOnly);
+	m_TRS.SetReadOnly(bReadOnly);
+	m_IPO.SetReadOnly(bReadOnly);
+	m_Listed.SetReadOnly(bReadOnly);
+	m_ShortSale.SetReadOnly(bReadOnly);
+	m_CSPBShort.SetReadOnly(bReadOnly);
+	m_WI.SetReadOnly(bReadOnly);
+	m_SecFee.SetReadOnly(bReadOnly);
+	m_Funded.SetReadOnly(bReadOnly);
 
 	m_SoftDollar.SetReadOnly(bReadOnly);
 
@@ -334,26 +211,21 @@ void CConfirmView::EnableCtrls()
 	m_DV01.ShowWindow(nCmdShow);
 	GetDlgItem(IDC_CONFIRM_MARGIN_STATIC)->ShowWindow(nCmdShow);
 	m_Margin.ShowWindow(nCmdShow);
-	if(m_MarginCurrency)
-		m_MarginCurrency->ShowWindow(nCmdShow);
+	m_MarginCurrency.ShowWindow(nCmdShow);
 	m_MarginAmount.ShowWindow(nCmdShow);
 
 	nCmdShow = (bSearch || (m_Mode == FMS_NORMAL && TransType == FOREX)) ? SW_SHOW : SW_HIDE; // Forex Type Impact
 	GetDlgItem(IDC_CONFIRM_USDACCOUNT_STATIC)->ShowWindow(nCmdShow);
-	m_USDAcct->ShowWindow(nCmdShow);
+	m_USDAcct.ShowWindow(nCmdShow);
 	GetDlgItem(IDC_CONFIRM_FXACCOUNT_STATIC)->ShowWindow(nCmdShow);
-	m_FxAcct->ShowWindow(nCmdShow); 
+	m_FxAcct.ShowWindow(nCmdShow); 
 	
 	nCmdShow = (bSearch || (m_Mode == FMS_NORMAL && (TransType == CALL || TransType == PUT))) ? SW_SHOW : SW_HIDE;  // Option Impact
-	if(m_EuroOpt)
-		m_EuroOpt->ShowWindow(nCmdShow);
-	if(m_OptAuto)
-		m_OptAuto->ShowWindow(nCmdShow);
+	m_EuroOpt.ShowWindow(nCmdShow);
+	m_OptAuto.ShowWindow(nCmdShow);
 	m_Binary.ShowWindow(nCmdShow);
-	if(m_Listed)
-		m_Listed->ShowWindow(nCmdShow);
-	if(m_OrFee)
-		m_OrFee->ShowWindow(m_Listed->GetCheck() && nCmdShow == SW_SHOW ? SW_SHOW : SW_HIDE);
+	m_Listed.ShowWindow(nCmdShow);
+	m_OrFee.ShowWindow(m_Listed.GetCheck() && nCmdShow == SW_SHOW ? SW_SHOW : SW_HIDE);
 
 	GetDlgItem(IDC_CONFIRM_STRIKE_STATIC)->ShowWindow(nCmdShow);
 	m_Strike.ShowWindow(nCmdShow);
@@ -383,20 +255,16 @@ void CConfirmView::EnableCtrls()
 	GetDlgItem(IDC_CONFIRM_RATE_STATIC)->ShowWindow(nCmdShow);
 	m_Rate.ShowWindow(nCmdShow);
 	GetDlgItem(IDC_CONFIRM_RATEBASIS_STATIC)->ShowWindow(nCmdShow);
-	if(m_RateBasis)
-		m_RateBasis->ShowWindow(nCmdShow);
+	m_RateBasis.ShowWindow(nCmdShow);
 	GetDlgItem(IDC_CONFIRM_MATURITY_STATIC)->ShowWindow(nCmdShow);
 	m_Maturity.ShowWindow(nCmdShow);
-	
+
 	// Leverage, Repo Impact
 	nCmdShow = (bSearch || (TransType == LEVERAGE || TransType == REPO)) ? SW_SHOW : SW_HIDE;
 	GetDlgItem(IDC_CONFIRM_FORMULA_STATIC)->ShowWindow(nCmdShow);
-	m_Formula->ShowWindow(nCmdShow);
+	m_Formula.ShowWindow(nCmdShow);
 	if(TransType == LEVERAGE)
-	{
-		if(m_TRS)
-			m_TRS->ShowWindow(nCmdShow);
-	}
+		m_TRS.ShowWindow(nCmdShow);
 
 	// IRS Impact
 	nCmdShow = (bSearch || (TransType == INTSWAP)) ? SW_SHOW : SW_HIDE;
@@ -419,26 +287,19 @@ void CConfirmView::EnableCtrls()
 
 	// Securities Impact
 	nCmdShow = (bSearch || (TransType == SECURITIES)) ? SW_SHOW : SW_HIDE;
-	if(m_IPO)
-		m_IPO->ShowWindow(nCmdShow);
-	if(m_TRS)
-		m_TRS->ShowWindow(nCmdShow);
+	m_IPO.ShowWindow(nCmdShow);
+	m_TRS.ShowWindow(nCmdShow);
 
 	// Call, Put, CDS, Securities Impact
 	nCmdShow = (bSearch || (TransType == CALL || TransType == CDS || 
 				TransType == PUT || TransType == SECURITIES)) ? SW_SHOW : SW_HIDE;
-	if(m_ShortSale)
-		m_ShortSale->ShowWindow(nCmdShow);
-	if(m_CSPBShort)
-		m_CSPBShort->ShowWindow(nCmdShow);
-	if(m_WI)
-		m_WI->ShowWindow(nCmdShow);
-	if(m_SecFee)
-		m_SecFee->ShowWindow(Dir == S && nCmdShow == SW_SHOW ? SW_SHOW : SW_HIDE);
+	m_ShortSale.ShowWindow(nCmdShow);
+	m_CSPBShort.ShowWindow(nCmdShow);
+	m_WI.ShowWindow(nCmdShow);
+	m_SecFee.ShowWindow(Dir == S && nCmdShow == SW_SHOW ? SW_SHOW : SW_HIDE);
 
 	nCmdShow = (bSearch || (TransType == CDS || TransType == INTSWAP)) ? SW_SHOW : SW_HIDE;
-	if(m_Funded)
-		m_Funded->ShowWindow(nCmdShow);
+	m_Funded.ShowWindow(nCmdShow);
 
 	return;
 }
@@ -454,8 +315,7 @@ void CConfirmView::EnableInvCtrls()
 			bReadOnly = FALSE;
 
 	m_InvAsset.SetReadOnly(bReadOnly);
-	if(m_InvTrDesc)
-		m_InvTrDesc->SetReadOnly(bReadOnly);
+	m_InvTrDesc.SetReadOnly(bReadOnly);
 	m_InvAmount.SetReadOnly(bReadOnly);
 	m_InvValueDate.SetReadOnly(bReadOnly);
 	m_InvCloseDate.SetReadOnly(bReadOnly);
@@ -463,11 +323,9 @@ void CConfirmView::EnableInvCtrls()
 	m_InvForexRef.SetReadOnly(bReadOnly);
 	m_InvCash.SetReadOnly(bReadOnly);
 	m_InvInterest.SetReadOnly(bReadOnly);
-	if(m_InvAccount)
-		m_InvAccount->SetReadOnly(bReadOnly);
+	m_InvAccount.SetReadOnly(bReadOnly);
 	m_InvAssignCT.SetReadOnly(bReadOnly);
-	if(m_InvCurrency)
-		m_InvCurrency->SetReadOnly(bReadOnly);
+	m_InvCurrency.SetReadOnly(bReadOnly);
 	m_InvCrossRate.SetReadOnly(bReadOnly);
 }
 
@@ -483,34 +341,33 @@ void CConfirmView::InitControls()
 	m_InvSS.LockSheet();
 	m_InvSS.SetSheetRows(0);
 	
-	m_Listed = (CCheckBox*) new CCheckBox(this, IDC_CONFIRM_LISTED_CHECK, Y);
-	m_IPO = (CCheckBox*) new CCheckBox(this, IDC_CONFIRM_IPO_CHECK, Y);
-	m_TRS = (CCheckBox*) new CCheckBox(this, IDC_CONFIRM_TRS_CHECK, TRS);
-	m_EuroOpt = (CCheckBox*) new CCheckBox(this, IDC_CONFIRM_EUROOPT_CHECK, Y);
-	m_OptAuto = (CCheckBox*) new CCheckBox(this, IDC_CONFIRM_AUTO_CHECK, Y);
-	m_DocRq = (CCheckBox*) new CCheckBox(this, IDC_CONFIRM_DOCREQ_CHECK, Y);
-	m_DocRecvd = (CCheckBox*) new CCheckBox(this, IDC_CONFIRM_DOCRCVD_CHECK, Y);
-	m_WI = (CCheckBox*) new CCheckBox(this, IDC_CONFIRM_WI_CHECK, Y);
-	m_Confirm = (CCheckBox*) new CCheckBox(this, IDC_CONFIRM_CONFIRM_CHECK, Y);
-	m_Funded = (CCheckBox*) new CCheckBox(this, IDC_CONFIRM_FUNDED_CHECK, Y);
-	m_ShortSale = (CCheckBox*) new CCheckBox(this, IDC_CONFIRM_SHORT_CHECK, Y);
-	m_CSPBShort = (CCheckBox*) new CCheckBox(this, IDC_CONFIRM_CSPBSHORT_CHECK, Y);
-	m_SecFee = (CCheckBox*) new CCheckBox(this, IDC_CONFIRM_SECFEE_CHECK, Y);
-	m_OrFee = (CCheckBox*) new CCheckBox(this, IDC_CONFIRM_ORFEE_CHECK, Y);
-	m_ETrade = (CCheckBox*) new CCheckBox(this, IDC_CONFIRM_ETRADE_CHECK, Y);
+	m_Listed.Setup(this, IDC_CONFIRM_LISTED_CHECK, Y);
+	m_IPO.Setup(this, IDC_CONFIRM_IPO_CHECK, Y);
+	m_TRS.Setup(this, IDC_CONFIRM_TRS_CHECK, TRS);
+	m_EuroOpt.Setup(this, IDC_CONFIRM_EUROOPT_CHECK, Y);
+	m_OptAuto.Setup(this, IDC_CONFIRM_AUTO_CHECK, Y);
+	m_DocRq.Setup(this, IDC_CONFIRM_DOCREQ_CHECK, Y);
+	m_DocRecvd.Setup(this, IDC_CONFIRM_DOCRCVD_CHECK, Y);
+	m_WI.Setup(this, IDC_CONFIRM_WI_CHECK, Y);
+	m_Confirm.Setup(this, IDC_CONFIRM_CONFIRM_CHECK, Y);
+	m_Funded.Setup(this, IDC_CONFIRM_FUNDED_CHECK, Y);
+	m_ShortSale.Setup(this, IDC_CONFIRM_SHORT_CHECK, Y);
+	m_CSPBShort.Setup(this, IDC_CONFIRM_CSPBSHORT_CHECK, Y);
+	m_SecFee.Setup(this, IDC_CONFIRM_SECFEE_CHECK, Y);
+	m_OrFee.Setup(this, IDC_CONFIRM_ORFEE_CHECK, Y);
 
-    m_Portfolio = (COptComboBox*) new COptComboBox(this, IDC_CONFIRM_PORTFOLIO_COMBO);
-	m_TransType = (COptComboBox*) new COptComboBox(this, IDC_CONFIRM_TYPE_COMBO);
-	m_PFU = (COptComboBox*) new COptComboBox(this, IDC_CONFIRM_PFU_COMBO);
-    m_Currency = (COptComboBox*) new COptComboBox(this, IDC_CONFIRM_CURRENCY_COMBO);
-    m_CP = (COptComboBox*) new COptComboBox(this, IDC_CONFIRM_CP_COMBO);
-    m_RateBasis = (COptComboBox*) new COptComboBox(this, IDC_CONFIRM_RATEBASIS_COMBO, TRUE);
-	m_Formula = (COptComboBox*) new COptComboBox(this, IDC_CONFIRM_FORMULA_COMBO, TRUE, TRUE);
-    m_Custodian = (COptComboBox*) new COptComboBox(this, IDC_CONFIRM_CUSTODIAN_COMBO, TRUE);
-    m_USDAcct = (COptComboBox*) new COptComboBox(this, IDC_CONFIRM_USDACCOUNT_COMBO, TRUE);
-    m_FxAcct = (COptComboBox*) new COptComboBox(this, IDC_CONFIRM_FXACCOUNT_COMBO, TRUE);
-	m_MarginCurrency = (COptComboBox*) new COptComboBox(this, IDC_CONFIRM_MARGIN_CURRENCY_COMBO, TRUE);
-	m_BestExecution = (COptComboBox*) new COptComboBox(this, IDC_CONFIRM_BESTEXECUTION_COMBO);
+    m_Portfolio.Setup(this, IDC_CONFIRM_PORTFOLIO_COMBO);
+	m_TransType.Setup(this, IDC_CONFIRM_TYPE_COMBO);
+	m_PFU.Setup(this, IDC_CONFIRM_PFU_COMBO);
+    m_Currency.Setup(this, IDC_CONFIRM_CURRENCY_COMBO);
+    m_CP.Setup(this, IDC_CONFIRM_CP_COMBO);
+    m_RateBasis.Setup(this, IDC_CONFIRM_RATEBASIS_COMBO, TRUE);
+	m_Formula.Setup(this, IDC_CONFIRM_FORMULA_COMBO, TRUE, TRUE);
+    m_Custodian.Setup(this, IDC_CONFIRM_CUSTODIAN_COMBO, TRUE);
+    m_USDAcct.Setup(this, IDC_CONFIRM_USDACCOUNT_COMBO, TRUE);
+    m_FxAcct.Setup(this, IDC_CONFIRM_FXACCOUNT_COMBO, TRUE);
+	m_MarginCurrency.Setup(this, IDC_CONFIRM_MARGIN_CURRENCY_COMBO, TRUE);
+	m_BestExecution.Setup(this, IDC_CONFIRM_BESTEXECUTION_COMBO);
 
 	m_TransNum.Setup(this, IDC_CONFIRM_TRANSNUM_EDIT);
 	m_TransNum.SetReadOnly();
@@ -551,6 +408,7 @@ void CConfirmView::InitControls()
 	m_Index.Setup(this, IDC_CONFIRM_INDEX_COMBO, 2, TRUE);
 	m_OptSet.Setup(this, IDC_CONFIRM_OPTSET_COMBO, 3, TRUE);
 	m_OptSet2.Setup(this, IDC_CONFIRM_OPTSET2_COMBO, 3, TRUE);
+	m_ETrade.Setup(this, IDC_CONFIRM_ETRADE_COMBO, 2, TRUE);
 	
 	m_Asset.Setup(this, IDC_CONFIRM_ASSET_EDIT, EMPTYSTRING, UPPERCASE);
 	m_Asset.SetLimitText(10);
@@ -586,10 +444,10 @@ void CConfirmView::InitControls()
 	m_InvAmount.Setup(this, IDC_CONFIRM_INV_NOMINAL_EDIT);
 	m_InvCash.Setup(this, IDC_CONFIRM_INV_CASH_EDIT, NULL, 2);
 	m_InvInterest.Setup(this, IDC_CONFIRM_INV_INTEREST_EDIT, NULL, 2);
-	m_InvTrDesc = (COptComboBox*) new COptComboBox(this, IDC_CONFIRM_INV_TRDESC_COMBO);
-	m_InvAccount = (COptComboBox*) new COptComboBox(this, IDC_CONFIRM_INV_ACCOUNT_COMBO, TRUE);
-	m_InvCurrency = (COptComboBox*) new COptComboBox(this, IDC_CONFIRM_INV_CURRENCY_COMBO, TRUE);
-	m_InvAssignCP = (COptComboBox*) new COptComboBox(this, IDC_CONFIRM_INV_ASSIGNCP_COMBO, TRUE);
+	m_InvTrDesc.Setup(this, IDC_CONFIRM_INV_TRDESC_COMBO);
+	m_InvAccount.Setup(this, IDC_CONFIRM_INV_ACCOUNT_COMBO, TRUE);
+	m_InvCurrency.Setup(this, IDC_CONFIRM_INV_CURRENCY_COMBO, TRUE);
+	m_InvAssignCP.Setup(this, IDC_CONFIRM_INV_ASSIGNCP_COMBO, TRUE);
 	m_InvAssignCT.Setup(this, IDC_CONFIRM_INV_ASSIGNCT_EDIT);
 
 	m_RecCurrency.Setup(this, IDC_CONFIRM_INV_REC_CURRENCY_EDIT);
@@ -598,22 +456,22 @@ void CConfirmView::InitControls()
 	m_RecCash.Setup(this, IDC_CONFIRM_INV_REC_CASH_EDIT, NULL, 2);
 	m_RecTotal.Setup(this, IDC_CONFIRM_INV_REC_TOTAL_EDIT, NULL, 2);
 
-	m_Data.Add(m_CP, &m_Data.GetTicket().GetCP());
+	m_Data.Add(&m_CP, &m_Data.GetTicket().GetCP());
 	m_Data.Add(&m_Ticket, &m_Data.GetTicket().GetTicket());
-	m_Data.Add(m_Portfolio, &m_Data.GetTicket().GetPortfolio());
+	m_Data.Add(&m_Portfolio, &m_Data.GetTicket().GetPortfolio());
 	m_Data.Add(&m_TransNum, &m_Data.GetTicket().GetTransNum());
 	m_Data.Add(&m_TradeDate, &m_Data.GetTicket().GetTradeDate());
 	m_Data.Add(&m_Asset, &m_Data.GetTicket().GetAsset());
 	m_Data.Add(&m_Trader, &m_Data.GetTicket().GetTrader());
 	m_Data.Add(&m_ValueDate, &m_Data.GetTicket().GetValueDate());
-	m_Data.Add(m_TransType, &m_Data.GetTicket().GetTransType());
+	m_Data.Add(&m_TransType, &m_Data.GetTicket().GetTransType());
 	m_Data.Add(&m_Dir, &m_Data.GetTicket().GetDir());
 	m_Data.Add(&m_Amount, &m_Data.GetTicket().GetAmount());
 	m_Data.Add(&m_Price, &m_Data.GetTicket().GetPrice());
-	m_Data.Add(m_Currency, &m_Data.GetTicket().GetCurrency());
+	m_Data.Add(&m_Currency, &m_Data.GetTicket().GetCurrency());
 	m_Data.Add(&m_Fxrate, &m_Data.GetTicket().GetFxRate());
 	m_Data.Add(&m_CT, &m_Data.GetTicket().GetCT());
-	m_Data.Add(m_TRS, &m_Data.GetTicket().GetTRS());
+	m_Data.Add(&m_TRS, &m_Data.GetTicket().GetTRS());
 	m_Data.Add(&m_Strike, &m_Data.GetTicket().GetStrike());
 	m_Data.Add(&m_ExerciseDate, &m_Data.GetTicket().GetExerciseDate());
 	m_Data.Add(&m_OptExp, &m_Data.GetTicket().GetOptExp());
@@ -623,50 +481,50 @@ void CConfirmView::InitControls()
 	m_Data.Add(&m_OptSet2, &m_Data.GetTicket().GetOptSet2());
 	m_Data.Add(&m_SetConvention, &m_Data.GetTicket().GetSetConvention());
 	m_Data.Add(&m_OptID, &m_Data.GetTicket().GetOptID());
-	m_Data.Add(m_EuroOpt, &m_Data.GetTicket().GetEuroOpt());
-	m_Data.Add(m_OptAuto, &m_Data.GetTicket().GetOptAuto());
+	m_Data.Add(&m_EuroOpt, &m_Data.GetTicket().GetEuroOpt());
+	m_Data.Add(&m_OptAuto, &m_Data.GetTicket().GetOptAuto());
 	m_Data.Add(&m_BrFee, &m_Data.GetTicket().GetBrokerFee());
 	m_Data.Add(&m_SoftDollar, &m_Data.GetTicket().GetSoftDollar());
 	m_Data.Add(&m_OtherFee, &m_Data.GetTicket().GetOtherFee());
 	m_Data.Add(&m_VAR, &m_Data.GetTicket().GetVAR());
 	m_Data.Add(&m_Rate, &m_Data.GetTicket().GetRate());
-	m_Data.Add(m_RateBasis, &m_Data.GetTicket().GetRateBasis());
+	m_Data.Add(&m_RateBasis, &m_Data.GetTicket().GetRateBasis());
 	m_Data.Add(&m_Maturity, &m_Data.GetTicket().GetMaturity());
 	m_Data.Add(&m_Index, &m_Data.GetTicket().GetIndex());
-	m_Data.Add(m_Formula, &m_Data.GetTicket().GetFormula());
+	m_Data.Add(&m_Formula, &m_Data.GetTicket().GetFormula());
 	m_Data.Add(&m_OriBooking, &m_Data.GetTicket().GetSWBooking());
 	m_Data.Add(&m_OriMaturity, &m_Data.GetTicket().GetSWMaturity());
-	m_Data.Add(m_FxAcct, &m_Data.GetTicket().GetFxAcc());
-	m_Data.Add(m_USDAcct, &m_Data.GetTicket().GetUSDAcc());
-	m_Data.Add(m_PFU, &m_Data.GetTicket().GetPFU());
-	m_Data.Add(m_IPO, &m_Data.GetTicket().GetIPO());
-	m_Data.Add(m_Custodian, &m_Data.GetTicket().GetCustodian());
+	m_Data.Add(&m_FxAcct, &m_Data.GetTicket().GetFxAcc());
+	m_Data.Add(&m_USDAcct, &m_Data.GetTicket().GetUSDAcc());
+	m_Data.Add(&m_PFU, &m_Data.GetTicket().GetPFU());
+	m_Data.Add(&m_IPO, &m_Data.GetTicket().GetIPO());
+	m_Data.Add(&m_Custodian, &m_Data.GetTicket().GetCustodian());
 	m_Data.Add(&m_Link, &m_Data.GetTicket().GetLink());
 	m_Data.Add(&m_Seq, &m_Data.GetTicket().GetTransSeq());
 	m_Data.Add(&m_Note, &m_Data.GetTicket().GetNote());
 	m_Data.Add(&m_Note2, &m_Data.GetTicket().GetNote2());
 	m_Data.Add(&m_CPTradeID, &m_Data.GetTicket().GetCPID());
-	m_Data.Add(m_DocRq, &m_Data.GetTicket().GetDocReq());
-	m_Data.Add(m_DocRecvd, &m_Data.GetTicket().GetDocRecvd());
-	m_Data.Add(m_WI, &m_Data.GetTicket().GetWI());
-	m_Data.Add(m_Confirm, &m_Data.GetTicket().GetConfirm());
+	m_Data.Add(&m_DocRq, &m_Data.GetTicket().GetDocReq());
+	m_Data.Add(&m_DocRecvd, &m_Data.GetTicket().GetDocRecvd());
+	m_Data.Add(&m_WI, &m_Data.GetTicket().GetWI());
+	m_Data.Add(&m_Confirm, &m_Data.GetTicket().GetConfirm());
 	m_Data.Add(&m_SwapTicket, &m_Data.GetTicket().GetSwapTicket());
 	m_Data.Add(&m_DeliveryDate, &m_Data.GetTicket().GetDeliveryDate());
 	m_Data.Add(&m_Margin, &m_Data.GetTicket().GetMargin());
-	m_Data.Add(m_MarginCurrency, &m_Data.GetTicket().GetMarginCurrency());
+	m_Data.Add(&m_MarginCurrency, &m_Data.GetTicket().GetMarginCurrency());
 	m_Data.Add(&m_MarginAmount, &m_Data.GetTicket().GetMarginAmount());
-	m_Data.Add(m_Listed, &m_Data.GetTicket().GetListed());
-	m_Data.Add(m_Funded, &m_Data.GetTicket().GetFunded());
+	m_Data.Add(&m_Listed, &m_Data.GetTicket().GetListed());
+	m_Data.Add(&m_Funded, &m_Data.GetTicket().GetFunded());
 	m_Data.Add(&m_Binary, &m_Data.GetTicket().GetBinary());
 	m_Data.Add(&m_DV01, &m_Data.GetTicket().GetDV01());
-	m_Data.Add(m_BestExecution, &m_Data.GetTicket().GetBestExecution());
-	m_Data.Add(m_ShortSale, &m_Data.GetTicket().GetShortSale());
-	m_Data.Add(m_CSPBShort, &m_Data.GetTicket().GetCSPBShort());
+	m_Data.Add(&m_BestExecution, &m_Data.GetTicket().GetBestExecution());
+	m_Data.Add(&m_ShortSale, &m_Data.GetTicket().GetShortSale());
+	m_Data.Add(&m_CSPBShort, &m_Data.GetTicket().GetCSPBShort());
 	m_Data.Add(&m_CancelTicket, &m_Data.GetTicket().GetCancelTicket());
 	m_Data.Add(&m_CorrectTicket, &m_Data.GetTicket().GetCorrectTicket());
-	m_Data.Add(m_SecFee, &m_Data.GetTicket().GetSecFee());
-	m_Data.Add(m_OrFee, &m_Data.GetTicket().GetOrFee());
-	m_Data.Add(m_ETrade, &m_Data.GetTicket().GetETrade());
+	m_Data.Add(&m_SecFee, &m_Data.GetTicket().GetSecFee());
+	m_Data.Add(&m_OrFee, &m_Data.GetTicket().GetOrFee());
+	m_Data.Add(&m_ETrade, &m_Data.GetTicket().GetETrade());
 	m_Data.Add(&m_Data.GetTicket().GetBooker());
 	m_Data.Add(&m_Data.GetTicket().GetBookDate());
 	m_Data.Add(&m_Data.GetTicket().GetVersion());
@@ -675,18 +533,18 @@ void CConfirmView::InitControls()
 	m_Data.Add(&m_Data.GetTicket().GetAssetClass()); 
 
 	m_Data.GetSRowCtrl().Add(&m_InvAsset, &m_Data.GetInv().GetAsset());
-	m_Data.GetSRowCtrl().Add(m_InvTrDesc, &m_Data.GetInv().GetTrDesc());
+	m_Data.GetSRowCtrl().Add(&m_InvTrDesc, &m_Data.GetInv().GetTrDesc());
 	m_Data.GetSRowCtrl().Add(&m_InvAmount, &m_Data.GetInv().GetNomAmount());
 	m_Data.GetSRowCtrl().Add(&m_InvValueDate, &m_Data.GetInv().GetValueDate());
 	m_Data.GetSRowCtrl().Add(&m_InvCloseDate, &m_Data.GetInv().GetCloseDate());
 	m_Data.GetSRowCtrl().Add(&m_InvPostDate, &m_Data.GetInv().GetPostDate());
-	m_Data.GetSRowCtrl().Add(m_InvCurrency, &m_Data.GetInv().GetCurrency());
+	m_Data.GetSRowCtrl().Add(&m_InvCurrency, &m_Data.GetInv().GetCurrency());
 	m_Data.GetSRowCtrl().Add(&m_InvForexRef, &m_Data.GetInv().GetForexRef());
 	m_Data.GetSRowCtrl().Add(&m_InvCrossRate, &m_Data.GetInv().GetCrossRate());
 	m_Data.GetSRowCtrl().Add(&m_InvCash, &m_Data.GetInv().GetCash());
 	m_Data.GetSRowCtrl().Add(&m_InvInterest, &m_Data.GetInv().GetInterest());
-	m_Data.GetSRowCtrl().Add(m_InvAccount, &m_Data.GetInv().GetAccount());
-	m_Data.GetSRowCtrl().Add(m_InvAssignCP, &m_Data.GetInv().GetAssignCP());
+	m_Data.GetSRowCtrl().Add(&m_InvAccount, &m_Data.GetInv().GetAccount());
+	m_Data.GetSRowCtrl().Add(&m_InvAssignCP, &m_Data.GetInv().GetAssignCP());
 	m_Data.GetSRowCtrl().Add(&m_InvAssignCT, &m_Data.GetInv().GetAssignCT());
 }
 
@@ -697,11 +555,11 @@ BOOL CConfirmView::IsOK()
 	CQData QData;
 	
 	OraLoader = GetData().GetOraLoader();
-	m_TransType->GetSelString(TransType);
+	TransType = m_TransType.GetData();
 	if(TransType.IsEmpty())
 		Text = "Invalid Trans Type";
 	
-	m_Dir.GetSelString(Dir);
+	Dir = m_Dir.GetData();
 	TransType = GetData().DefineTransType(TransType, Dir);
 	if(Dir.IsEmpty())
 		Text = "Invalid Dir";
@@ -726,28 +584,28 @@ BOOL CConfirmView::IsOK()
 		if(m_OptExp.GetData().IsEmpty())
 			Text = "Invalid Option Expiration";
 		
-		if(m_Listed->GetCheck() && m_OptTicker.GetWindowTextLength() == 0)
+		if(m_Listed.GetCheck() && m_OptTicker.GetWindowTextLength() == 0)
 			Text = "Invalid Option Ticker";
 	}
 
 	if((TransType == REPO || TransType == LEVERAGE || TransType == CASH) && 
-		m_RateBasis->GetCurSel() < 0)
+		m_RateBasis.GetCurSel() < 0)
 		Text = "Invalid Rate Basis";
 
 	if(m_Ticket.GetData().IsEmpty())
 		Text = "Invalid Text";
 
-	if(m_CP->GetCurSel() < 0)
+	if(m_CP.GetCurSel() < 0)
 		Text = "Invalid Conterparty";
 
 	if(m_CT.GetWindowTextLength() == 0)
 		Text = "Invalid Contact";
 	
-	if(m_PFU->GetCurSel() < 0) 
+	if(m_PFU.GetCurSel() < 0) 
 		Text = "Invalid PFU";
 
-	m_Asset.GetWindowText(Asset);
-	m_Portfolio->GetSelString(Portfolio);
+	Asset = m_Asset.GetData();
+	Portfolio = m_Portfolio.GetData();
 	Portfolio = QData.GetQueryText(Portfolio);
 	if(!m_Link.GetData().IsEmpty() && !Asset.IsEmpty() &&
 		(TransType == SECURITIES || TransType == CALL || TransType == PUT))
@@ -755,12 +613,11 @@ BOOL CConfirmView::IsOK()
 		Asset = QData.GetQueryText(Asset);
 		Link = m_Link.GetData();
 
-		OraLoader.GetSql().Format("SELECT COUNT(*) FROM SEMAM.NW_TR_TICKETS A "
-								"WHERE A.PORTFOLIO = %s "
-								"AND A.ASSET_CODE = %s "
-								"AND A.TRANS_NUM = %s "
-								"AND A.TRANS_TYPE IN ('CALL', 'PUT') ", 
-								(LPCTSTR) Portfolio, (LPCTSTR) Asset, QData.GetQueryText(Link));
+		OraLoader.GetSql() = "SELECT COUNT(*) FROM SEMAM.NW_TR_TICKETS A "
+								"WHERE A.PORTFOLIO = " + Portfolio + 
+								" AND A.ASSET_CODE = " + Asset + 
+								" AND A.TRANS_NUM = " + QData.GetQueryNumber(Link) + 
+								" AND A.TRANS_TYPE IN ('CALL', 'PUT') "; 
 
 		if(TransType == CALL || TransType == PUT)
 		{
@@ -769,18 +626,16 @@ BOOL CConfirmView::IsOK()
 			OraLoader.GetSql() += " AND A.TRANS_DIRECTION != ";
 			OraLoader.GetSql() += QData.GetQueryText(Dir);
 			
-			m_Strike.GetWindowText(Data);
 			OraLoader.GetSql() += " AND EXERCISE_PRICE = ";
-			OraLoader.GetSql() += QData.GetQueryNumber(Data);
+			OraLoader.GetSql() += QData.GetQueryNumber(m_Strike.GetData());
 
-			m_OptExp.GetWindowText(Data);
 			OraLoader.GetSql() += " AND OPT_EXPIRATION = ";
-			OraLoader.GetSql() += QData.GetQueryDate(Data);
+			OraLoader.GetSql() += QData.GetQueryDate(m_OptExp.GetData());
 		
-			if(m_Listed->GetCheck())
+			if(m_Listed.GetCheck())
 				OraLoader.GetSql() += " AND LISTED = 'Y' ";
 
-			if(m_EuroOpt->GetCheck())
+			if(m_EuroOpt.GetCheck())
 				OraLoader.GetSql() += " AND EURO_OPT = 'Y' ";
 		}
 
@@ -788,22 +643,21 @@ BOOL CConfirmView::IsOK()
 			Text = "Invalid Option Link";
 	}
 
-	if(m_BestExecution->GetCurSel() < 0)
+	if(m_BestExecution.GetCurSel() < 0)
 		Text = "Invalid Best Execution";
 
 	if(!m_InvForexRef.GetData().IsEmpty())
 	{
-		m_Currency->GetSelString(Data);
+		Data = m_Currency.GetData();
 		if(!Data.IsEmpty())
 		{
 			Data = QData.GetQueryText(Data);
-			OraLoader.GetSql().Format("SELECT COUNT(*) FROM SEMAM.NW_TR_TICKETS "
-										"WHERE PORTFOLIO = %s AND TRANS_TYPE = 'FOREX' "
-										"AND CURRENCY = %s AND TRANS_NUM = %s ",
-										(LPCTSTR) Portfolio, (LPCTSTR) Data, 
-										(LPCTSTR) QData.RemoveComma(m_InvForexRef.GetData()));
 
-			if(OraLoader.GetCount() <= 0)
+			if(OraLoader.GetCount("SELECT COUNT(*) FROM SEMAM.NW_TR_TICKETS "
+								"WHERE PORTFOLIO = " + Portfolio + 
+								" AND TRANS_TYPE = 'FOREX' "
+								" AND CURRENCY = " + Data + 
+								" AND TRANS_NUM = " + QData.RemoveComma(m_InvForexRef.GetData())) <= 0)
 				Text = "Invalid Forex trade";
 		}
 	}
@@ -853,7 +707,7 @@ void CConfirmView::SetSameDate()
 	m_bSameDate = (TradeDate == Today);
 }
 
-void CConfirmView::UpdateCPCT(COptComboBox *CP, CCntlEdit &CT)
+void CConfirmView::UpdateCPCT(COptComboBox &CP, CCntlEdit &CT)
 {
 	CFindDlg FindDlg;
 	CQData QData;
@@ -861,7 +715,7 @@ void CConfirmView::UpdateCPCT(COptComboBox *CP, CCntlEdit &CT)
 
 	FindDlg.m_OraLoader = GetData().GetOraLoader();
 
-	CP->GetSelString(sCP);
+	sCP = CP.GetData();
 	if(sCP.IsEmpty())
 	{
 		MessageBox("Insufficient search condition", "Error", MB_OK);
@@ -873,7 +727,7 @@ void CConfirmView::UpdateCPCT(COptComboBox *CP, CCntlEdit &CT)
 						"FROM SEMAM.NW_COUNTER_CONTACTS WHERE ISVALID = 'Y' AND CP_CODE = %s "
 						"ORDER BY 6 ", QData.GetQueryText(sCP));
 	if(FindDlg.DoModal() == IDOK)
-		CT.SetWindowText(FindDlg.m_Key);
+		CT.SetData(FindDlg.m_Key);
 }
 
 BOOL CConfirmView::UpdateData(BOOL bSaveandValid)
@@ -883,32 +737,31 @@ BOOL CConfirmView::UpdateData(BOOL bSaveandValid)
 	}
 	else
 	{
-		CQData QData;
-
 		GetData().LoadSupportData();
 
-		QData.CopyDBRecArrayToComboBox(GetData().GetPortfolioArr(), *m_Portfolio);
-		QData.CopyDBRecArrayToComboBox(GetData().GetTransTypeArr(), *m_TransType);
-		QData.CopyDBRecArrayToComboBox(GetData().GetRateBasisArr(), *m_RateBasis);
-		QData.CopyDBRecArrayToComboBox(GetData().GetCurrencyArr(), *m_Currency, 0, FALSE);
-		QData.CopyDBRecArrayToComboBox(GetData().GetCurrencyArr(), *m_MarginCurrency, 0, FALSE);
-		QData.CopyDBRecArrayToComboBox(GetData().GetCurrencyArr(), *m_InvCurrency);
-		QData.CopyDBRecArrayToComboBox(GetData().GetBestExecutionArr(), *m_BestExecution);
-		QData.CopyKeyDBListKeyToComboBox(GetData().GetContactList(), *m_CP, FALSE);
-		QData.CopyKeyDBListKeyToComboBox(GetData().GetContactList(), *m_Custodian, FALSE);
-		QData.CopyKeyDBListKeyToComboBox(GetData().GetContactList(), *m_InvAssignCP, FALSE);
+		GetData().GetPortfolioArr().CopyToComboBox(m_Portfolio);
+		GetData().GetTransTypeArr().CopyToComboBox(m_TransType);
+		GetData().GetRateBasisArr().CopyToComboBox(m_RateBasis);
+		GetData().GetCurrencyArr().CopyToComboBox(m_Currency);
+		GetData().GetCurrencyArr().CopyToComboBox(m_MarginCurrency);
+		GetData().GetCurrencyArr().CopyToComboBox(m_InvCurrency);
+		GetData().GetBestExecutionArr().CopyToComboBox(m_BestExecution);
+		GetData().GetContactList().CopyKeyToComboBox(m_CP);
+		GetData().GetContactList().CopyKeyToComboBox(m_Custodian);
+		GetData().GetContactList().CopyKeyToComboBox(m_InvAssignCP);
 
 		GetData().GetTraderArr().CopyToMCComboBox(m_Trader);
 		GetData().GetTransDirArr().CopyToMCComboBox(m_Dir);
 		GetData().GetIndexArr().CopyToMCComboBox(m_Index);
 		GetData().GetOptSetArr().CopyToMCComboBox(m_OptSet);
 		GetData().GetOptSetArr().CopyToMCComboBox(m_OptSet2);
+		GetData().GetETradeTypeArr().CopyToMCComboBox(m_ETrade);
 
-		QData.CopyDBRecArrayToComboBox(GetData().GetPFUArr(), *m_PFU);
-		QData.CopyDBRecArrayToComboBox(GetData().GetAccountArr(), *m_USDAcct, 0, FALSE);
-		QData.CopyDBRecArrayToComboBox(GetData().GetAccountArr(), *m_FxAcct, 0, FALSE);
-		QData.CopyDBRecArrayToComboBox(GetData().GetAccountArr(), *m_InvAccount);
-		QData.CopyDBRecArrayToComboBox(GetData().GetTrDescArr(), *m_InvTrDesc);
+		GetData().GetPFUArr().CopyToComboBox(m_PFU);
+		GetData().GetAccountArr().CopyToComboBox(m_USDAcct);
+		GetData().GetAccountArr().CopyToComboBox(m_FxAcct);
+		GetData().GetAccountArr().CopyToComboBox(m_InvAccount);
+		GetData().GetTrDescArr().CopyToComboBox(m_InvTrDesc);
 	}
 
 	return TRUE;
@@ -937,12 +790,11 @@ void CConfirmView::OnInitialUpdate()
 
 	GetData().LoadDates();
 
-	m_Formula->AddString(NONE);
-	m_Formula->AddString(DAILYREPO);
-	m_Formula->AddString(DAILYREPOA);
+	m_Formula.AddString(NONE);
+	m_Formula.AddString(DAILYREPO);
+	m_Formula.AddString(DAILYREPOA);
 
-	if(m_Portfolio)
-		m_Portfolio->EnableWindow(FALSE);
+	m_Portfolio.EnableWindow(FALSE);
 	SetMode(FMS_NORMAL);
 	UpdateData(FALSE);
 	EndWaitCursor();
@@ -966,21 +818,21 @@ void CConfirmView::OnDblClickConfirmInvList(long Col, long Row)
 		m_Data.SetInvNum(m_Data.GetSRowCtrl().GetID());
 		m_Data.Compute();
 
-		m_RecCurrency.SetWindowText(m_Data.GetRecCurrency());
-		m_RecInterest.SetWindowText(QData.WriteNumber(m_Data.GetPrePaid(), TRUE, 2));
-		m_RecAccretion.SetWindowText(QData.WriteNumber(m_Data.GetAccretion(), TRUE, 2));		
-		m_RecCash.SetWindowText(QData.WriteNumber(m_Data.GetCash(), TRUE, 2));
-		m_RecTotal.SetWindowText(QData.WriteNumber(m_Data.GetCash() + m_Data.GetAccretion() + m_Data.GetPrePaid(), TRUE, 2));
+		m_RecCurrency.SetData(m_Data.GetRecCurrency());
+		m_RecInterest.SetData(QData.WriteNumber(m_Data.GetPrePaid(), TRUE, 2));
+		m_RecAccretion.SetData(QData.WriteNumber(m_Data.GetAccretion(), TRUE, 2));		
+		m_RecCash.SetData(QData.WriteNumber(m_Data.GetCash(), TRUE, 2));
+		m_RecTotal.SetData(QData.WriteNumber(m_Data.GetCash() + m_Data.GetAccretion() + m_Data.GetPrePaid(), TRUE, 2));
 	}
 	else
 	{
 		m_Data.GetSRowCtrl().SetCurrentRow(-1);
 		m_Data.GetSRowCtrl().Refresh();
-		m_RecCurrency.SetWindowText(EMPTYSTRING);
-		m_RecInterest.SetWindowText(EMPTYSTRING);
-		m_RecAccretion.SetWindowText(EMPTYSTRING);		
-		m_RecCash.SetWindowText(EMPTYSTRING);
-		m_RecTotal.SetWindowText(EMPTYSTRING);
+		m_RecCurrency.SetData(EMPTYSTRING);
+		m_RecInterest.SetData(EMPTYSTRING);
+		m_RecAccretion.SetData(EMPTYSTRING);		
+		m_RecCash.SetData(EMPTYSTRING);
+		m_RecTotal.SetData(EMPTYSTRING);
 	}
 
 	EnableInvCtrls();
@@ -1013,7 +865,7 @@ void CConfirmView::OnDblClickConfirmTicketList(long Col, long Row)
 
 void CConfirmView::OnSelchangeConfirmCpCombo() 
 {
-	if(m_CP->GetCurSel() >= 0)
+	if(m_CP.GetCurSel() >= 0)
 	{
 		if(m_Data.GetCurrentRow() > 0 && m_Data.GetModify())
 		{
@@ -1035,16 +887,16 @@ void CConfirmView::OnSelchangeConfirmDirCombo()
 {
 	CString TransType, Dir;
 
-	m_TransType->GetSelString(TransType);
-	m_Dir.GetSelString(Dir);
+	TransType = m_TransType.GetData();
+	Dir = m_Dir.GetData();
 	TransType = GetData().DefineTransType(TransType, Dir);
 	if(TransType.IsEmpty())
 		return;
 		
 	if(TransType == REPO || TransType == LEVERAGE || TransType == BORROW || TransType == LEND)		
 	{
-		if(m_Mode != FMS_SEARCH && m_RateBasis->GetCurSel() < 0)
-			m_RateBasis->SelectString(-1, "A/360");
+		if(m_Mode != FMS_SEARCH && m_RateBasis.GetCurSel() < 0)
+			m_RateBasis.SetData("A/360");
 	}
 
 	ChangeShortLabel();
@@ -1072,20 +924,17 @@ void CConfirmView::OnConfirmListedCheck()
 	CString Date, TransType;
 
 	Date = m_TradeDate.GetData();
-	m_TransType->GetSelString(TransType);
+	TransType = m_TransType.GetData();
 
-	m_ValueDate.SetData(GetData().GetOraLoader().GetValueDate(Date, TransType, m_Listed->GetCheck()));
+	m_ValueDate.SetData(GetData().GetOraLoader().GetValueDate(Date, TransType, m_Listed.GetCheck()));
 
-	if(m_OrFee)
-	{
-		if(!m_OrFee->GetReadOnly())
-			m_OrFee->EnableWindow(m_Listed->GetCheck());
-	}
+	if(!m_OrFee.GetReadOnly())
+		m_OrFee.EnableWindow(m_Listed.GetCheck());
 }
 
 void CConfirmView::OnUpdateConfirmClearscreen(CCmdUI* pCmdUI) 
 {
-	pCmdUI->Enable(m_Portfolio->GetCurSel() >= 0 ? TRUE : FALSE);
+	pCmdUI->Enable(m_Portfolio.GetCurSel() >= 0 ? TRUE : FALSE);
 }
 
 void CConfirmView::OnConfirmClearscreen() 
@@ -1103,8 +952,7 @@ void CConfirmView::OnConfirmClearscreen()
 	m_bSameDate = TRUE;
 	SetMode(FMS_SEARCH);
 	EnableCtrls();
-	if(m_CP)
-		m_CP->SetReadOnly(FALSE);
+	m_CP.SetReadOnly(FALSE);
 }
 
 void CConfirmView::OnConfirmDelete() 
@@ -1118,7 +966,7 @@ void CConfirmView::OnUpdateConfirmDelete(CCmdUI* pCmdUI)
 	if(GetData().IsOperation() || GetData().IsPowerUser())
 	{
 		if(m_bSameDate || GetData().IsPowerUser())
-			pCmdUI->Enable(m_Portfolio->GetCurSel() >= 0 && m_SS.GetSheetCurRow() >= 1 && 
+			pCmdUI->Enable(m_Portfolio.GetCurSel() >= 0 && m_SS.GetSheetCurRow() >= 1 && 
 				        (m_SS.GetIsBlockSelected() || m_InvSS.GetIsBlockSelected()) && 
 						strlen(m_Data.GetKey()) > 0);
 		else
@@ -1137,7 +985,7 @@ void CConfirmView::OnConfirmUpdate()
 void CConfirmView::OnUpdateConfirmUpdate(CCmdUI* pCmdUI) 
 {
 	if(GetData().IsOperation() || GetData().IsPowerUser())
-		pCmdUI->Enable(m_Portfolio->GetCurSel() >= 0 && m_SS.GetSheetCurRow() > 0);
+		pCmdUI->Enable(m_Portfolio.GetCurSel() >= 0 && m_SS.GetSheetCurRow() > 0);
 	else
 		pCmdUI->Enable(FALSE);
 }
@@ -1160,12 +1008,12 @@ void CConfirmView::OnConfirmFindasset()
 
 	Dlg.m_pData = &GetData();
 	if(m_nCurrID == IDC_CONFIRM_INV_ASSET_EDIT)
-		m_InvAsset.GetWindowText(Dlg.m_FindData.GetRec().GetAsset());
+		Dlg.m_FindData.GetRec().GetAsset() = m_InvAsset.GetData();
 	else
 	{
-		m_Asset.GetWindowText(Dlg.m_FindData.GetRec().GetAsset());
-		m_AssetDesc.GetWindowText(Dlg.m_FindData.GetRec().GetDesc());
-		m_OptTicker.GetWindowText(Dlg.m_FindData.GetRec().GetOptTicker());
+		Dlg.m_FindData.GetRec().GetAsset() =  m_Asset.GetData();
+		Dlg.m_FindData.GetRec().GetDesc() = m_AssetDesc.GetData();
+		Dlg.m_FindData.GetRec().GetOptTicker() = m_OptTicker.GetData();
 	}
 	
 	if(Dlg.DoModal() != IDOK)
@@ -1173,59 +1021,59 @@ void CConfirmView::OnConfirmFindasset()
 
 	if(m_nCurrID == IDC_CONFIRM_INV_ASSET_EDIT)
 	{
-		m_InvAsset.SetWindowText(Dlg.m_FindData.GetRec().GetAsset());
+		m_InvAsset.SetData(Dlg.m_FindData.GetRec().GetAsset());
 		return;
 	}
 		
-	m_Asset.SetWindowText(Dlg.m_FindData.GetRec().GetAsset());
-	m_AssetDesc.SetWindowText(Dlg.m_FindData.GetRec().GetDesc());
-	m_AssetCurr.SetWindowText(Dlg.m_FindData.GetRec().GetCurrency());
-	m_Trader.SelectString(0, Dlg.m_FindData.GetTrader());
-	m_Custodian->SelectString(0, Dlg.m_FindData.GetCustodian());
+	m_Asset.SetData(Dlg.m_FindData.GetRec().GetAsset());
+	m_AssetDesc.SetData(Dlg.m_FindData.GetRec().GetDesc());
+	m_AssetCurr.SetData(Dlg.m_FindData.GetRec().GetCurrency());
+	m_Trader.SetData(Dlg.m_FindData.GetTrader());
+	m_Custodian.SetData(Dlg.m_FindData.GetCustodian());
 
 	
-	m_TransType->GetSelString(TransType);
+	TransType = m_TransType.GetData();
 	if(TransType == CALL || TransType == PUT || TransType == SPRSWCLL || TransType == SPRSWPUT)
 	{
-		m_OptTicker.SetWindowText(Dlg.m_FindData.GetRec().GetOptTicker()); // Set Opt Ticker
-		m_Listed->SetCheck(Dlg.m_OptListed);
+		m_OptTicker.SetData(Dlg.m_FindData.GetRec().GetOptTicker()); // Set Opt Ticker
+		m_Listed.SetCheck(Dlg.m_OptListed);
 	}
 	else
-		m_OptTicker.SetWindowText(EMPTYSTRING);		
+		m_OptTicker.SetData(EMPTYSTRING);		
 
 	if(TransType == SECURITIES && Dlg.m_FindData.GetRec().GetClass() == "CURRENCY FWDS" || TransType == FOREX)
 		bValueDateChangable = FALSE;
 
-	m_Currency->GetSelString(Currency);
+	Currency = m_Currency.GetData();
 	if(Currency.IsEmpty() || 
 		(Currency != Dlg.m_FindData.GetRec().GetCurrency() &&
 		 MessageBox("Note: Trading Currency is Different from Asset Currency! "
 					"Do you want to synchonize them ?", "Warning", MB_YESNO) == IDYES))
-		m_Currency->SelectString(-1, Dlg.m_FindData.GetRec().GetCurrency());
+		m_Currency.SetData(Dlg.m_FindData.GetRec().GetCurrency());
 
 	if(m_Fxrate.GetWindowTextLength() == 0)
-		m_Fxrate.SetWindowText(Currency == USD ? "1" : EMPTYSTRING);							
+		m_Fxrate.SetData(Currency == USD ? "1" : EMPTYSTRING);							
 
 	if(m_TradeDate.GetData().IsEmpty())
 		m_TradeDate.SetData(GetData().GetDate());
 
 	if(bValueDateChangable)
 	{
-		m_ValueDate.SetData(GetData().GetOraLoader().GetValueDate(m_TradeDate.GetData(), TransType, m_Listed->GetCheck(), Dlg.m_Future == "F" ? TRUE : FALSE));	
+		m_ValueDate.SetData(GetData().GetOraLoader().GetValueDate(m_TradeDate.GetData(), TransType, m_Listed.GetCheck(), Dlg.m_Future == "F" ? TRUE : FALSE));	
 		if(Dlg.m_EuropeBond == "Y")
 			m_ValueDate.SetData(GetData().GetPlus2Date());
 	}
 	
 	EnableCtrls();
-	m_TransType->SetFocus();
+	m_TransType.SetFocus();
 }
 
 void CConfirmView::OnUpdateConfirmFindasset(CCmdUI* pCmdUI) 
 {
 	CString TransType;
 
-	m_TransType->GetSelString(TransType);	
-	pCmdUI->Enable((m_Portfolio->GetCurSel() < 0 || TransType.IsEmpty() || 
+	TransType = m_TransType.GetData();	
+	pCmdUI->Enable((m_Portfolio.GetCurSel() < 0 || TransType.IsEmpty() || 
 					TransType == CASH || TransType == FOREX || TransType == SPRSWCLL || 
 					TransType == SPRSWCLL) ? FALSE : TRUE);	
 }
@@ -1241,39 +1089,39 @@ void CConfirmView::OnConfirmFindticket()
 
 void CConfirmView::OnUpdateConfirmFindticket(CCmdUI* pCmdUI) 
 {
-	pCmdUI->Enable(m_Mode == FMS_SEARCH && m_CP->GetCurSel() >= 0);
+	pCmdUI->Enable(m_Mode == FMS_SEARCH && m_CP.GetCurSel() >= 0);
 }
 
 void CConfirmView::OnConfirmRefresh() 
 {	
 	int Index;
 
-	Index = m_CP->GetCurSel();
+	Index = m_CP.GetCurSel();
 	m_Data.SetCurrentRow(-1);
 	m_Data.Refresh();
-	m_Portfolio->SetCurSel(-1);
-	m_RecCurrency.SetWindowText(EMPTYSTRING);
-	m_RecInterest.SetWindowText(EMPTYSTRING);
-	m_RecAccretion.SetWindowText(EMPTYSTRING);		
-	m_RecCash.SetWindowText(EMPTYSTRING);
-	m_RecTotal.SetWindowText(EMPTYSTRING);
+	m_Portfolio.SetCurSel(-1);
+	m_RecCurrency.SetData(EMPTYSTRING);
+	m_RecInterest.SetData(EMPTYSTRING);
+	m_RecAccretion.SetData(EMPTYSTRING);		
+	m_RecCash.SetData(EMPTYSTRING);
+	m_RecTotal.SetData(EMPTYSTRING);
 	m_bInCurrMonth = TRUE;
 
 	EnableCtrls();
 	EnableInvCtrls();
 	
-	m_CP->SetCurSel(Index);
+	m_CP.SetCurSel(Index);
 	m_TradeDate.SetData(GetData().GetDate());
 }
 
 void CConfirmView::OnUpdateConfirmRefresh(CCmdUI* pCmdUI) 
 {
-	pCmdUI->Enable(m_Portfolio->GetCurSel() >= 0);
+	pCmdUI->Enable(m_Portfolio.GetCurSel() >= 0);
 }
 
 void CConfirmView::OnUpdateConfirmInventory(CCmdUI* pCmdUI) 
 {
-	pCmdUI->Enable(m_Portfolio->GetCurSel() >= 0 && m_InvSS.GetSheetRows() > 0);
+	pCmdUI->Enable(m_Portfolio.GetCurSel() >= 0 && m_InvSS.GetSheetRows() > 0);
 }
 
 void CConfirmView::OnConfirmFindItem() 
@@ -1291,16 +1139,14 @@ void CConfirmView::OnConfirmFindItem()
 	switch(CurrID)
 	{
 		case IDC_CONFIRM_DEAL_EDIT:
-			m_TransType->GetSelString(TransType);
-			m_Dir.GetSelString(Dir);
+			TransType = m_TransType.GetData();
+			Dir = m_Dir.GetData();
 			TransType = GetData().DefineTransType(TransType, Dir);
 			if(TransType == SECURITIES || TransType == CDS || TransType == CALL || 
 				TransType == PUT || TransType == SPRSWCLL || TransType == SPRSWPUT)
 			{
-				m_Portfolio->GetSelString(Portfolio);
-				Portfolio = QData.GetQueryText(Portfolio);
-				m_Asset.GetWindowText(Asset);
-				Asset = QData.GetQueryText(Asset);
+				Portfolio = QData.GetQueryText(m_Portfolio.GetData());
+				Asset = QData.GetQueryText(m_Asset.GetData());
 				ValueDate = m_ValueDate.GetData();
 
 				if(TransType == SECURITIES || TransType == CDS)
@@ -1311,39 +1157,43 @@ void CConfirmView::OnConfirmFindItem()
 						return;
 					}
 					
-					FindDlg.m_OraLoader.GetSql().Format("SELECT TRANS_NUM, ASSET_CODE, TRANS_DIRECTION \"DIR\", "
-							"TRANS_TYPE, EXERCISE_PRICE \"STRIKE\", OPT_EXPIRATION \"OPT_EXP\",  NOM_AMOUNT "
-							"FROM SEMAM.NW_OUT_OPTIONS WHERE PORTFOLIO = %s AND ASSET_CODE = %s "
-							"AND TRANS_TYPE IN ('PUT', 'CALL', 'SPR.SW.CLL', 'SPR.SW.PUT') "
-							"AND (OPT_EXPIRATION IS NULL OR OPT_EXPIRATION >=TO_DATE(%s) - 5) "
-							"AND EXERCISE_DATE IS NULL AND NOM_AMOUNT > 0 ORDER BY TRANS_NUM ", 
-							(LPCTSTR) Portfolio, (LPCTSTR) Asset,	QData.GetQueryDate(ValueDate));
+					FindDlg.m_OraLoader.GetSql() = "SELECT TRANS_NUM, ASSET_CODE, TRANS_DIRECTION \"DIR\", "
+													"TRANS_TYPE, EXERCISE_PRICE \"STRIKE\", OPT_EXPIRATION \"OPT_EXP\",  "
+													"NOM_AMOUNT "
+													"FROM SEMAM.NW_OUT_OPTIONS "
+													"WHERE PORTFOLIO = " + Portfolio + 
+													" AND ASSET_CODE =" + Asset + 
+													" AND TRANS_TYPE IN ('PUT', 'CALL', 'SPR.SW.CLL', 'SPR.SW.PUT') "
+													" AND (OPT_EXPIRATION IS NULL OR OPT_EXPIRATION >=TO_DATE(" + QData.GetQueryDate(ValueDate) + ") - 5) "
+													"AND EXERCISE_DATE IS NULL AND NOM_AMOUNT > 0 ORDER BY TRANS_NUM ";
 				}
 				else
 				{
-					m_Strike.GetWindowText(Strike);
-					Strike = QData.GetQueryNumber(Strike);
-					OptExp = m_OptExp.GetData();
-					OptExp = QData.GetQueryDate(OptExp);
+					Strike = QData.GetQueryNumber(m_Strike.GetData());
+					OptExp = QData.GetQueryDate(m_OptExp.GetData());
 					TransType = QData.GetQueryText(TransType);
 					Dir = QData.GetQueryText(Dir);
-					if(Portfolio.IsEmpty() || Asset.IsEmpty() || 
-						ValueDate.IsEmpty() || Strike.IsEmpty() ||
+					if(Portfolio.IsEmpty() || Asset.IsEmpty() || ValueDate.IsEmpty() || Strike.IsEmpty() ||
 						OptExp.IsEmpty() || Dir.IsEmpty())
 					{
 						MessageBox("Insufficient search condition", "Error", MB_OK);
 						return;
 					}
 
-					FindDlg.m_OraLoader.GetSql().Format("SELECT TRANS_NUM, ASSET_CODE, TRANS_DIRECTION \"DIR\", "
-							"TRANS_TYPE, EXERCISE_PRICE \"STRIKE\", OPT_EXPIRATION \"OPT_EXP\", NOM_AMOUNT "
-							"FROM SEMAM.NW_OUT_OPTIONS WHERE PORTFOLIO = %s AND ASSET_CODE = %s "
-							"AND TRANS_TYPE IN ('PUT', 'CALL', 'SPR.SW.CLL', 'SPR.SW.PUT') "
-							"AND (OPT_EXPIRATION IS NULL OR OPT_EXPIRATION >=TO_DATE(%s) - 5) "
-							"AND EXERCISE_DATE IS NULL AND NOM_AMOUNT > 0 AND EXERCISE_PRICE = %s "
-							"AND OPT_EXPIRATION = %s AND TRANS_TYPE = %s AND TRANS_DIRECTION != %s "
-							"ORDER BY TRANS_NUM ", (LPCTSTR) Portfolio, (LPCTSTR) Asset, QData.GetQueryDate(ValueDate), 
-							(LPCTSTR) Strike, (LPCTSTR) OptExp, (LPCTSTR) TransType, (LPCTSTR) Dir);					
+					FindDlg.m_OraLoader.GetSql() = "SELECT TRANS_NUM, ASSET_CODE, TRANS_DIRECTION \"DIR\", "
+													"TRANS_TYPE, EXERCISE_PRICE \"STRIKE\", OPT_EXPIRATION \"OPT_EXP\", "
+													"NOM_AMOUNT "
+													"FROM SEMAM.NW_OUT_OPTIONS "
+													"WHERE PORTFOLIO = " + Portfolio + 
+													" AND ASSET_CODE = " + Asset + 
+													" AND TRANS_TYPE IN ('PUT', 'CALL', 'SPR.SW.CLL', 'SPR.SW.PUT') "
+													" AND (OPT_EXPIRATION IS NULL OR OPT_EXPIRATION >=TO_DATE(" + QData.GetQueryDate(ValueDate) + ") - 5) "
+													" AND EXERCISE_DATE IS NULL "
+													" AND NOM_AMOUNT > 0 "
+													" AND EXERCISE_PRICE = " + Strike + 
+													" AND OPT_EXPIRATION = " + OptExp + 
+													" AND TRANS_TYPE = " + TransType + 
+													" AND TRANS_DIRECTION != " + Dir;
 				}
 
 				if(FindDlg.DoModal() == IDOK)
@@ -1357,9 +1207,9 @@ void CConfirmView::OnConfirmFindItem()
 			UpdateCPCT(m_InvAssignCP, m_InvAssignCT);
 			break;
 		case IDC_CONFIRM_INV_FOREX_REF_EDIT:
-			m_Portfolio->GetSelString(Portfolio);
-			m_Currency->GetSelString(Currency);
-			m_Dir.GetSelString(Dir);
+			Portfolio = m_Portfolio.GetData();
+			Currency = m_Currency.GetData();
+			Dir = m_Dir.GetData();
 			ValueDate = m_ValueDate.GetData();
 
 			if(Currency.IsEmpty())
@@ -1376,24 +1226,24 @@ void CConfirmView::OnConfirmFindItem()
 						(const char *) Portfolio, (const char *) Currency, (const char *) ValueDate,
 						(const char *) ValueDate, (const char *) Dir);
 			if(FindDlg.DoModal() == IDOK)
-				m_InvForexRef.SetWindowText(QData.RemoveComma(FindDlg.m_Key));
+				m_InvForexRef.SetData(QData.RemoveComma(FindDlg.m_Key));
 			break;
-			m_Asset.GetWindowText(SetDlg.m_sAsset);
-			m_Portfolio->GetSelString(SetDlg.m_sPortfolio);
+			SetDlg.m_sAsset = m_Asset.GetData();
+			SetDlg.m_sPortfolio = m_Portfolio.GetData();
 			SetDlg.m_pData = &GetData();
 			if(SetDlg.DoModal() == IDOK)
-				m_SetConvention.SetWindowText(SetDlg.m_sSetConvention);
+				m_SetConvention.SetData(SetDlg.m_sSetConvention);
 			break;
 		case IDC_CONFIRM_BINARY_EDIT:
 			FindDlg.m_OraLoader.Open("SELECT OPT_TYPE, OPT_TYPE_DESC FROM SEMAM.NW_EXOTIC_OPTTYPE ORDER BY 1 ");
 			if(FindDlg.DoModal() == IDOK)
 			{
 				CString Text;
-				m_Binary.GetWindowText(Text);
+				Text = m_Binary.GetData();
 				Text.MakeUpper();
 				Text = Text.SpanExcluding("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
 				Text = FindDlg.m_Key + Text;
-				m_Binary.SetWindowText(Text);
+				m_Binary.SetData(Text);
 			}
 			break;
 		default:
@@ -1404,23 +1254,23 @@ void CConfirmView::OnConfirmFindItem()
 void CConfirmView::OnUpdateConfirmFindItem(CCmdUI* pCmdUI) 
 {
 	pCmdUI->Enable(m_nCurrID && 
-			((m_Portfolio->GetCurSel() >= 0 && m_Asset.GetWindowTextLength() > 0
-			&& !m_ValueDate.GetData().IsEmpty() && m_TransType->GetCurSel() >= 0) || 
-			m_CP->GetCurSel() > 0));
+			((m_Portfolio.GetCurSel() >= 0 && m_Asset.GetWindowTextLength() > 0
+			&& !m_ValueDate.GetData().IsEmpty() && m_TransType.GetCurSel() >= 0) || 
+			m_CP.GetCurSel() > 0));
 }
 
 void CConfirmView::OnUpdateConfirmInvertPrice(CCmdUI* pCmdUI)
 {
-	pCmdUI->Enable(m_Portfolio->GetCurSel() >= 0);
+	pCmdUI->Enable(m_Portfolio.GetCurSel() >= 0);
 }
 
 void CConfirmView::OnConfirmInvertPrice()
 {
 	CInvert Dlg;
 
-	m_Price.GetWindowText(Dlg.m_Origin);
+	Dlg.m_Origin = m_Price.GetData();
 	if(Dlg.DoModal() == IDOK)
-		m_Price.SetWindowText(Dlg.m_New);
+		m_Price.SetData(Dlg.m_New);
 }
 
 void CConfirmView::OnConfirmRepoPrice()
@@ -1428,44 +1278,38 @@ void CConfirmView::OnConfirmRepoPrice()
 	CRepoPrice Dlg;
 	CString	ValueDate, RateBasis, Formula;
 	
-	m_Asset.GetWindowText(Dlg.m_Asset);
-	m_Margin.GetWindowText(Dlg.m_HairCut);
-	if(m_TRS->GetCheck())
+	Dlg.m_Asset = m_Asset.GetData();
+	Dlg.m_HairCut = m_Margin.GetData();
+	if(m_TRS.GetCheck())
 		Dlg.m_HairCut = "0";
 	else
 		Dlg.m_HairCut = "10";
 	
-	m_Price.GetWindowText(Dlg.m_NWINetPrice);
+	Dlg.m_NWINetPrice = m_Price.GetData();
 	ValueDate = m_ValueDate.GetData();
-	m_RateBasis->GetSelString(RateBasis); // Lev Rate Basis
-	m_Formula->GetSelString(Formula);
+	RateBasis = m_RateBasis.GetData(); // Lev Rate Basis
+	Formula = m_Formula.GetData();
 	Dlg.m_Val.Setup(GetData().GetOraLoader(), REPO, P, Dlg.m_Asset, ValueDate, ValueDate, 
 					"0", "0", "1", RateBasis, "1", Formula);
 					
 	if(Dlg.DoModal() == IDOK)
 	{
-		m_Price.SetWindowText(Dlg.m_NWINetPrice);
-		m_Margin.SetWindowText(Dlg.m_HairCut);
+		m_Price.SetData(Dlg.m_NWINetPrice);
+		m_Margin.SetData(Dlg.m_HairCut);
 	}
 }
 
 void CConfirmView::OnUpdateConfirmRepoPrice(CCmdUI* pCmdUI)
 {
-	CString Text;
-
-	m_TransType->GetSelString(Text);
-	pCmdUI->Enable(m_Portfolio->GetCurSel() >= 0 && Text == REPO && 
-					m_Asset.GetWindowTextLength() > 0);
+	pCmdUI->Enable(m_Portfolio.GetCurSel() >= 0 && m_TransType.GetData() == REPO && m_Asset.GetWindowTextLength() > 0);
 }
 
 void CConfirmView::OnUpdateConfirmOptionExp(CCmdUI* pCmdUI)
 {
 	CString TransType;
 
-	m_TransType->GetSelString(TransType);
-	pCmdUI->Enable(m_Portfolio->GetCurSel() >= 0 && 
-					(TransType == CALL || TransType == PUT) ? 
-					TRUE : FALSE);
+	TransType = m_TransType.GetData();
+	pCmdUI->Enable(m_Portfolio.GetCurSel() >= 0 && (TransType == CALL || TransType == PUT) ? TRUE : FALSE);
 }
 
 void CConfirmView::OnConfirmOptionExp()
@@ -1483,7 +1327,7 @@ void CConfirmView::OnConfirmTrsCheck()
 	{
 		if(MessageBox("Do you want to make a change on TRS Field?", 
 					NULL, MB_YESNO) != IDYES)
-			m_TRS->SetCheck(m_Data.GetTicket().GetTRS()); // Change back to the original one
+			m_TRS.SetCheck(m_Data.GetTicket().GetTRS()); // Change back to the original one
 	}
 }
 
@@ -1504,7 +1348,7 @@ void CConfirmView::OnConfirmFindExactTicket()
 
 void CConfirmView::OnUpdateConfirmFindExactTicket(CCmdUI* pCmdUI) 
 {
-	pCmdUI->Enable(m_Mode == FMS_SEARCH && m_CP->GetCurSel() >= 0);	
+	pCmdUI->Enable(m_Mode == FMS_SEARCH && m_CP.GetCurSel() >= 0);	
 }
 
 void CConfirmView::OnEnSetfocusConfirmInvForexRefEdit()
@@ -1529,7 +1373,7 @@ void CConfirmView::OnEnKillfocusConfirmMaturityEdit()
 
 void CConfirmView::OnUpdateConfirmOtherfee(CCmdUI *pCmdUI)
 {
-	pCmdUI->Enable(!m_TransNum.GetData().IsEmpty() && (m_SecFee->GetCheck() || m_OrFee->GetCheck()));
+	pCmdUI->Enable(!m_TransNum.GetData().IsEmpty() && (m_SecFee.GetCheck() || m_OrFee.GetCheck()));
 }
 
 void CConfirmView::OnConfirmOtherfee()
@@ -1538,17 +1382,17 @@ void CConfirmView::OnConfirmOtherfee()
 	CQData QData;
 
 	Dlg.m_TransNum = m_TransNum.GetData();
-	Dlg.m_bSecFee = m_SecFee->GetCheck();
-	Dlg.m_bOrFee = m_OrFee->GetCheck();
+	Dlg.m_bSecFee = m_SecFee.GetCheck();
+	Dlg.m_bOrFee = m_OrFee.GetCheck();
 	if(Dlg.DoModal() == IDOK)
-		m_OtherFee.SetWindowText(QData.WriteNumber(Dlg.m_dSecFee + Dlg.m_dOrFee, TRUE));
+		m_OtherFee.SetData(QData.WriteNumber(Dlg.m_dSecFee + Dlg.m_dOrFee, TRUE));
 }
 
 void CConfirmView::OnEnSetfocusConfirmBinaryEdit()
 {
 	CString TransType;
 
-	m_TransType->GetSelString(TransType);
+	TransType = m_TransType.GetData();
 
 	if(TransType == CALL || TransType == PUT)
 		m_nCurrID = IDC_CONFIRM_BINARY_EDIT;

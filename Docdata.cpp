@@ -59,48 +59,31 @@ CDocData::~CDocData()
 
 void CDocData::LoadAssetData(BOOL Refresh)
 {
-	LoadDBRecArray(m_CountryArr, "SELECT COUNTRY FROM SEMAM.NW_COUNTRIES "
-					"WHERE SOV_FLAG = 'Y' ORDER BY 1", Refresh);
-	LoadDBRecArray(m_ProfileCountryArr, "SELECT COUNTRY FROM SEMAM.NW_COUNTRIES "
-					"ORDER BY 1", Refresh);
-	LoadDBRecArray(m_CDSFeeTypeArr, "SELECT FEE_TYPE, FEE_DESC FROM SEMAM.NW_DF_FEE_TYPE "
-					"ORDER BY 1", Refresh);
-	LoadDBRecArray(m_IndustryArr, "SELECT IND_AREAS FROM SEMAM.NW_IND_AREAS "
-					"ORDER BY 1", Refresh);
-	LoadDBRecArray(m_BucketArr, "SELECT BUCKET, BUCKET_DESC FROM SEMAM.NW_BUCKETS "
-					"ORDER BY BUCKET_INDEX", Refresh);
-	LoadDBRecArray(m_AssetTypeArr, "SELECT IND_CODE FROM SEMAM.NW_INDUSTRIES "
-					"WHERE TYPE_FLAG = 'Y' ORDER BY 1", Refresh);
-	LoadDBRecArray(m_AssetProfileTypeArr, "SELECT IND_CODE FROM SEMAM.NW_INDUSTRIES "
-					"ORDER BY 1", Refresh);
+	LoadDBRecArray(m_CountryArr, "SELECT COUNTRY FROM SEMAM.NW_COUNTRIES WHERE SOV_FLAG = 'Y' ORDER BY 1", Refresh);
+	LoadDBRecArray(m_ProfileCountryArr, "SELECT COUNTRY FROM SEMAM.NW_COUNTRIES ORDER BY 1", Refresh);
+	LoadDBRecArray(m_CDSFeeTypeArr, "SELECT FEE_TYPE, FEE_DESC FROM SEMAM.NW_DF_FEE_TYPE ORDER BY 1", Refresh);
+	LoadDBRecArray(m_IndustryArr, "SELECT IND_AREAS FROM SEMAM.NW_IND_AREAS ORDER BY 1", Refresh);
+	LoadDBRecArray(m_BucketArr, "SELECT BUCKET, BUCKET_DESC FROM SEMAM.NW_BUCKETS ORDER BY BUCKET_INDEX", Refresh);
+	LoadDBRecArray(m_AssetTypeArr, "SELECT IND_CODE FROM SEMAM.NW_INDUSTRIES WHERE TYPE_FLAG = 'Y' ORDER BY 1", Refresh);
+	LoadDBRecArray(m_AssetProfileTypeArr, "SELECT IND_CODE FROM SEMAM.NW_INDUSTRIES ORDER BY 1", Refresh);
 	LoadDBRecArray(m_FutureTypeArr, "SELECT FUTURE_TYPE FROM SEMAM.NW_FUTURE_TYPE ORDER BY 1 ", Refresh);
-	LoadDBRecArray(m_PmntFrqArr, "SELECT PAYMENT_FREQ, FREQ_DESC FROM SEMAM.NW_PAYMENT_FREQ "
-					"ORDER BY 1", Refresh);
-	LoadDBRecArray(m_IssuerArr, "SELECT ISSUER FROM SEMAM.NW_ISSUERS "
-					"ORDER BY 1", Refresh);
-	LoadDBRecArray(m_ActionArr, "SELECT ACTION FROM SEMAM.NW_ACTIONS "
-					"ORDER BY 1", Refresh);
-	LoadDBRecArray(m_RateTypeArr, "SELECT ASS_INT_TYPE FROM SEMAM.NW_INT_TYPES "
-					"ORDER BY 1", Refresh);
-	LoadDBRecArray(m_MethodArr, "SELECT METHOD FROM SEMAM.NW_ASSET_METHODS "
-					"ORDER BY 1", Refresh);
-	LoadDBRecArray(m_IndexArr, "SELECT REF_IDX, REF_IDX_DESC, CICO_ID, YC_NAME FROM SEMAM.NW_REF_IDX ORDER BY 1 ");
-	LoadDBRecArray(m_LevelArr, "SELECT ASSET_LEVEL, LEVEL_DESC FROM SEMAM.NW_ASSET_LEVEL "
-					"ORDER BY 1", Refresh);
-	LoadDBRecArray(m_PFClassArr, "SELECT PF_CLASS FROM SEMAM.NW_PF_CLASS "
-					"ORDER BY 1", Refresh);
-	LoadDBRecArray(m_PFSubClassArr, "SELECT PF_SUBCLASS FROM SEMAM.NW_PF_SUBCLASS "
-					"ORDER BY 1", Refresh);
+	LoadDBRecArray(m_PmntFrqArr, "SELECT PAYMENT_FREQ, FREQ_DESC FROM SEMAM.NW_PAYMENT_FREQ ORDER BY 1", Refresh);
+	LoadDBRecArray(m_IssuerArr, "SELECT ISSUER FROM SEMAM.NW_ISSUERS ORDER BY 1", Refresh);
+	LoadDBRecArray(m_ActionArr, "SELECT ACTION FROM SEMAM.NW_ACTIONS ORDER BY 1", Refresh);
+	LoadDBRecArray(m_RateTypeArr, "SELECT ASS_INT_TYPE FROM SEMAM.NW_INT_TYPES ORDER BY 1", Refresh);
+	LoadDBRecArray(m_MethodArr, "SELECT METHOD FROM SEMAM.NW_ASSET_METHODS ORDER BY 1", Refresh);
+	LoadDBRecArray(m_IndexArr, "SELECT REF_IDX, REF_IDX_DESC, CICO_ID, YC_NAME FROM SEMAM.NW_REF_IDX ORDER BY 1 ", Refresh);
+	LoadDBRecArray(m_LevelArr, "SELECT ASSET_LEVEL, LEVEL_DESC FROM SEMAM.NW_ASSET_LEVEL ORDER BY 1", Refresh);
+	LoadDBRecArray(m_PFClassArr, "SELECT PF_CLASS FROM SEMAM.NW_PF_CLASS ORDER BY 1", Refresh);
+	LoadDBRecArray(m_PFSubClassArr, "SELECT PF_SUBCLASS FROM SEMAM.NW_PF_SUBCLASS ORDER BY 1", Refresh);
 	LoadDBRecArray(m_BlmKeyArr, "SELECT BLM_KEY FROM SEMAM.NW_BLM_KEY ORDER BY 1", Refresh);
-	LoadDBRecArray(m_YieldCurveArr, "SELECT YC_NAME, YC_SYMBOL, YC_INDEX, YC_TERM, "
-					"YC_SOURCE, YC_DEFAULT "
+	LoadDBRecArray(m_YieldCurveArr, "SELECT YC_NAME, YC_SYMBOL, YC_INDEX, YC_TERM, YC_SOURCE, YC_DEFAULT "
 					"FROM SEMAM.NW_YIELD_CURVE ORDER BY 1 ", Refresh);
 }
 
 void CDocData::LoadCashData(BOOL Refresh)
 {
-	LoadDBRecArray(m_CashTypeArr, "SELECT PMNT_TYPE FROM SEMAM.NW_PMNT_TYPES "
-					"ORDER BY 1", Refresh);
+	LoadDBRecArray(m_CashTypeArr, "SELECT PMNT_TYPE FROM SEMAM.NW_PMNT_TYPES ORDER BY 1", Refresh);
 }
 
 void CDocData::LoadDates()
@@ -117,8 +100,7 @@ void CDocData::LoadSupportData(BOOL Refresh)
 					"FROM SEMAM.NW_PORTFOLIOS WHERE STATUS IS NULL ORDER BY 1", Refresh);
 	LoadDBRecArray(m_TraderArr, "SELECT TRADER_INI, TRADER FROM SEMAM.NW_TRADERS "
 							"WHERE ACTIVE = 'Y' ORDER BY 1", Refresh);
-	LoadDBRecArray(m_TransDirArr, "SELECT DIRECTION, DIR_DESCRIPTION FROM SEMAM.NW_DIRECTION WHERE DIRECTION IN ('P', 'S') "
-					"ORDER BY 1", Refresh);
+	LoadDBRecArray(m_TransDirArr, "SELECT DIRECTION, DIR_DESCRIPTION FROM SEMAM.NW_DIRECTION WHERE DIRECTION IN ('P', 'S') ORDER BY 1", Refresh);
 	LoadDBRecArray(m_CurrencyArr, "SELECT CURRENCY FROM SEMAM.NW_CURRENCY ORDER BY 1", Refresh);
 
 	if(Refresh)
@@ -141,22 +123,16 @@ void CDocData::LoadSupportData(BOOL Refresh)
 					"WHERE B.CP_CODE = A.CP_CODE AND B.ISVALID = 'Y' "
 					"AND A.ISVALID = 'Y' ORDER BY 1, 2, 3", Refresh);
 
-	LoadDBRecArray(m_IndexArr, "SELECT REF_IDX, REF_IDX_DESC FROM SEMAM.NW_REF_IDX ORDER BY 1 ",
-					Refresh);
-
-	LoadDBRecArray(m_AccountArr, "SELECT ACC_CODE FROM SEMAM.NW_CASH_ACCOUNTS "
-					"WHERE ACTIVE = 'Y' ORDER BY 1", Refresh);
-	LoadDBRecArray(m_OptSetArr, "SELECT OPT_SET_CODE, OPT_SET_ZONE, OPT_SET_TIME "
-					"FROM SEMAM.NW_OPT_SETTLEMENT ORDER BY 2, 3");
-	LoadDBRecArray(m_TransTypeArr, "SELECT TRANS_TYPE FROM LIN.NW_TRANS_TYPES "
-					"ORDER BY 1", Refresh);
+	LoadDBRecArray(m_IndexArr, "SELECT REF_IDX, REF_IDX_DESC FROM SEMAM.NW_REF_IDX ORDER BY 1 ", Refresh);
+	LoadDBRecArray(m_AccountArr, "SELECT ACC_CODE FROM SEMAM.NW_CASH_ACCOUNTS WHERE ACTIVE = 'Y' ORDER BY 1", Refresh);
+	LoadDBRecArray(m_OptSetArr, "SELECT OPT_SET_CODE, OPT_SET_ZONE, OPT_SET_TIME FROM SEMAM.NW_OPT_SETTLEMENT ORDER BY 2, 3", Refresh);
+	LoadDBRecArray(m_TransTypeArr, "SELECT TRANS_TYPE FROM LIN.NW_TRANS_TYPES ORDER BY 1", Refresh);
 	LoadDBRecArray(m_TrDescArr, "SELECT TR_DESC FROM SEMAM.NW_TR_DESC ORDER BY 1 ", Refresh);
-	LoadDBRecArray(m_CategoryArr, "SELECT STRATEGY FROM SEMAM.NW_INV_STRATEGIES "
-							"WHERE TRANS_BUCKET IS NULL ORDER BY CAT_INDEX", Refresh);
-	LoadDBRecArray(m_RateBasisArr, "SELECT RATE_BASIS FROM SEMAM.NW_RATE_BASES "
-					"ORDER BY 1", Refresh);
+	LoadDBRecArray(m_CategoryArr, "SELECT STRATEGY FROM SEMAM.NW_INV_STRATEGIES WHERE TRANS_BUCKET IS NULL ORDER BY CAT_INDEX", Refresh);
+	LoadDBRecArray(m_RateBasisArr, "SELECT RATE_BASIS FROM SEMAM.NW_RATE_BASES ORDER BY 1", Refresh);
 	LoadDBRecArray(m_PFUArr, "SELECT PFU FROM SEMAM.NW_PFU ORDER BY 1", Refresh);
 	LoadDBRecArray(m_BestExecutionArr, "SELECT BEST_EXECUTION FROM SEMAM.NW_BEST_EXECUTION ORDER BY 1", Refresh);
+	LoadDBRecArray(m_ETradeTypeArr, "SELECT ETRADE_TYPE, ETRADE_DESC FROM SEMAM.NW_ETRADE_TYPE ORDER BY 2", Refresh);
 }
 
 void CDocData::LoadUser(BOOL Refresh)
@@ -297,7 +273,7 @@ void CDocData::PasswordExpiryWarning()
 		if(Value.IsNull())
 			nPassDays = 100;
 		else
-			nPassDays = (double) Value;
+			nPassDays = (int) Value;
 		GetOraLoader().MoveNext();
 	}
 

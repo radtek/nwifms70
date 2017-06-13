@@ -14,25 +14,6 @@ IMPLEMENT_DYNAMIC(CCPFutureCommDlg, CDialogEx)
 CCPFutureCommDlg::CCPFutureCommDlg(CWnd* pParent /*=NULL*/)
 	: CDialogEx(CCPFutureCommDlg::IDD, pParent)
 {
-	m_CP = NULL;
-	m_TransType = NULL;
-	m_Currency = NULL;
-	m_FutureType = NULL;
-	m_ETrade = NULL;
-}
-
-CCPFutureCommDlg::~CCPFutureCommDlg()
-{
-	if(m_CP)
-		delete m_CP;
-	if(m_TransType)
-		delete m_TransType;
-	if(m_Currency)
-		delete m_Currency;
-	if(m_FutureType)
-		delete m_FutureType;
-	if(m_ETrade)
-		delete m_ETrade;
 }
 
 void CCPFutureCommDlg::DoDataExchange(CDataExchange* pDX)
@@ -57,13 +38,13 @@ BOOL CCPFutureCommDlg::IsOK(int nAction)
 			Text = "No Record selected";
 	}
 
-	if(m_CP->GetCurSel() < 0)
+	if(m_CP.GetCurSel() < 0)
 		Text = "No counterparty selected";
-	if(m_TransType->GetCurSel() < 0)
+	if(m_TransType.GetCurSel() < 0)
 		Text = "No trans type selected";
-	if(m_FutureType->GetCurSel() < 0)
+	if(m_FutureType.GetCurSel() < 0)
 		Text = "No future type selected";
-	if(m_Currency->GetCurSel() < 0)
+	if(m_Currency.GetCurSel() < 0)
 		Text = "No currency selected";
 	if(m_FromDate.GetData().IsEmpty())
 		Text = "No From Date entered";
@@ -90,14 +71,14 @@ void CCPFutureCommDlg::RowToControls()
 		int Row;
 
 		Row = m_SS.GetSheetCurRow();
-		m_CP->SelectString(0, m_SS.GetSheetText(1, Row));
-		m_TransType->SelectString(0, m_SS.GetSheetText(2, Row));
-		m_Currency->SelectString(0, m_SS.GetSheetText(3, Row));
-		m_FutureType->SelectString(0, m_SS.GetSheetText(4, Row));
+		m_CP.SetData(m_SS.GetSheetText(1, Row));
+		m_TransType.SetData(m_SS.GetSheetText(2, Row));
+		m_Currency.SetData(m_SS.GetSheetText(3, Row));
+		m_FutureType.SetData(m_SS.GetSheetText(4, Row));
 		m_FromDate.SetData(m_SS.GetSheetText(5, Row));
 		m_ToDate.SetData(m_SS.GetSheetText(6, Row));
-		m_ETrade->SetCheck(m_SS.GetSheetText(7, Row));
-		m_Commission.SetWindowText(m_SS.GetSheetText(8, Row));
+		m_ETrade.SetData(m_SS.GetSheetText(7, Row));
+		m_Commission.SetData(m_SS.GetSheetText(8, Row));
 		m_RowID = m_SS.GetSheetText(9, Row);
 	}
 }
@@ -123,23 +104,24 @@ BOOL CCPFutureCommDlg::OnInitDialog()
 	m_SS.SetVisibleRows(14);
 	m_SS.SetVisibleCols(5);
 
-	m_CP = (COptComboBox*) new COptComboBox(this, IDC_FC_CP_COMBO);
-	m_TransType = (COptComboBox*) new COptComboBox(this, IDC_FC_TRANSTYPE_COMBO);
-	m_Currency = (COptComboBox*) new COptComboBox(this, IDC_FC_CURRENCY_COMBO);
-	m_FutureType = (COptComboBox*) new COptComboBox(this, IDC_FC_FUTURETYPE_COMBO, TRUE);
+	m_CP.Setup(this, IDC_FC_CP_COMBO);
+	m_TransType.Setup(this, IDC_FC_TRANSTYPE_COMBO);
+	m_Currency.Setup(this, IDC_FC_CURRENCY_COMBO);
+	m_FutureType.Setup(this, IDC_FC_FUTURETYPE_COMBO, TRUE);
 	m_FromDate.Setup(this, IDC_FC_FROMDATE_EDIT);
 	m_ToDate.Setup(this, IDC_FC_TODATE_EDIT);
 	m_Commission.Setup(this, IDC_FC_COMMISSION_EDIT);
-	m_ETrade = (CCheckBox*) new CCheckBox(this, IDC_FC_ETRADE_CHECK, Y, N);
+	m_ETrade.Setup(this, IDC_FC_ETRADE_COMBO);
 
 	BeginWaitCursor();
 
 	m_OraLoader = m_pData->GetOraLoader();
-	m_pData->GetContactList().CopyKeyToComboBox(*m_CP);
-	m_pData->GetCurrencyArr().CopyToComboBox(*m_Currency);
-	m_pData->GetFutureTypeArr().CopyToComboBox(*m_FutureType);
-	m_TransType->AddString("OPTION");
-	m_TransType->AddString(SECURITIES);
+	m_pData->GetContactList().CopyKeyToComboBox(m_CP);
+	m_pData->GetCurrencyArr().CopyToComboBox(m_Currency);
+	m_pData->GetFutureTypeArr().CopyToComboBox(m_FutureType);
+	m_TransType.AddString("OPTION");
+	m_TransType.AddString(SECURITIES);
+	m_pData->GetETradeTypeArr().CopyToMCComboBox(m_ETrade);
 
 	this->SetWindowText("Counterparty Future Commission Schedule");
 	OnBnClickedFcLoadButton();
@@ -183,21 +165,19 @@ void CCPFutureCommDlg::OnBnClickedFcAddButton()
 		return;
 
 	CDBRec Rec;
-	CString Text;
 
 	m_OraLoader.Open("SELECT COUNTERPARTY, TRANS_TYPE, CURRENCY, FUTURE_TYPE, FROM_DATE, "
 						"TO_DATE, ETRADE, COMMISSION "
 						"FROM SEMAM.NW_FUTURE_COMM_SCHEDULE ", ODYNASET_DEFAULT);
 	
-	Rec.Add(m_CP->GetSelString(Text));
-	Rec.Add(m_TransType->GetSelString(Text));
-	Rec.Add(m_Currency->GetSelString(Text));
-	Rec.Add(m_FutureType->GetSelString(Text));
+	Rec.Add(m_CP.GetData());
+	Rec.Add(m_TransType.GetData());
+	Rec.Add(m_Currency.GetData());
+	Rec.Add(m_FutureType.GetData());
 	Rec.Add(m_FromDate.GetData());
 	Rec.Add(m_ToDate.GetData());
-	Rec.Add(m_ETrade->GetCheckString());
-	m_Commission.GetWindowText(Text);
-	Rec.Add(Text);
+	Rec.Add(m_ETrade.GetData());
+	Rec.Add(m_Commission.GetData());
 
 	m_OraLoader.UpdateRecord(Rec, TRUE);
 	m_SS.AddSheetRow(Rec);
@@ -212,20 +192,18 @@ void CCPFutureCommDlg::OnBnClickedFcUpdateButton()
 		return;
 
 	CDBRec Rec;
-	CString Text;
 
 	m_OraLoader.Open("SELECT COUNTERPARTY, TRANS_TYPE, CURRENCY, FUTURE_TYPE, FROM_DATE, "
 						"TO_DATE, ETRADE, COMMISSION "
 						"FROM SEMAM.NW_FUTURE_COMM_SCHEDULE WHERE ROWIDTOCHAR(ROWID) = '" + m_RowID + "' ", ODYNASET_DEFAULT);
-	Rec.Add(m_CP->GetSelString(Text));
-	Rec.Add(m_TransType->GetSelString(Text));
-	Rec.Add(m_Currency->GetSelString(Text));
-	Rec.Add(m_FutureType->GetSelString(Text));
+	Rec.Add(m_CP.GetData());
+	Rec.Add(m_TransType.GetData());
+	Rec.Add(m_Currency.GetData());
+	Rec.Add(m_FutureType.GetData());
 	Rec.Add(m_FromDate.GetData());
 	Rec.Add(m_ToDate.GetData());
-	Rec.Add(m_ETrade->GetCheckString());
-	m_Commission.GetWindowText(Text);
-	Rec.Add(Text);
+	Rec.Add(m_ETrade.GetData());
+	Rec.Add(m_Commission.GetData());
 
 	m_OraLoader.UpdateRecord(Rec);
 	m_SS.UpdateSheetRow(m_SS.GetSheetCurRow(), Rec);

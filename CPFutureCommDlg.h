@@ -27,21 +27,21 @@ class CCPFutureCommDlg : public CDialogEx
 
 public:
 	CCPFutureCommDlg(CWnd* pParent = NULL);   // standard constructor
-	virtual ~CCPFutureCommDlg();
+	virtual ~CCPFutureCommDlg() {}
 
 // Dialog Data
 	enum { IDD = IDD_FUTURE_COMM_SCHEDULE_DIALOG };
 	COraLoader m_OraLoader;
 	CDBSheet m_SS;
 	CDocData *m_pData;
-	COptComboBox *m_CP;
-	COptComboBox *m_TransType;
-	COptComboBox *m_Currency;
-	COptComboBox *m_FutureType;
+	COptComboBox m_CP;
+	COptComboBox m_TransType;
+	COptComboBox m_Currency;
+	COptComboBox m_FutureType;
 	CMaskDateEdit m_FromDate;
 	CMaskDateEdit m_ToDate;
 	CNumEdit m_Commission;
-	CCheckBox *m_ETrade;
+	CMCComboBox m_ETrade;
 	CString m_RowID;
 
 protected:

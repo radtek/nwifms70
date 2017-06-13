@@ -44,34 +44,33 @@ public:
 	CDBSheet m_SS;
 	CDBSheet m_InvSS;
 
-	CCheckBox *m_TRS;
-	CCheckBox *m_IPO;
-	CCheckBox *m_EuroOpt;
-	CCheckBox *m_Listed;
-	CCheckBox *m_DocRq;
-	CCheckBox *m_DocRecvd;
-	CCheckBox *m_WI;
-	CCheckBox *m_Confirm;
-	CCheckBox *m_OptAuto;
-	CCheckBox *m_Funded;
-	CCheckBox *m_CSPBShort;
-	CCheckBox *m_ShortSale;
-	CCheckBox *m_SecFee;
-	CCheckBox *m_OrFee;
-	CCheckBox *m_ETrade;
+	CCheckBox m_TRS;
+	CCheckBox m_IPO;
+	CCheckBox m_EuroOpt;
+	CCheckBox m_Listed;
+	CCheckBox m_DocRq;
+	CCheckBox m_DocRecvd;
+	CCheckBox m_WI;
+	CCheckBox m_Confirm;
+	CCheckBox m_OptAuto;
+	CCheckBox m_Funded;
+	CCheckBox m_CSPBShort;
+	CCheckBox m_ShortSale;
+	CCheckBox m_SecFee;
+	CCheckBox m_OrFee;
 	
-    COptComboBox *m_Portfolio;
-    COptComboBox *m_TransType;
-	COptComboBox *m_CP;
-    COptComboBox *m_PFU;
-	COptComboBox *m_Currency;
-    COptComboBox *m_RateBasis;
-	COptComboBox *m_Formula;
-	COptComboBox *m_Custodian;
-    COptComboBox *m_USDAcct;
-    COptComboBox *m_FxAcct;
-	COptComboBox *m_MarginCurrency;
-	COptComboBox *m_BestExecution;
+    COptComboBox m_Portfolio;
+    COptComboBox m_TransType;
+	COptComboBox m_CP;
+    COptComboBox m_PFU;
+	COptComboBox m_Currency;
+    COptComboBox m_RateBasis;
+	COptComboBox m_Formula;
+	COptComboBox m_Custodian;
+    COptComboBox m_USDAcct;
+    COptComboBox m_FxAcct;
+	COptComboBox m_MarginCurrency;
+	COptComboBox m_BestExecution;
 
 	CMaskIDEdit m_Ticket;
 	CMaskDateEdit m_TradeDate;
@@ -108,6 +107,7 @@ public:
 	CMCComboBox m_Index;
 	CMCComboBox m_OptSet;
 	CMCComboBox m_OptSet2;
+	CMCComboBox m_ETrade;
 
 	CNumEdit m_Margin;
 	CNumEdit m_MarginAmount;
@@ -130,10 +130,10 @@ public:
 	CNumEdit m_InvAmount;
 	CNumEdit m_InvCash;
 	CNumEdit m_InvInterest;
-	COptComboBox *m_InvTrDesc;
-	COptComboBox *m_InvAccount;
-	COptComboBox *m_InvCurrency;
-	COptComboBox *m_InvAssignCP;
+	COptComboBox m_InvTrDesc;
+	COptComboBox m_InvAccount;
+	COptComboBox m_InvCurrency;
+	COptComboBox m_InvAssignCP;
 	CCntlEdit m_InvAssignCT;
 
 	CCntlEdit m_RecCurrency;
@@ -163,7 +163,7 @@ public:
 	void SetInCurrMonth();
 	void SetMode(int Mode);
 	void SetSameDate();
-	void UpdateCPCT(COptComboBox *CP, CCntlEdit &CT);
+	void UpdateCPCT(COptComboBox &CP, CCntlEdit &CT);
 	BOOL UpdateData(BOOL bSaveandValid = TRUE);
 
 
@@ -178,7 +178,7 @@ public:
 
 // Implementation
 protected:
-	virtual ~CFmsTicket();
+	virtual ~CFmsTicket() {}
 #ifdef _DEBUG
 	virtual void AssertValid() const;
 	virtual void Dump(CDumpContext& dc) const;

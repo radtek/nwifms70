@@ -62,8 +62,8 @@ void CFxSource::UpdateData(BOOL bAdd)
 	for(i = 1; i <= m_SelSS.GetSheetRows(); i++)
 		Amount += atof(QData.RemoveComma(m_SelSS.GetSheetText(m_SelSS.GetSheetCols() - 1, i)));
 
-	m_Amount.SetWindowText(QData.WriteNumber(Amount, TRUE, 2));
-	m_Remain.SetWindowText(QData.WriteNumber(atof(m_sNomAmount) + Amount, TRUE, 2));
+	m_Amount.SetData(QData.WriteNumber(Amount, TRUE, 2));
+	m_Remain.SetData(QData.WriteNumber(atof(m_sNomAmount) + Amount, TRUE, 2));
 }
 
 // CFxSource message handlers
@@ -87,10 +87,10 @@ BOOL CFxSource::OnInitDialog()
 	m_Remain.Setup(this, IDC_FX_REMAIN_EDIT);
 
 	m_Ticket.SetData(m_sTicket);
-	m_Currency.SetWindowText(m_sCurrency);
-	m_ValueDate.SetWindowText(m_sValueDate);
-	m_Fxrate.SetWindowText(m_sFxrate);
-	m_NomAmount.SetWindowText(m_sNomAmount);
+	m_Currency.SetData(m_sCurrency);
+	m_ValueDate.SetData(m_sValueDate);
+	m_Fxrate.SetData(m_sFxrate);
+	m_NomAmount.SetData(m_sNomAmount);
 
 	if(m_pData)
 	{

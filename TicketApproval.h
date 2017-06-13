@@ -36,15 +36,14 @@ public:
 	CDBSheet m_SS;
 	CDBSheet m_AllocSS;
 	CDBSheet m_PositionSS;
-	CCheckBox *m_Listed;
-	CCheckBox *m_EuroOpt;
-    CCheckBox *m_TRS;
-    CCheckBox *m_IPO;
-	CCheckBox *m_WI;
-	CCheckBox *m_Funded;
-	CCheckBox *m_OptAuto;
-	CCheckBox *m_ShortSale;
-	CCheckBox *m_ETrade;
+	CCheckBox m_Listed;
+	CCheckBox m_EuroOpt;
+    CCheckBox m_TRS;
+    CCheckBox m_IPO;
+	CCheckBox m_WI;
+	CCheckBox m_Funded;
+	CCheckBox m_OptAuto;
+	CCheckBox m_ShortSale;
 
 	CCntlEdit m_Ticket;
 	CCntlEdit m_Sign;
@@ -100,6 +99,7 @@ public:
 	CCntlEdit m_BestExecution;
 	CCntlEdit m_Ratio;
 	CCntlEdit m_Binary;
+	CCntlEdit m_ETrade;
 
 	CNumEdit m_PrevVAR;
 	CNumEdit m_CurrVAR;
@@ -126,7 +126,7 @@ protected:
 
 // Implementation
 protected:
-	virtual ~CTicketApproval();
+	virtual ~CTicketApproval() {}
 #ifdef _DEBUG
 	virtual void AssertValid() const;
 	virtual void Dump(CDumpContext& dc) const;

@@ -22,38 +22,7 @@ IMPLEMENT_DYNCREATE(CTicketApproval, CFormView)
 CTicketApproval::CTicketApproval() : CFormView(CTicketApproval::IDD)
 {
 	//{{AFX_DATA_INIT(CTicketApproval)
-	m_Listed = NULL;
-	m_EuroOpt = NULL;
-    m_TRS = NULL;
-    m_IPO = NULL;
-	m_WI = NULL;
-	m_Funded = NULL;
-	m_OptAuto = NULL;
-	m_ShortSale = NULL;
-	m_ETrade = NULL;
 	//}}AFX_DATA_INIT
-}
-
-CTicketApproval::~CTicketApproval()
-{
-	if(m_Listed)
-		delete m_Listed;
-	if(m_EuroOpt)
-		delete m_EuroOpt;
-	if(m_TRS)
-		delete m_TRS;
-    if(m_IPO)
-		delete m_IPO;
-	if(m_WI)
-		delete m_WI;
-	if(m_Funded)
-		delete m_Funded;
-	if(m_OptAuto)
-		delete m_OptAuto;
-	if(m_ShortSale)
-		delete m_ShortSale;
-	if(m_ETrade)
-		delete m_ETrade;
 }
 
 void CTicketApproval::DoDataExchange(CDataExchange* pDX)
@@ -104,16 +73,16 @@ void CTicketApproval::InitControls()
 	m_PositionSS.SetVisibleRows(3);
 	m_PositionSS.SetVisibleCols(7);
 
-	m_Listed = new CCheckBox(this, IDC_APPROVAL_LISTED_CHECK, Y);
-	m_EuroOpt = new CCheckBox(this, IDC_APPROVAL_EUROOPT_CHECK, Y);
-	m_TRS = new CCheckBox(this, IDC_APPROVAL_DEAL_CHECK, TRS);
-	m_IPO = new CCheckBox(this, IDC_APPROVAL_IPO_CHECK, Y);
-	m_WI = new CCheckBox(this, IDC_APPROVAL_WI_CHECK, Y);
-	m_Funded = new CCheckBox(this, IDC_APPROVAL_FUNDED_CHECK, Y);
-	m_OptAuto = new CCheckBox(this, IDC_APPROVAL_AUTO_CHECK, Y);
-	m_ShortSale = new CCheckBox(this, IDC_APPROVAL_SHORT_CHECK, Y);
-	m_ETrade = new CCheckBox(this, IDC_APPROVAL_ETRADE_CHECK, Y);
-	
+	m_Listed.Setup(this, IDC_APPROVAL_LISTED_CHECK, Y);
+	m_EuroOpt.Setup(this, IDC_APPROVAL_EUROOPT_CHECK, Y);
+	m_TRS.Setup(this, IDC_APPROVAL_DEAL_CHECK, TRS);
+	m_IPO.Setup(this, IDC_APPROVAL_IPO_CHECK, Y);
+	m_WI.Setup(this, IDC_APPROVAL_WI_CHECK, Y);
+	m_Funded.Setup(this, IDC_APPROVAL_FUNDED_CHECK, Y);
+	m_OptAuto.Setup(this, IDC_APPROVAL_AUTO_CHECK, Y);
+	m_ShortSale.Setup(this, IDC_APPROVAL_SHORT_CHECK, Y);
+	m_ETrade.Setup(this, IDC_APPROVAL_ETRADE_EDIT);
+
 	m_Sign.Setup(this, IDC_APPROVAL_SIGN_EDIT);
 	m_Ticket.Setup(this, IDC_APPROVAL_TICKET_EDIT, NULL, 0, FALSE); 
 	m_Trader.Setup(this, IDC_APPROVAL_TRADER_EDIT);
@@ -186,13 +155,13 @@ void CTicketApproval::InitControls()
 	m_Data.Add(&m_Amount, &m_Data.GetTicket().GetNomAmount());
 	m_Data.Add(&m_Strike, &m_Data.GetTicket().GetStrike());
 	m_Data.Add(&m_OptExp, &m_Data.GetTicket().GetOptExp());
-	m_Data.Add(m_Listed, &m_Data.GetTicket().GetListed());
+	m_Data.Add(&m_Listed, &m_Data.GetTicket().GetListed());
 	m_Data.Add(&m_OptTicker, &m_Data.GetTicket().GetOptTicker());
 	m_Data.Add(&m_OptSet, &m_Data.GetTicket().GetOptSetCode());
 	m_Data.Add(&m_OptSet2, &m_Data.GetTicket().GetOptSetCode2());
 	m_Data.Add(&m_OptID, &m_Data.GetTicket().GetOptID());
-	m_Data.Add(m_EuroOpt, &m_Data.GetTicket().GetEuroOpt());
-	m_Data.Add(m_OptAuto, &m_Data.GetTicket().GetOptAuto());
+	m_Data.Add(&m_EuroOpt, &m_Data.GetTicket().GetEuroOpt());
+	m_Data.Add(&m_OptAuto, &m_Data.GetTicket().GetOptAuto());
 	m_Data.Add(&m_Currency, &m_Data.GetTicket().GetCurrency());
 	m_Data.Add(&m_Fxrate, &m_Data.GetTicket().GetFxRate());
 	m_Data.Add(&m_CP, &m_Data.GetTicket().GetCP());
@@ -210,9 +179,9 @@ void CTicketApproval::InitControls()
 	m_Data.Add(&m_Bucket, &m_Data.GetTicket().GetAssetBucket());
 	m_Data.Add(&m_Coupon, &m_Data.GetTicket().GetAssetCoupon());
 	m_Data.Add(&m_AssetMaturity, &m_Data.GetTicket().GetAssetMaturity());
-	m_Data.Add(m_IPO, &m_Data.GetTicket().GetIPO());
-	m_Data.Add(m_TRS, &m_Data.GetTicket().GetTRS());
-	m_Data.Add(m_Funded, &m_Data.GetTicket().GetFunded());
+	m_Data.Add(&m_IPO, &m_Data.GetTicket().GetIPO());
+	m_Data.Add(&m_TRS, &m_Data.GetTicket().GetTRS());
+	m_Data.Add(&m_Funded, &m_Data.GetTicket().GetFunded());
 	m_Data.Add(&m_Binary, &m_Data.GetTicket().GetBinary());
 	m_Data.Add(&m_RepoCP, &m_Data.GetTicket().GetRepoCP());
 	m_Data.Add(&m_Rate, &m_Data.GetTicket().GetRate());
@@ -229,11 +198,11 @@ void CTicketApproval::InitControls()
 	m_Data.Add(&m_FloatRate, &m_Data.GetTicket().GetSWFloatRate());
 	m_Data.Add(&m_FloatBasis, &m_Data.GetTicket().GetSWFloatBasis());
 	m_Data.Add(&m_FloatMaturity, &m_Data.GetTicket().GetSWFloatMaturity());
-	m_Data.Add(m_WI, &m_Data.GetTicket().GetWI());
+	m_Data.Add(&m_WI, &m_Data.GetTicket().GetWI());
 	m_Data.Add(&m_Booker, &m_Data.GetTicket().GetBroker());
 	m_Data.Add(&m_BestExecution, &m_Data.GetTicket().GetBestExecution());
-	m_Data.Add(m_ShortSale, &m_Data.GetTicket().GetShortSale());
-	m_Data.Add(m_ETrade, &m_Data.GetTicket().GetETrade());
+	m_Data.Add(&m_ShortSale, &m_Data.GetTicket().GetShortSale());
+	m_Data.Add(&m_ETrade, &m_Data.GetTicket().GetETrade());
 	m_Data.Add(&m_Data.GetTicket().GetOrderID());
 	m_Data.Add(&m_Data.GetTicket().GetCPTradeID());
 	m_Data.Add(&m_Ratio);
@@ -244,15 +213,13 @@ void CTicketApproval::LoadSNote()
 	if(m_SS.GetSheetCurRow() > 0)
 	{
 		COraLoader OraLoader;
-		CString Ticket;
 
 		OraLoader.SetDB(&theDB);
-		m_Ticket.GetWindowText(Ticket);
-		OraLoader.Open("SELECT NOTE FROM SEMAM.NW_RAW_TICKET_OPINION WHERE TICKET_NUM = " + Ticket);
+		OraLoader.Open("SELECT NOTE FROM SEMAM.NW_RAW_TICKET_OPINION WHERE TICKET_NUM = " + m_Ticket.GetData());
 		OraLoader.LoadText(m_SNote);
 	}
 	else
-		m_SNote.SetWindowText("");
+		m_SNote.SetData(EMPTYSTRING);
 }
 
 BOOL CTicketApproval::UpdateData(BOOL bSaveAndValid)
@@ -267,7 +234,7 @@ BOOL CTicketApproval::UpdateData(BOOL bSaveAndValid)
 		int Pos;
 		
 		OraLoader.SetDB(&theDB);
-		m_Ticket.GetWindowText(Ticket);
+		Ticket = m_Ticket.GetData();
 		m_Data.GetTicket().SetSign(m_Sign.GetWindowTextLength() > 0 ? EMPTYSTRING : GetData().GetUser());
 		
 		Pos = Ticket.Find(MINUS, 0);
@@ -283,14 +250,14 @@ BOOL CTicketApproval::UpdateData(BOOL bSaveAndValid)
 
 			bOK = OraLoader.ExecuteSql(OraLoader.GetSql());
 			if(bOK)
-				m_Sign.SetWindowText(m_Data.GetTicket().GetSign());
+				m_Sign.SetData(m_Data.GetTicket().GetSign());
 		}
 		else
 		{
-			m_SNote.GetWindowText(SNote);
+			SNote = m_SNote.GetData();
 			bOK = m_Data.ApprovalTicket(SNote);
 			if(bOK)
-				m_Sign.SetWindowText(m_Data.GetTicket().GetSign());
+				m_Sign.SetData(m_Data.GetTicket().GetSign());
 		}
 		
 		if(m_SS.GetSheetCurRow() > 0 && bOK)
@@ -323,6 +290,7 @@ void CTicketApproval::OnInitialUpdate()
 		bTrader = FALSE;
 	else
 		bTrader = TRUE;
+
 	m_Data.Setup(GetData().GetOraLoader(), &m_SS, &m_AllocSS, GetData().GetBlotter(), bTrader, GetData().GetSign(), 2);
 	UpdateData(FALSE);
 	GetDlgItem(IDC_APPROVAL_SIGN_BUTTON)->ShowWindow(GetData().GetBlotter() ? SW_HIDE : SW_SHOW);
@@ -353,12 +321,13 @@ void CTicketApproval::OnApprovalSignButton()
 
 void CTicketApproval::OnDblClickApprovalTicketList(long Col, long Row) 
 {
+	CString Asset, Dir;
+
 	if(Row >= 1 && Row <= m_SS.GetSheetRows())
 	{
 		m_Data.SetCurrentRow(Row, m_Data.GetAllocList());
-		CString Asset, Sql;
-
-		m_Asset.GetWindowText(Asset);
+		
+		Asset = m_Asset.GetData();
 		if(m_CurrAsset != Asset)
 		{
 			m_CurrAsset = Asset;
@@ -366,7 +335,6 @@ void CTicketApproval::OnDblClickApprovalTicketList(long Col, long Row)
 			{
 				BeginWaitCursor();
 				m_Data.LoadPositionList(m_CurrAsset, m_PositionSS);
-				
 				EndWaitCursor();
 			}
 			else
@@ -379,14 +347,12 @@ void CTicketApproval::OnDblClickApprovalTicketList(long Col, long Row)
 		m_PositionSS.ClearSheet();
 	}
 
-	CString Dir;
-
-	m_Dir.GetWindowText(Dir);
+	Dir = m_Dir.GetData();
 	if(Dir == P)
-		m_ShortSale->SetWindowText("CShort");
+		m_ShortSale.SetWindowText("CShort");
 	else
 		if(Dir == S)
-			m_ShortSale->SetWindowText("SShort");
+			m_ShortSale.SetWindowText("SShort");
 
 	GetDlgItem(IDC_APPROVAL_SIGN_BUTTON)->EnableWindow(m_SS.GetSheetCurRow() > 0);
 	if(m_SS.GetSheetCurRow() > 0 && !(GetData().GetBlotter() || GetData().GetSign()))
@@ -405,29 +371,29 @@ void CTicketApproval::OnDblClickApprovalAllocationList(long Col, long Row)
 {
 	if(Row >= 1 && Row <= m_AllocSS.GetSheetRows())
 	{
-		m_Data.GetSRowCtrl().SetCurrentRow(Row);
-		CString Portfolio, Category, Text;
+		CString Portfolio, Category;
 		CStringArray Rec;
 		double VAR;
 		CQData QData;
 
+		m_Data.GetSRowCtrl().SetCurrentRow(Row);
+
 		Portfolio = m_AllocSS.GetSheetText(1, Row);
-		m_Category.GetWindowText(Category);
-		Text = m_AllocSS.GetSheetText(8, Row);
-		VAR = atof(QData.RemoveComma(Text));
+		Category = m_Category.GetData();
+		VAR = atof(QData.RemoveComma(m_AllocSS.GetSheetText(8, Row)));
 		if(m_Data.LoadVARs(Rec, Portfolio, Category, VAR) > 0)
 		{
-			m_PrevVAR.SetWindowText(Rec.GetAt(0));
-			m_CurrVAR.SetWindowText(Rec.GetAt(1));
-			m_VARLimit.SetWindowText(Rec.GetAt(2));
-			m_VARStatus.SetWindowText(Rec.GetAt(3));
+			m_PrevVAR.SetData(Rec.GetAt(0));
+			m_CurrVAR.SetData(Rec.GetAt(1));
+			m_VARLimit.SetData(Rec.GetAt(2));
+			m_VARStatus.SetData(Rec.GetAt(3));
 		}
 		else
 		{
-			m_PrevVAR.SetWindowText(EMPTYSTRING);
-			m_CurrVAR.SetWindowText(EMPTYSTRING);
-			m_VARLimit.SetWindowText(EMPTYSTRING);
-			m_VARStatus.SetWindowText(EMPTYSTRING);
+			m_PrevVAR.SetData(EMPTYSTRING);
+			m_CurrVAR.SetData(EMPTYSTRING);
+			m_VARLimit.SetData(EMPTYSTRING);
+			m_VARStatus.SetData(EMPTYSTRING);
 		}
 	}
 	else

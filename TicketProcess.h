@@ -45,21 +45,20 @@ public:
 	CDBSheet m_SS;
 	CDBSheet m_AllocSS;
 
-	CCheckBox *m_IPO;
-	CCheckBox *m_TRS;
-	CCheckBox *m_Listed;
-	CCheckBox *m_EuroOpt;
-	CCheckBox *m_OptAuto;
-	CCheckBox *m_ShortSale;
-	CCheckBox *m_CSPBShort;
-	CCheckBox *m_WI;
-	CCheckBox *m_Funded;
-	CCheckBox *m_SecFee;
-	CCheckBox *m_OrFee;
-	CCheckBox *m_Confirm;
-	CCheckBox *m_DocReq;
-	CCheckBox *m_DocRecvd;
-	CCheckBox *m_ETrade;
+	CCheckBox m_IPO;
+	CCheckBox m_TRS;
+	CCheckBox m_Listed;
+	CCheckBox m_EuroOpt;
+	CCheckBox m_OptAuto;
+	CCheckBox m_ShortSale;
+	CCheckBox m_CSPBShort;
+	CCheckBox m_WI;
+	CCheckBox m_Funded;
+	CCheckBox m_SecFee;
+	CCheckBox m_OrFee;
+	CCheckBox m_Confirm;
+	CCheckBox m_DocReq;
+	CCheckBox m_DocRecvd;
 	
 	CCntlEdit m_Asset;
 	CCntlEdit m_AssetDesc;
@@ -116,19 +115,19 @@ public:
 	CNumEdit m_Accretion;
 	CNumEdit m_Total;
 
-	COptComboBox *m_TransType;
-	COptComboBox *m_CP;
-	COptComboBox *m_RepoCP;
-	COptComboBox *m_AssignCP;
-    COptComboBox *m_Currency;
-	COptComboBox *m_RepoType;
-    COptComboBox *m_RateBasis;
-	COptComboBox *m_Formula;
-    COptComboBox *m_PFU;
-    COptComboBox *m_USDAcc;
-    COptComboBox *m_FxAcc;
-	COptComboBox *m_MarginCurrency;
-	COptComboBox *m_BestExecution;
+	COptComboBox m_TransType;
+	COptComboBox m_CP;
+	COptComboBox m_RepoCP;
+	COptComboBox m_AssignCP;
+    COptComboBox m_Currency;
+	COptComboBox m_RepoType;
+    COptComboBox m_RateBasis;
+	COptComboBox m_Formula;
+    COptComboBox m_PFU;
+    COptComboBox m_USDAcc;
+    COptComboBox m_FxAcc;
+	COptComboBox m_MarginCurrency;
+	COptComboBox m_BestExecution;
 
 	CMCComboBox m_Dir;
 	CMCComboBox m_Trader;
@@ -136,6 +135,7 @@ public:
 	CMCComboBox m_OptSet;
 	CMCComboBox m_OptSet2;
 	CMCComboBox m_AAMethod;
+	CMCComboBox m_ETrade;
 
 	BOOL m_bShow;
 	BOOL m_bWarned;
@@ -162,7 +162,7 @@ public:
 	void GetStatus(CDBRec &Rec, BOOL Updated = FALSE);
 	void InitControls();
 	BOOL IsOK();
-	void UpdateCPCT(COptComboBox *CP, CCntlEdit &m_CT);
+	void UpdateCPCT(COptComboBox &CP, CCntlEdit &m_CT);
 	BOOL UpdateData(BOOL bSaveandValid = TRUE);
 	
 // Overrides
@@ -176,7 +176,7 @@ protected:
 	//}}AFX_VIRTUAL
 // Implementation
 protected:
-	virtual ~CTicketProcess();
+	virtual ~CTicketProcess() {}
 	void ProcessVerifyRisk();
 	void UpdateAsset();
 	void UpdateCash();
@@ -246,6 +246,7 @@ public:
 	afx_msg void OnEnChangeProcessPriceEdit();
 	afx_msg void OnEnKillfocusProcessAssetEdit();
 	afx_msg void OnCbnKillfocusProcessAaCombo();
+	afx_msg void OnProcessFxcategory();
 };
 
 #ifndef _DEBUG  // debug version in CTicketProcess.cpp

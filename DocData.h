@@ -23,6 +23,7 @@ protected:
 	CDBRecArray m_BucketArr;
 	CDBRecArray m_CategoryArr;
 	CDBRecArray m_CDSFeeTypeArr;
+	CDBRecArray m_ETradeTypeArr;
 	CDBRecArray m_RateBasisArr;
 	CDBRecArray m_TraderArr;
 	CDBRecArray m_PFUArr;
@@ -88,6 +89,7 @@ public:
 	CDBRecArray &GetBucketArr() { return m_BucketArr; }
 	CDBRecArray &GetCategoryArr() { return m_CategoryArr; }
 	CDBRecArray &GetCDSFeeTypeArr() { return m_CDSFeeTypeArr; }
+	CDBRecArray &GetETradeTypeArr() { return m_ETradeTypeArr; }
 	CDBRecArray &GetRateBasisArr() { return m_RateBasisArr; }
 	CDBRecArray &GetTraderArr() { return m_TraderArr; }
 	CDBRecArray &GetPFUArr() { return m_PFUArr; }

@@ -53,19 +53,17 @@ public:
 	CDBSheet m_SS;
 	CDBSheet m_AllocSS;
 
-	CCheckBox *m_Listed;
-	CCheckBox *m_EuroOpt;
-	CCheckBox *m_Trs;
-	CCheckBox *m_IPO;
-	CCheckBox *m_WI;
-	CCheckBox *m_OptAuto;
-	CCheckBox *m_Funded;
-	CCheckBox *m_ShortSale;
-	CCheckBox *m_ETrade;
-	CCheckBox *m_CSPBShort;
+	CCheckBox m_Listed;
+	CCheckBox m_EuroOpt;
+	CCheckBox m_Trs;
+	CCheckBox m_IPO;
+	CCheckBox m_WI;
+	CCheckBox m_OptAuto;
+	CCheckBox m_Funded;
+	CCheckBox m_ShortSale;
+	CCheckBox m_CSPBShort;
 
 	CMaskIDEdit m_Ticket;
-//	CMaskIDEdit m_Link;
 	CMaskIDEdit m_SwapTicket;
 	CMaskIDEdit m_UnWindTicket;
 	CMaskIDEdit m_CancelTicket;
@@ -110,23 +108,24 @@ public:
 	CNumEdit m_PrevVAR;
 	CNumEdit m_CurrVAR;
 	CNumEdit m_VARLimit;
-    COptComboBox *m_TransType;
-    COptComboBox *m_CP;
-    COptComboBox *m_Currency;
-	COptComboBox *m_RepoCP;
-	COptComboBox *m_RateBasis;
-	COptComboBox *m_FloatRateBasis;
-	COptComboBox *m_Portfolio;
-	COptComboBox *m_AssignCP;
-	COptComboBox *m_MarginCurrency;
-	COptComboBox *m_AAFReason;
-	COptComboBox *m_BestExecution;
+    COptComboBox m_TransType;
+    COptComboBox m_CP;
+    COptComboBox m_Currency;
+	COptComboBox m_RepoCP;
+	COptComboBox m_RateBasis;
+	COptComboBox m_FloatRateBasis;
+	COptComboBox m_Portfolio;
+	COptComboBox m_AssignCP;
+	COptComboBox m_MarginCurrency;
+	COptComboBox m_AAFReason;
+	COptComboBox m_BestExecution;
 
 	CMCComboBox m_Dir;
 	CMCComboBox m_Trader;
 	CMCComboBox m_OptSet;
 	CMCComboBox m_OptSet2;
 	CMCComboBox m_AAMethod;
+	CMCComboBox m_ETrade;
 
 	double m_dNomAmount;
 	int m_dParValue;
@@ -177,7 +176,7 @@ public:
 
 // Implementation
 protected:
-	virtual ~CTicketEntry();
+	virtual ~CTicketEntry() {}
 #ifdef _DEBUG
 	virtual void AssertValid() const;
 	virtual void Dump(CDumpContext& dc) const;
