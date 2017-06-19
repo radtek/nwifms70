@@ -1796,11 +1796,9 @@ void CTicketProcess::OnEnKillfocusProcessAssetEdit()
 void CTicketProcess::OnProcessFxcategory()
 {
 	CFXCategoryDlg Dlg;
-	CString TransType;
 
 	Dlg.m_pData = &GetData();
-	TransType = m_TransType.GetData();
-	if(TransType == FOREX && m_Asset.GetWindowTextLength() == 0)
+	if(m_TransType.GetData() == FOREX && (m_Asset.GetData().IsEmpty() || m_Asset.GetData() == NEWASSET))
 		Dlg.m_sTicket = m_Ticket.GetData();
 	else
 		Dlg.m_sTicket.Empty();

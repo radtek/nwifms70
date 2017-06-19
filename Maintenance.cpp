@@ -1273,7 +1273,7 @@ void CMaintenance::OnMaintOther()
 																	Dlg.DoModal();
 																}
 																else
-																	if(Dlg.m_Table = "NW_FUTURE_FEES")
+																	if(Dlg.m_Table == "NW_FUTURE_FEES")
 																	{
 																		CFutureFeesDlg Dlg;
 
