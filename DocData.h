@@ -5,6 +5,10 @@
 #include "dataobj.h"
 #endif
 
+#ifndef __ORFEEDATA_H__
+#include "orfeedata.h"
+#endif
+
 class CDocData : public CDataObj
 {
 DECLARE_DYNAMIC(CDocData)
@@ -147,6 +151,7 @@ public:
 	void SetTicketNumber(LPCTSTR TicketNumber) { m_TicketNumber = TicketNumber; }
 
 	void LoadFees();
+	void LoadOrFeeArray(COrFeeDataArray &OrFeeArray);
 	void LoadDates();
 	void LoadUser(BOOL Refresh = FALSE);
 	void LoadAssetData(BOOL Refresh = FALSE);

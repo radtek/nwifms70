@@ -93,10 +93,8 @@ public:
 	CMaskIDEdit m_CorrectTicket;
 
 	CNumEdit m_Price;
-	CNumEdit m_NetPrice;
 	CNumEdit m_BrokerFee;
 	CNumEdit m_SoftDollar;
-	CNumEdit m_OtherFee;
 	CNumEdit m_DownPymnt;
 	CNumEdit m_VAR;
 	CNumEdit m_DV01;
@@ -226,12 +224,8 @@ protected:
 	afx_msg void OnEnKillfocusProcessFxrateEdit();
 	afx_msg void OnEnKillfocusProcessBrokerFeeEdit();
 	afx_msg void OnEnKillfocusProcessOtherFeeEdit();
-	DECLARE_EVENTSINK_MAP()
-	//}}AFX_MSG
-	DECLARE_MESSAGE_MAP()
-public:
-	afx_msg void OnBnClickedProcessSecfeeCheck();
-	afx_msg void OnBnClickedProcessOrfeeCheck();
+//	afx_msg void OnBnClickedProcessSecfeeCheck();
+//	afx_msg void OnBnClickedProcessOrfeeCheck();
 	afx_msg void OnEnChangeProcessUnwindTicketEdit();
 	afx_msg void OnEnSetfocusProcessBinaryEdit();
 	afx_msg void OnEnSetfocusProcessSetconventionEdit();
@@ -247,6 +241,10 @@ public:
 	afx_msg void OnEnKillfocusProcessAssetEdit();
 	afx_msg void OnCbnKillfocusProcessAaCombo();
 	afx_msg void OnProcessFxcategory();
+//	afx_msg void OnCbnSelchangeProcessAssigncpCombo();
+	DECLARE_EVENTSINK_MAP()
+	//}}AFX_MSG
+	DECLARE_MESSAGE_MAP()
 };
 
 #ifndef _DEBUG  // debug version in CTicketProcess.cpp

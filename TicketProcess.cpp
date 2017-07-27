@@ -78,7 +78,6 @@ BEGIN_MESSAGE_MAP(CTicketProcess, CFormView)
 	ON_CBN_SELCHANGE(IDC_PROCESS_CURRENCY_COMBO, OnSelchangeProcessCurrencyCombo)
 	ON_COMMAND(ID_PROCESS_XCURRENCY, OnProcessXcurrency)
 	ON_EN_SETFOCUS(IDC_PROCESS_AMOUNT_EDIT, OnSetfocusAmountEdit)
-	//}}AFX_MSG_MAP
 	ON_COMMAND(ID_PROCESS_FXREFLINK, &CTicketProcess::OnProcessFxreflink)
 	ON_BN_CLICKED(IDC_PROCESS_SECFEE_CHECK, &CTicketProcess::OnBnClickedSecCheck)
 	ON_EN_CHANGE(IDC_PROCESS_ASSET_EDIT, &CTicketProcess::OnEnChangeProcessAssetEdit)
@@ -86,8 +85,8 @@ BEGIN_MESSAGE_MAP(CTicketProcess, CFormView)
 	ON_EN_KILLFOCUS(IDC_PROCESS_FXRATE_EDIT, &CTicketProcess::OnEnKillfocusProcessFxrateEdit)
 	ON_EN_KILLFOCUS(IDC_PROCESS_BROKER_FEE_EDIT, &CTicketProcess::OnEnKillfocusProcessBrokerFeeEdit)
 	ON_EN_KILLFOCUS(IDC_PROCESS_OTHER_FEE_EDIT, &CTicketProcess::OnEnKillfocusProcessOtherFeeEdit)
-	ON_BN_CLICKED(IDC_PROCESS_SECFEE_CHECK, &CTicketProcess::OnBnClickedProcessSecfeeCheck)
-	ON_BN_CLICKED(IDC_PROCESS_ORFEE_CHECK, &CTicketProcess::OnBnClickedProcessOrfeeCheck)
+//	ON_BN_CLICKED(IDC_PROCESS_SECFEE_CHECK, &CTicketProcess::OnBnClickedProcessSecfeeCheck)
+//	ON_BN_CLICKED(IDC_PROCESS_ORFEE_CHECK, &CTicketProcess::OnBnClickedProcessOrfeeCheck)
 	ON_EN_CHANGE(IDC_PROCESS_UNWIND_TICKET_EDIT, &CTicketProcess::OnEnChangeProcessUnwindTicketEdit)
 	ON_EN_SETFOCUS(IDC_PROCESS_BINARY_EDIT, &CTicketProcess::OnEnSetfocusProcessBinaryEdit)
 	ON_EN_SETFOCUS(IDC_PROCESS_SETCONVENTION_EDIT, &CTicketProcess::OnEnSetfocusProcessSetconventionEdit)
@@ -103,6 +102,8 @@ BEGIN_MESSAGE_MAP(CTicketProcess, CFormView)
 	ON_EN_KILLFOCUS(IDC_PROCESS_ASSET_EDIT, &CTicketProcess::OnEnKillfocusProcessAssetEdit)
 	ON_CBN_KILLFOCUS(IDC_PROCESS_AA_COMBO, &CTicketProcess::OnCbnKillfocusProcessAaCombo)
 	ON_COMMAND(ID_PROCESS_FXCATEGORY, &CTicketProcess::OnProcessFxcategory)
+//	ON_CBN_SELCHANGE(IDC_PROCESS_ASSIGNCP_COMBO, &CTicketProcess::OnCbnSelchangeProcessAssigncpCombo)
+	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -400,18 +401,13 @@ void CTicketProcess::InitControls()
 	m_TradeDate.Setup(this, IDC_PROCESS_TRADEDATE_EDIT);
 	m_ExecTime.Setup(this, IDC_PROCESS_EXECTIME_EDIT);
 	m_ValueDate.Setup(this, IDC_PROCESS_VALUEDATE_EDIT);
-	m_Maturity.Setup(this, IDC_PROCESS_MATURITY_EDIT, TRUE, 
-					"Exercise Date must be greated than or equal to Value Date", &m_ValueDate);
-	m_ExerciseDate.Setup(this, IDC_PROCESS_EXERCISEDATE_EDIT, TRUE, 
-					"Exercise Date must be greater than or equal to Trade Date", &m_TradeDate);
-	m_OptExpDate.Setup(this, IDC_PROCESS_OPTEXP_EDIT, TRUE, 
-					"Option Expiration Date must be greater or equal to Trade Date", &m_TradeDate);
-	m_DeliveryDate.Setup(this, IDC_PROCESS_DELIVERY_EDIT, TRUE, 
-						"Delivery Date must be greater than Expiration Date", &m_OptExpDate);
+	m_Maturity.Setup(this, IDC_PROCESS_MATURITY_EDIT, TRUE, "Exercise Date must be greated than or equal to Value Date", &m_ValueDate);
+	m_ExerciseDate.Setup(this, IDC_PROCESS_EXERCISEDATE_EDIT, TRUE, "Exercise Date must be greater than or equal to Trade Date", &m_TradeDate);
+	m_OptExpDate.Setup(this, IDC_PROCESS_OPTEXP_EDIT, TRUE, "Option Expiration Date must be greater or equal to Trade Date", &m_TradeDate);
+	m_DeliveryDate.Setup(this, IDC_PROCESS_DELIVERY_EDIT, TRUE, "Delivery Date must be greater than Expiration Date", &m_OptExpDate);
 
 	m_SWBooking.Setup(this, IDC_PROCESS_SWAP_BOOKING_EDIT);
-	m_SWMaturity.Setup(this, IDC_PROCESS_SWAP_MATURITY_EDIT, TRUE, 
-					"Swap Maturity Date must be greater than or equal to Swap Booking Date", &m_SWBooking);
+	m_SWMaturity.Setup(this, IDC_PROCESS_SWAP_MATURITY_EDIT, TRUE, "Swap Maturity Date must be greater than or equal to Swap Booking Date", &m_SWBooking);
 	m_FXDate.Setup(this, IDC_PROCESS_FXDATE_EDIT);
 
 	m_Rate.Setup(this, IDC_PROCESS_RATE_EDIT);
@@ -456,11 +452,9 @@ void CTicketProcess::InitControls()
 	m_Booker.Setup(this, IDC_PROCESS_BOOKER_EDIT);
 
 	m_Price.Setup(this, IDC_PROCESS_PRICE_EDIT);
-	m_NetPrice.Setup(this, IDC_PROCESS_NETPRICE_EDIT);
 	m_DownPymnt.Setup(this, IDC_PROCESS_DOWNPAY_EDIT);
 	m_BrokerFee.Setup(this, IDC_PROCESS_BROKER_FEE_EDIT);
 	m_SoftDollar.Setup(this, IDC_PROCESS_SOFTDOLLAR_EDIT);
-	m_OtherFee.Setup(this, IDC_PROCESS_OTHER_FEE_EDIT);
 	m_VAR.Setup(this, IDC_PROCESS_VAR_EDIT);
 	m_DV01.Setup(this, IDC_PROCESS_DV01_EDIT);
 
@@ -536,7 +530,6 @@ void CTicketProcess::InitControls()
 	m_Data.Add(&m_DownPymnt, &pTicket->GetDownPymnt());
 	m_Data.Add(&m_BrokerFee, &pTicket->GetBrokerFee());
 	m_Data.Add(&m_SoftDollar, &pTicket->GetSoftDollar());
-	m_Data.Add(&m_OtherFee, &pTicket->GetOtherFee());
 	m_Data.Add(&m_VAR, &pTicket->GetVAR());
 	m_Data.Add(&m_DV01, &pTicket->GetDV01());
 	m_Data.Add(&m_AssignCP, &pTicket->GetAssignCP());
@@ -564,7 +557,6 @@ void CTicketProcess::InitControls()
 	m_Data.Add(&m_Par);
 	m_Data.Add(&pTicket->GetOriNominal());
 	m_Data.Add(&pTicket->GetCPTradeID());
-	m_Data.Add(&m_NetPrice, &pTicket->GetNetPrice());
 	m_Data.Add(&m_sImgID);
 
 	CRawInvRec *pInv;
@@ -577,6 +569,7 @@ void CTicketProcess::InitControls()
 	m_Data.GetSRowCtrl().Add(&pInv->GetPrice());
 	m_Data.GetSRowCtrl().Add(&pInv->GetLink());
 	m_Data.GetSRowCtrl().Add(&pInv->GetDownPymnt());
+	m_Data.GetSRowCtrl().Add(&pInv->GetOtherFee());
 }
 
 BOOL CTicketProcess::IsOK()
@@ -717,18 +710,6 @@ BOOL CTicketProcess::IsOK()
 	if(m_BestExecution.GetCurSel() < 0)
 		Text = "Must choose a best execution method";
 
-/*	m_NetPrice.GetWindowText(Data);
-	if(!Data.IsEmpty())
-	{
-		CString Data2;
-		for(int i = 1; i <= m_AllocSS.GetSheetRows(); i++)
-		{
-			Data2 = m_AllocSS.GetSheetText(6, i);
-			if(Data2 != Data)
-				Text = "Net Price and Allocation Price are not match";
-		}
-	} */
-
 	if(!Text.IsEmpty())
 	{
 		MessageBox(Text);
@@ -783,6 +764,7 @@ void CTicketProcess::UpdateCash()
 	if(m_Asset.GetData() == NEWASSET)
 		return;
 	
+	m_Data.GetCustodian() = m_Custodian;
 	m_Data.SetupAssetInfo();
 	m_Data.ComputeValue(m_SecFee.GetCheck(), m_OrFee.GetCheck());
 	if(m_FxRate.GetWindowTextLength() > 0)
@@ -790,28 +772,10 @@ void CTicketProcess::UpdateCash()
 	else
 		m_SetCurrency.SetData(m_Currency.GetSelString(Asset));
 
-	Data = QData.WriteNumber(m_Data.GetNetPrice(), TRUE);
-	m_NetPrice.SetData(Data);
 	m_Cash.SetData(QData.WriteNumber(m_Data.GetCash(), TRUE, 2));
 	m_PrePaid.SetData(QData.WriteNumber(m_Data.GetPrePaid(), TRUE, 2));
 	m_Accretion.SetData(QData.WriteNumber(m_Data.GetAccretion(), TRUE, 2));
 	m_Total.SetData(QData.WriteNumber(m_Data.GetCash() + m_Data.GetPrePaid() + m_Data.GetAccretion(), TRUE, 2));
-	
-	Data = m_NetPrice.GetData();
-	Data = m_Price.GetData();
-	Data2.Format("%.2lf", m_Data.ComputeOtherFee(atof(Data), m_SecFee.GetCheck(), m_OrFee.GetCheck()));
-	if(m_SecFee.GetCheck() || m_OrFee.GetCheck())
-		m_OtherFee.SetData(Data2);
-
-/*	if(m_Data.GetNetPrice() > 0)
-	{
-		for(int i = 1; i <= m_AllocSS.GetSheetRows(); i++)
-		{
-			Data2 = m_AllocSS.GetSheetText(6, i);
-			if(!Data2.IsEmpty() && Data2 != Data)
-				m_AllocSS.SetSheetText(6, i, Data);
-		}
-	} */
 }
 
 void CTicketProcess::UpdateCPCT(COptComboBox &CP, CCntlEdit &CT)
@@ -830,9 +794,9 @@ void CTicketProcess::UpdateCPCT(COptComboBox &CP, CCntlEdit &CT)
 	}
 
 	FindDlg.m_OraLoader.GetSql().Format("SELECT CT_CODE \"CT\", CT_NAME, CT_EURO_NUM \"EUROCLEAR\", "
-						"CT_CEDEL_NUM \"CEDEL\", CT_ADDRESS1 \"CP_CT\" , TO_NUMBER(CT_CODE) \"IDX\" "
-						"FROM SEMAM.NW_COUNTER_CONTACTS WHERE ISVALID = 'Y' AND CP_CODE = %s "
-						"ORDER BY 6 ", QData.GetQueryText(sCP));
+										"CT_CEDEL_NUM \"CEDEL\", CT_ADDRESS1 \"CP_CT\" , TO_NUMBER(CT_CODE) \"IDX\" "
+										"FROM SEMAM.NW_COUNTER_CONTACTS WHERE ISVALID = 'Y' AND CP_CODE = %s "
+										"ORDER BY 6 ", QData.GetQueryText(sCP));
 	if(FindDlg.DoModal() == IDOK)
 		CT.SetData(FindDlg.m_Key);
 }
@@ -981,6 +945,8 @@ void CTicketProcess::OnDblClickProcessTicketList(long Col, long Row)
 			MessageBox("This ticket has been processed.  Please reload tickets.", m_Data.GetRawTicket().GetTicket());
 			return;
 		}
+		if(m_AllocSS.GetSheetRows() > 0)
+			m_Custodian = m_AllocSS.GetSheetText(4, 1); // Get Custodian
 	}
 	else
 	{
@@ -1043,6 +1009,7 @@ void CTicketProcess::OnUpdateProcessAdd(CCmdUI* pCmdUI)
 void CTicketProcess::OnProcessAllocation() 
 {
 	CAllocation Dlg;
+	CQData QData;
 	CString TransType, Dir;
 	CKeyDBRecArray *pArray;
 	int i;
@@ -1050,7 +1017,7 @@ void CTicketProcess::OnProcessAllocation()
 	m_Data.UpdateData();
 	m_Data.SetKey();
 	Dlg.m_Data.Setup(GetData().GetOraLoader(), m_Data.GetRawTicket(), m_Data.GetTicket().GetFormula());
-	m_Data.GetRawTicket().GetNetPrice() = m_NetPrice.GetData();
+//	m_Data.GetRawTicket().GetNetPrice() = m_NetPrice.GetData();
 	Dlg.m_Data.GetTicket() = m_Data.GetRawTicket();
 	Dlg.m_DownPay = m_DownPymnt.GetData();
 	pArray = m_Data.GetAllocList().GetAt(m_Data.GetKey());
@@ -1077,6 +1044,8 @@ void CTicketProcess::OnProcessAllocation()
 			m_Data.GetAllocList().SetAt(i, Dlg.m_RecArray);
 		m_Data.GetAllocList().CopyDataToRowCtrl(Dlg.m_RecArray.GetKey(), m_Data.GetSRowCtrl());
 		m_Margin.SetData(Dlg.m_Margin);
+		m_Custodian = Dlg.m_sCustodian;
+		UpdateCash();
 	}
 }
 
@@ -1586,7 +1555,7 @@ void CTicketProcess::OnEnKillfocusProcessOtherFeeEdit()
 	UpdateCash();
 }
 
-void CTicketProcess::OnBnClickedProcessSecfeeCheck()
+/*void CTicketProcess::OnBnClickedProcessSecfeeCheck()
 {
 	double Price, OtherFee;
 	CQData QData;
@@ -1597,12 +1566,12 @@ void CTicketProcess::OnBnClickedProcessSecfeeCheck()
 	m_OtherFee.SetData(QData.WriteNumber(OtherFee, TRUE, 2));
 
 	UpdateCash();
-}
+} 
 
 void CTicketProcess::OnBnClickedProcessOrfeeCheck()
 {
 	OnBnClickedProcessSecfeeCheck();
-}
+} */
 
 void CTicketProcess::OnEnChangeProcessUnwindTicketEdit()
 {
@@ -1776,6 +1745,7 @@ void CTicketProcess::OnEnChangeProcessAmountEdit()
 
 void CTicketProcess::OnEnKillfocusProcessAmountEdit()
 {
+//	OnBnClickedProcessSecfeeCheck();
 	if(m_nRiskLevel == 3) // Exceeds Limit
 		m_Amount.SetFocus();
 }
@@ -1805,5 +1775,9 @@ void CTicketProcess::OnProcessFxcategory()
 
 	Dlg.DoModal();
 }
-
-
+/*
+void CTicketProcess::OnCbnSelchangeProcessAssigncpCombo()
+{
+	if(m_AssignCP.GetCurSel() >= 0)
+		OnBnClickedProcessSecfeeCheck();
+} */

@@ -19,7 +19,7 @@ void CRawInvRec::Copy(CRawInvRec &RawInvRec)
 	SetPrice(RawInvRec.GetPrice());
 	SetLink(RawInvRec.GetLink());
 	SetDownPymnt(RawInvRec.GetDownPymnt());
-//	SetAssignCT(RawInvRec.GetAssignCT());
+	SetOtherFee(RawInvRec.GetOtherFee());
 }
 
 void CRawInvRec::ToDBRec(CDBRec &Rec)
@@ -40,6 +40,7 @@ void CRawInvRec::ToDBRec(CDBRec &Rec)
 	Rec.Add(GetPrice());
 	Rec.Add(GetLink());
 	Rec.Add(GetDownPymnt());
+	Rec.Add(GetOtherFee());
 }
 
 BOOL CRawInvRec::AddRec(COraLoader &OraLoader)
@@ -52,7 +53,7 @@ BOOL CRawInvRec::AddRec(COraLoader &OraLoader)
 						"FROM SEMAM.NW_RAW_TICKET_DETAIL ", ODYNASET_DEFAULT))
 		return FALSE; */
 	if(!OraLoader.Open("SELECT TICKET_NUM, PORTFOLIO, NOM_AMOUNT, CUSTODIAN, ACCOUNT, PRICE, "
-						"OPT_BACK, DOWN_PYMNT FROM SEMAM.NW_RAW_TICKET_DETAIL ", ODYNASET_DEFAULT))
+						"OPT_BACK, DOWN_PYMNT, OTHER_FEES FROM SEMAM.NW_RAW_TICKET_DETAIL ", ODYNASET_DEFAULT))
 		return FALSE;
 
 	CDBRec Rec;
@@ -71,7 +72,7 @@ BOOL CRawInvRec::UpdateRec(COraLoader &OraLoader, BOOL bByID)
 //								"FROM SEMAM.NW_RAW_TICKET_DETAIL WHERE ROWIDTOCHAR(ROWID) = %s ", 
 //								QData.GetQueryText(GetID())); // Rowid 
 	OraLoader.GetSql().Format("SELECT TICKET_NUM, PORTFOLIO, NOM_AMOUNT, CUSTODIAN, ACCOUNT, "
-								"PRICE, OPT_BACK, DOWN_PYMNT FROM SEMAM.NW_RAW_TICKET_DETAIL "
+								"PRICE, OPT_BACK, DOWN_PYMNT, OTHER_FEES FROM SEMAM.NW_RAW_TICKET_DETAIL "
 								"WHERE ROWIDTOCHAR(ROWID) = %s ", QData.GetQueryText(GetID())); // Rowid 
 	if(!OraLoader.Open(OraLoader.GetSql(), ODYNASET_DEFAULT))
 		return FALSE;

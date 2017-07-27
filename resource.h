@@ -195,6 +195,7 @@
 #define IDD_FUTURE_COMM_SCHEDULE_DIALOG 459
 #define IDD_FUTURE_FEES_DIALOG          461
 #define IDD_FXCAT_DIALOG                463
+#define IDD_OR_FEE_DIALOG               465
 #define IDC_ACCOUNT_COMBO               701
 #define IDC_ACCOUNT_GROUP_EDIT          702
 #define IDC_ACCOUNT_COLLATERAL_CHECK    703
@@ -262,6 +263,7 @@
 #define IDC_ALLOC_FINDITEM2_BUTTON      800
 #define IDC_ALLOC_CONTRACT_CONVERTOR_BUTTON 801
 #define IDC_ALLOC_REPOPRICE_BUTTON      802
+#define IDC_ALLOC_OTHER_FEE             803
 #define IDC_ASSETDLG_ASSET_EDIT         821
 #define IDC_ASSETDLG_DESC_EDIT          822
 #define IDC_ASSETDLG_MATURITY_EDIT      823
@@ -2026,8 +2028,20 @@
 #define IDC_ORDER_MANDATORY_CHECK       4082
 #define IDC_ORDER_DISCRETIONARY_CHECK   4082
 #define IDC_TRENCH_TICKET_EDIT          4101
+#define IDC_ORFEE_PB_COMBO              4101
 #define IDC_TRENCH_CODE_COMBO           4102
+#define IDC_ORFEE_CP_COMBO              4102
 #define IDC_TRENCH_LIST                 4103
+#define IDC_ORFEE_LOWLIMIT_EDIT         4103
+#define IDC_ORFEE_HIGHLIMIT_EDIT        4104
+#define IDC_ORFEE_FROM_EDIT             4105
+#define IDC_ORFEE_TO_EDIT               4106
+#define IDC_ORFEE_ORFEE_EDIT            4107
+#define IDC_ORFEE_OCCFEE_EDIT           4108
+#define IDC_ORFEE_LIST                  4109
+#define IDC_ORFEE_ADD_BUTTON            4110
+#define IDC_ORFEE_UPDATE_BUTTON         4111
+#define IDC_ORFEE_DELETE_BUTTON         4112
 #define IDC_FC_CP_COMBO                 4121
 #define IDC_FC_TRANSTYPE_COMBO          4122
 #define IDC_FC_CURRENCY_COMBO           4123
@@ -2320,7 +2334,7 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        465
+#define _APS_NEXT_RESOURCE_VALUE        467
 #define _APS_NEXT_COMMAND_VALUE         33103
 #define _APS_NEXT_CONTROL_VALUE         1704
 #define _APS_NEXT_SYMED_VALUE           310

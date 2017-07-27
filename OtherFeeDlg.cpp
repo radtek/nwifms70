@@ -26,7 +26,7 @@ void COtherFeeDlg::DoDataExchange(CDataExchange* pDX)
 	CDialog::DoDataExchange(pDX);
 }
 
-void COtherFeeDlg::ComputeFees()
+/* void COtherFeeDlg::ComputeFees()
 {
 	COraLoader OraLoader;
 	OValue Value;
@@ -74,11 +74,54 @@ void COtherFeeDlg::ComputeFees()
 	}
 
 	if(m_bOrFee)
-		m_dOrFee = EqVal.GetOrFees(Par, m_bOrFee);
+	{
+		if(Par > 0)
+			m_dOrFee = EqVal.GetOrFees(m_PB, m_CP, NomAmount/Par);
+		else
+			m_dOrFee = EqVal.GetOrFees(m_PB, m_CP, NomAmount);
+	}
 
-	m_SecFee.SetWindowText(QData.WriteNumber(m_dSecFee, TRUE));
-	m_OrFee.SetWindowText(QData.WriteNumber(m_dOrFee, TRUE));
-	m_TotalFee.SetWindowText(QData.WriteNumber(m_dSecFee + m_dOrFee, TRUE));
+	m_SecFee.SetData(QData.WriteNumber(m_dSecFee, TRUE));
+	m_OrFee.SetData(QData.WriteNumber(m_dOrFee, TRUE));
+	m_TotalFee.SetData(QData.WriteNumber(m_dSecFee + m_dOrFee, TRUE));
+} */
+
+void COtherFeeDlg::ComputeFees()
+{
+	COraLoader OraLoader;
+	CEquity EqVal;
+	double Amount, Par;
+	CQData QData;
+	CString Text;
+
+	m_dSecFee = 0;
+	m_dOrFee = 0;
+
+	OraLoader.SetDB(&theDB);
+	OraLoader.Open("SELECT ASS_PAR_VALUE FROM SEMAM.NW_ASSETS WHERE ASS_CODE = " + m_Asset);
+	OraLoader.LoadTextString(Text);
+
+	EqVal.Setup(m_TransType, m_dNomAmount, m_dPrice, m_dFxrate, m_Dir);
+	if(m_bSecFee)
+	{
+		Amount = EqVal.GetValue();
+		Amount += m_dBrFee + m_dOtherFee;
+		m_dPrice = Amount/EqVal.GetNomAmount();
+		m_dSecFee = EqVal.GetSecFees(m_dPrice, m_bSecFee);
+	}
+
+	if(m_bOrFee)
+	{
+		Par = atof(QData.RemoveComma(Text));
+		if(Par > 0)
+			m_dOrFee = EqVal.GetOrFees(m_PB, m_CP, m_dNomAmount/Par);
+		else
+			m_dOrFee = EqVal.GetOrFees(m_PB, m_CP, m_dNomAmount);
+	}
+
+	m_SecFee.SetData(QData.WriteNumber(m_dSecFee, TRUE));
+	m_OrFee.SetData(QData.WriteNumber(m_dOrFee, TRUE));
+	m_TotalFee.SetData(QData.WriteNumber(m_dSecFee + m_dOrFee, TRUE));
 }
 
 BOOL COtherFeeDlg::OnInitDialog() 

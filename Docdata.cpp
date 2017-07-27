@@ -245,7 +245,7 @@ void CDocData::LoadFees()
 		GetOraLoader().MoveNext();
 	}
 	
-	GetOraLoader().Open("SELECT OR_FEE FROM SEMAM.NW_OR_FEE "
+/*	GetOraLoader().Open("SELECT OR_FEE FROM SEMAM.NW_OR_FEE "
 						"WHERE FROM_DATE <= TRUNC(SYSDATE) "
 						"AND NVL(TO_DATE, SYSDATE) > TRUNC(SYSDATE) ");
 	while(!GetOraLoader().IsEOF())
@@ -253,7 +253,12 @@ void CDocData::LoadFees()
 		GetOraLoader().GetFieldValue(0, &Value);
 		m_OptFee = (double) Value;
 		GetOraLoader().MoveNext();
-	}
+	} */
+}
+
+void CDocData::LoadOrFeeArray(COrFeeDataArray &OrFeeArray)
+{
+	OrFeeArray.LoadData(GetOraLoader());
 }
 
 void CDocData::PasswordExpiryWarning()

@@ -22,6 +22,7 @@ protected:
 	CAssetVal m_Val;
 	CString m_Booker;
 	CString m_BookDate;
+	CString m_Custodian;
 	double m_NetPrice;
 	double m_OtherFee;
 	double m_Cash;
@@ -76,5 +77,7 @@ public:
 	void SetPrePaid(double PrePaid) { m_PrePaid = PrePaid; }
 	void SetAccretion(double Accretion) { m_Accretion = Accretion; }
 	void LoadAllocTicket(CStringArray &AllocTickets);
+
+	CString &GetCustodian() { return m_Custodian; }
 };
 #endif

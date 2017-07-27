@@ -16,6 +16,7 @@
 #include "portfolioaccount.h"
 #include "assetsupplement.h"
 #include "country.h"
+#include "OrFeeDlg.h"
 #include "secfee.h"
 #include "investordialog.h"
 #include "claimcp.h"
@@ -1287,16 +1288,16 @@ void CMaintenance::OnMaintSecFee()
 	CSECFee Dlg;
 
 	Dlg.m_OraLoader = GetData().GetOraLoader();
-	Dlg.m_bSecFee = TRUE;
 	Dlg.DoModal();
 }
 
 void CMaintenance::OnMaintOrFee()
 {
-	CSECFee Dlg;
+	COrFeeDlg Dlg;
 
 	Dlg.m_OraLoader = GetData().GetOraLoader();
-	Dlg.m_bSecFee = FALSE;
+	Dlg.m_Data = &GetData();
+
 	Dlg.DoModal();
 }
 
@@ -1349,7 +1350,7 @@ void CMaintenance::OnMaintFillRate()
 
 void CMaintenance::OnUpdateMaintSecFee(CCmdUI* pCmdUI)
 {
-	if(GetData().IsPowerUser() && (GetData().IsOperation() && !GetData().IsGuest()))
+	if(GetData().IsPowerUser() || GetData().IsOperation())
 		pCmdUI->Enable(TRUE);
 	else
 		pCmdUI->Enable(FALSE);
@@ -1357,7 +1358,7 @@ void CMaintenance::OnUpdateMaintSecFee(CCmdUI* pCmdUI)
 
 void CMaintenance::OnUpdateMaintOrFee(CCmdUI *pCmdUI)
 {
-	if(GetData().IsPowerUser() && (GetData().IsOperation() && !GetData().IsGuest()))
+	if(GetData().IsPowerUser() || GetData().IsOperation())
 		pCmdUI->Enable(TRUE);
 	else
 		pCmdUI->Enable(FALSE);

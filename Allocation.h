@@ -33,7 +33,7 @@ class CAllocation : public CDialog
 // Construction
 public:
 	CAllocation(CWnd* pParent = NULL);   // standard constructor
-	~CAllocation();
+	~CAllocation() {}
 
 // Dialog Data
 	//{{AFX_DATA(CAllocation)
@@ -44,15 +44,16 @@ public:
 	CDBSheet m_SS;
 	CDBSheet m_RepoInfoSS;
 
-	CCheckBox* m_CSPBShort;
+	CCheckBox m_CSPBShort;
 
-	COptComboBox* m_Portfolio;
-	COptComboBox* m_Custodian;
-	COptComboBox* m_Account;
+	COptComboBox m_Portfolio;
+	COptComboBox m_Custodian;
+	COptComboBox m_Account;
 	CString m_TransNum;
 
 	CNumEdit m_Amount;
 	CNumEdit m_Price;
+	CNumEdit m_OtherFee;
 
 	CString m_Category;
 	CString m_AssetClass;

@@ -27,7 +27,6 @@ public:
 	CMaskDateEdit m_FromDate;
 	CMaskDateEdit m_ToDate;
 	CNumEdit m_Fee;
-	BOOL m_bSecFee;
 	//}}AFX_DATA
 
 

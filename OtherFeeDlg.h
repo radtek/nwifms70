@@ -10,6 +10,10 @@
 #include "oraloader.h"
 #endif
 
+#ifndef __DOCDATA_H__
+#include "DocData.h"
+#endif 
+
 // COtherFeeDlg dialog
 
 class COtherFeeDlg : public CDialog
@@ -26,7 +30,18 @@ public:
 	CNumEdit m_OrFee;
 	CNumEdit m_TotalFee;
 
-	CString m_TransNum;
+	CString m_PB;
+	CString m_CP;
+	
+	CString m_TransType;
+	CString m_Dir;
+	CString m_Asset;
+	double m_dNomAmount;
+	double m_dPrice;
+	double m_dFxrate;
+	double m_dBrFee;
+	double m_dOtherFee;
+
 	double m_dSecFee;
 	double m_dOrFee;
 	BOOL m_bSecFee;

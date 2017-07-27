@@ -307,8 +307,7 @@ void CFmsTicket::EnableCtrls()
 	m_TRS.ShowWindow(nCmdShow);
 
 	// Call, Put, CDS, Securities Impact
-	nCmdShow = (bSearch || (TransType == CALL || TransType == CDS || 
-				TransType == PUT || TransType == SECURITIES)) ? SW_SHOW : SW_HIDE;
+	nCmdShow = (bSearch || (TransType == CALL || TransType == CDS || TransType == PUT || TransType == SECURITIES)) ? SW_SHOW : SW_HIDE;
 	m_ShortSale.ShowWindow(nCmdShow);
 	m_CSPBShort.ShowWindow(nCmdShow);
 	m_WI.ShowWindow(nCmdShow);
@@ -1450,7 +1449,7 @@ void CFmsTicket::OnEnSetfocusTicketSetconventionEdit()
 
 void CFmsTicket::OnUpdateTransOtherfee(CCmdUI *pCmdUI)
 {
-	pCmdUI->Enable(!m_TransNum.GetData().IsEmpty() && (m_SecFee.GetCheck() || m_OrFee.GetCheck()));
+	pCmdUI->Enable(!m_TransNum.GetData().IsEmpty() && (m_SecFee.GetCheck() > 0 || m_OrFee.GetCheck() > 0));
 }
 
 void CFmsTicket::OnTransOtherfee()
@@ -1458,9 +1457,32 @@ void CFmsTicket::OnTransOtherfee()
 	COtherFeeDlg Dlg;
 	CQData QData;
 
-	Dlg.m_TransNum = m_TransNum.GetData();
+	Dlg.m_TransType = m_TransType.GetData();
+	Dlg.m_Dir = m_Dir.GetData();
+	Dlg.m_Asset = QData.GetQueryText(m_Asset.GetData());
+	Dlg.m_dNomAmount = atof(QData.RemoveComma(m_Amount.GetData()));
+	Dlg.m_dPrice = atof(QData.RemoveComma(m_Price.GetData()));
+	if(m_Fxrate.GetWindowTextLength() == 0)
+		Dlg.m_dFxrate = 1;
+	else
+		Dlg.m_dFxrate = atof(QData.RemoveComma(m_Fxrate.GetData()));
+	if(m_BrFee.GetWindowTextLength() == 0)
+		Dlg.m_dBrFee = 0;
+	else
+		Dlg.m_dBrFee = atof(QData.RemoveComma(m_BrFee.GetData()));
+	
+	if(m_OtherFee.GetWindowTextLength() == 0)
+		Dlg.m_dOtherFee = 0;
+	else
+		Dlg.m_dOtherFee = atof(QData.RemoveComma(m_Price.GetData()));
+
 	Dlg.m_bSecFee = m_SecFee.GetCheck();
 	Dlg.m_bOrFee = m_OrFee.GetCheck();
+	Dlg.m_PB = m_InvAssignCP.GetData();
+	if(Dlg.m_PB.IsEmpty())
+		Dlg.m_PB = m_Custodian.GetData();
+	Dlg.m_CP = m_CP.GetData();
+
 	if(Dlg.DoModal() == IDOK)
 		m_OtherFee.SetData(QData.WriteNumber(Dlg.m_dSecFee + Dlg.m_dOrFee, TRUE));
 }

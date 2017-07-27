@@ -59,8 +59,7 @@ BOOL CNWIFMS70Doc::OnNewDocument()
 
 	GetData().LoadFees();
 	Eq.m_SecFeeRate = GetData().GetSecFee();
-	Eq.m_OrFeeRate = GetData().GetOptFee();
-
+	GetData().LoadOrFeeArray(m_OrFeeDataArray);
 	GetData().PasswordExpiryWarning();
 
 	GetData().LoadUser();

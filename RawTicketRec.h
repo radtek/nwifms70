@@ -20,9 +20,9 @@ protected:
 	CString m_DownPymnt;
 	CString m_Link;
 
-	CString m_NetPrice;
 	CString m_Custodian;
 	CString m_Account;
+	CString m_OtherFee;
 
 public:
 	CRawInvRec() {}
@@ -39,9 +39,9 @@ public:
 	CString &GetDownPymnt() { return m_DownPymnt; }
 	CString &GetLink() { return m_Link; }
 
-	CString &GetNetPrice() { return m_NetPrice; }
 	CString &GetCustodian() { return m_Custodian; }
 	CString &GetAccount() { return m_Account; }
+	CString &GetOtherFee() { return m_OtherFee; }
 
 	void SetPortfolio(LPCTSTR Portfolio) { m_Portfolio = Portfolio; }
 	void SetNomAmount(LPCTSTR NomAmount) { m_NomAmount = NomAmount; }
@@ -49,9 +49,9 @@ public:
 	void SetDownPymnt(LPCTSTR DownPymnt) { m_DownPymnt = DownPymnt; } 
 	void SetLink(LPCTSTR Link) { m_Link = Link; }
 
-	void SetNetPrice(LPCTSTR NetPrice) { m_NetPrice = NetPrice; }
 	void SetCustodian(LPCTSTR Custodian) { m_Custodian = Custodian; }
 	void SetAccount(LPCTSTR Account) { m_Account = Account; }
+	void SetOtherFee(LPCTSTR OtherFee) { m_OtherFee; }
 
 	virtual void Copy(CRawInvRec &RawInvRec);
 	const CRawInvRec &operator = (CRawInvRec &RawInvRec) { Copy(RawInvRec); return *this; }

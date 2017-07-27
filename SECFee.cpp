@@ -37,10 +37,7 @@ void CSECFee::LoadData()
 {
 	m_SS.ClearSheet();
 
-	if(m_bSecFee)
-		m_OraLoader.Open("SELECT FROM_DATE, TO_DATE, SEC_FEE FROM SEMAM.NW_SEC_FEE ORDER BY 1 ");
-	else
-		m_OraLoader.Open("SELECT FROM_DATE, TO_DATE, OR_FEE FROM SEMAM.NW_OR_FEE ORDER BY 1 ");
+	m_OraLoader.Open("SELECT FROM_DATE, TO_DATE, SEC_FEE FROM SEMAM.NW_SEC_FEE ORDER BY 1 ");
 
 	m_OraLoader.LoadDBSheet(m_SS, TRUE);
 }
@@ -61,7 +58,7 @@ void CSECFee::UpdateData(BOOL bAdd)
 	Rec.Add(Text);
 	Rec.Add(m_ToDate.GetData());
 
-	m_Fee.GetWindowText(Text);
+	Text = m_Fee.GetData();
 	if(!Text.IsEmpty())
 	{
 		MessageBox("Invalid Fee");
@@ -71,20 +68,13 @@ void CSECFee::UpdateData(BOOL bAdd)
 
 	if(bAdd)
 	{
-		if(m_bSecFee)
-			m_OraLoader.Open("SELECT FROM_DATE, TO_DATE, SEC_FEE FROM SEMAM.NW_SEC_FEE ");
-		else
-			m_OraLoader.Open("SELECT FROM_DATE, TO_DATE, OR_FEE FROM SEMAM.NW_OR_FEE ");
+		m_OraLoader.Open("SELECT FROM_DATE, TO_DATE, SEC_FEE FROM SEMAM.NW_SEC_FEE ", ODYNASET_DEFAULT);
 		m_OraLoader.UpdateRecord(Rec, bAdd);
 	}
 	else
 	{
-		if(m_bSecFee)
-			m_OraLoader.GetSql() = "SELECT FROM_DATE, TO_DATE, SEC_FEE FROM SEMAM.NW_SEC_FEE " 
-									"WHERE FROM_DATE = ";
-		else
-			m_OraLoader.GetSql() = "SELECT FROM_DATE, TO_DATE, OR_FEE FROM SEMAM.NW_OR_FEE " 
-									"WHERE FROM_DATE = ";
+		m_OraLoader.GetSql() = "SELECT FROM_DATE, TO_DATE, SEC_FEE FROM SEMAM.NW_SEC_FEE " 
+								"WHERE FROM_DATE = ";
 		m_OraLoader.GetSql() += QData.GetQueryDate(Rec.GetAt(0));
 		
 		if(m_OraLoader.Open(m_OraLoader.GetSql(), ODYNASET_DEFAULT))
@@ -117,7 +107,7 @@ BOOL CSECFee::OnInitDialog()
 	m_ToDate.Setup(this, IDC_SECFEE_TO_EDIT);
 	m_Fee.Setup(this, IDC_SECFEE_FEE_EDIT);
 
-	GetDlgItem(IDC_SECFEE_STATIC)->SetWindowText(m_bSecFee ? "SEC FEE" : "OR FEE");
+	GetDlgItem(IDC_SECFEE_STATIC)->SetWindowText("SEC FEE");
 
 	LoadData();
 
@@ -165,10 +155,7 @@ void CSECFee::OnBnClickedSecfeeDeleteButton()
 	if(Text.IsEmpty())
 		return;
 
-	if(m_bSecFee)
-		m_OraLoader.GetSql() = "DELETE FROM SEMAM.NW_SEC_FEE WHERE FROM_DATE = ";
-	else
-		m_OraLoader.GetSql() = "DELETE FROM SEMAM.NW_OR_FEE WHERE FROM_DATE = ";
+	m_OraLoader.GetSql() = "DELETE FROM SEMAM.NW_SEC_FEE WHERE FROM_DATE = ";
 	m_OraLoader.GetSql() += QData.GetQueryDate(Text);
 	m_OraLoader.ExecuteSql();
 	LoadData();
@@ -200,7 +187,7 @@ void CSECFee::OnDblClickSecfeeList(long Col, long Row)
 					m_ToDate.SetData(Text);
 					break;
 				case 3:
-					m_Fee.SetWindowText(Text);
+					m_Fee.SetData(Text);
 					break;
 				default:
 					break;
@@ -211,7 +198,7 @@ void CSECFee::OnDblClickSecfeeList(long Col, long Row)
 	{
 		m_FromDate.SetData(EMPTYSTRING);
 		m_ToDate.SetData(EMPTYSTRING);
-		m_Fee.SetWindowText(EMPTYSTRING);
+		m_Fee.SetData(EMPTYSTRING);
 	}
 }
 
