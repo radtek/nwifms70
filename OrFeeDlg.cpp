@@ -30,7 +30,7 @@ void COrFeeDlg::LoadData()
 {
 	m_SS.ClearSheet();
 
-	m_OraLoader.Open("SELECT PB_NAME, CP, LOW_LIMIT, HIGH_LIMIT, FROM_DATE, TO_DATE, OR_FEE, OCC_FEE, ROWIDTOCHAR(ROWID) \"ID\" FROM LIN.NW_OR_FEE ORDER BY 1, 5 DESC ");
+	m_OraLoader.Open("SELECT PB_NAME, CP, LOW_LIMIT, HIGH_LIMIT, FROM_DATE, TO_DATE, OR_FEE, OCC_FEE, ROWIDTOCHAR(ROWID) \"ID\" FROM SEMAM.NW_OR_FEE ORDER BY 1, 5 DESC ");
 
 	m_OraLoader.LoadDBSheet(m_SS, TRUE);	
 }
@@ -65,13 +65,13 @@ void COrFeeDlg::UpdateData(BOOL bAdd)
 
 	if(bAdd)
 	{
-		m_OraLoader.Open("SELECT PB_NAME, CP, LOW_LIMIT, HIGH_LIMIT, FROM_DATE, TO_DATE, OR_FEE, OCC_FEE FROM LIN.NW_OR_FEE ", ODYNASET_DEFAULT);
+		m_OraLoader.Open("SELECT PB_NAME, CP, LOW_LIMIT, HIGH_LIMIT, FROM_DATE, TO_DATE, OR_FEE, OCC_FEE FROM SEMAM.NW_OR_FEE ", ODYNASET_DEFAULT);
 		m_OraLoader.UpdateRecord(Rec, bAdd);
 	}
 	else
 	{
 		Text = QData.GetQueryText(m_ID);
-		if(m_OraLoader.Open("SELECT PB_NAME, CP, LOW_LIMIT, HIGH_LIMIT, FROM_DATE, TO_DATE, OR_FEE, OCC_FEE FROM LIN.NW_OR_FEE " 
+		if(m_OraLoader.Open("SELECT PB_NAME, CP, LOW_LIMIT, HIGH_LIMIT, FROM_DATE, TO_DATE, OR_FEE, OCC_FEE FROM SEMAM.NW_OR_FEE " 
 							"WHERE ROWIDTOCHAR(ROWID) = " + Text, ODYNASET_DEFAULT))
 			m_OraLoader.UpdateRecord(Rec);
 	}
@@ -156,7 +156,7 @@ void COrFeeDlg::OnBnClickedOrfeeDeleteButton()
 	CString Text;
 
 	Text = QData.GetQueryText(m_ID);
-	GetOraLoader().ExecuteSql("DELETE FROM LIN.NW_OR_FEE WHERE ROWIDTOCHAR(ROWID) = " + Text);
+	GetOraLoader().ExecuteSql("DELETE FROM SEMAM.NW_OR_FEE WHERE ROWIDTOCHAR(ROWID) = " + Text);
 	LoadData();
 
 	GetDlgItem(IDC_ORFEE_DELETE_BUTTON)->EnableWindow(FALSE);

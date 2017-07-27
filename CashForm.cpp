@@ -28,37 +28,9 @@ IMPLEMENT_DYNCREATE(CCashForm, CFormView)
 CCashForm::CCashForm() : CFormView(CCashForm::IDD)
 {
 	//{{AFX_DATA_INIT(CCashForm)
-	m_Portfolio = NULL;
-	m_Account = NULL;
-	m_Currency = NULL;
-	m_PayType = NULL;
-	m_DiffReason = NULL;
-	m_AccountTo = NULL;
-	m_PortfolioTo = NULL;
 	m_bFind = FALSE;
 	m_Fund = "";
-	m_CouponPaid = NULL;
 	//}}AFX_DATA_INIT
-}
-
-CCashForm::~CCashForm()
-{
-	if(m_Portfolio)
-		delete m_Portfolio;
-	if(m_Account)
-		delete m_Account;
-	if(m_Currency)
-		delete m_Currency;
-	if(m_PayType)
-		delete m_PayType;
-	if(m_DiffReason)
-		delete m_DiffReason;
-	if(m_AccountTo)
-		delete m_AccountTo;
-	if(m_PortfolioTo)
-		delete m_PortfolioTo;
-	if(m_CouponPaid)
-		delete m_CouponPaid;
 }
 
 void CCashForm::DoDataExchange(CDataExchange* pDX)
@@ -141,34 +113,34 @@ void CCashForm::EnableControls()
 	CString Text, PmntType;
 
 	if(!m_bFind)
-		m_Portfolio->EnableWindow(!m_CashNum.GetData().IsEmpty() ? FALSE: TRUE);
+		m_Portfolio.EnableWindow(!m_CashNum.GetData().IsEmpty() ? FALSE: TRUE);
 	else
-		m_Portfolio->EnableWindow(TRUE);
+		m_Portfolio.EnableWindow(TRUE);
 
 	if(!m_bFind && m_Data.IsLoaded() && m_Data.IsCoupon() && m_CashAssetCode.IsEmpty()) // Coupon Pickup from view cannot be edited.
 	{
 		bEnabled = FALSE;
 		m_CashNum.EnableWindow(bEnabled);
 		m_PostDate.EnableWindow(bEnabled);
-		m_Portfolio->EnableWindow(bEnabled);
-		m_Account->EnableWindow(bEnabled);
-		m_Currency->EnableWindow(bEnabled);
+		m_Portfolio.EnableWindow(bEnabled);
+		m_Account.EnableWindow(bEnabled);
+		m_Currency.EnableWindow(bEnabled);
 		m_Amount.EnableWindow(bEnabled);
-		m_PayType->EnableWindow(bEnabled);
+		m_PayType.EnableWindow(bEnabled);
 		m_Asset.EnableWindow(bEnabled);
 		m_CloseDate.EnableWindow(bEnabled);
 		m_Fxrate.EnableWindow(bEnabled);
 		m_Remaining.EnableWindow(bEnabled);
-		m_DiffReason->EnableWindow(bEnabled);
+		m_DiffReason.EnableWindow(bEnabled);
 		m_Note.EnableWindow(bEnabled);
 		m_PayID.EnableWindow(bEnabled);
 		m_CustRef.EnableWindow(bEnabled);
 		m_Link.EnableWindow(bEnabled);
 		m_IRSID.EnableWindow(bEnabled);
-		m_AccountTo->EnableWindow(bEnabled);
-		m_PortfolioTo->EnableWindow(bEnabled);
+		m_AccountTo.EnableWindow(bEnabled);
+		m_PortfolioTo.EnableWindow(bEnabled);
 		m_ToDate.EnableWindow(bEnabled);
-		m_CouponPaid->EnableWindow(bEnabled);
+		m_CouponPaid.EnableWindow(bEnabled);
 		return;
 	}
 
@@ -197,8 +169,8 @@ void CCashForm::EnableControls()
 	}
 
 //	m_Portfolio->EnableWindow(bEnabled);
-	m_Account->EnableWindow(bEnabled);
-	m_Currency->EnableWindow(bEnabled);
+	m_Account.EnableWindow(bEnabled);
+	m_Currency.EnableWindow(bEnabled);
 	m_Amount.EnableWindow(bEnabled);
 
 	if(m_bFind)
@@ -207,19 +179,21 @@ void CCashForm::EnableControls()
 		if(!GetData().IsPowerUser())
 			bEnabled = UserClass > 2 ? FALSE : TRUE;
 		
-	m_PayType->EnableWindow(bEnabled);
+	m_PayType.EnableWindow(bEnabled);
 	m_Asset.EnableWindow(bEnabled);
 	m_CloseDate.EnableWindow(bEnabled);
 	m_Fxrate.EnableWindow(bEnabled);
 	m_Remaining.EnableWindow(bEnabled);
-	m_DiffReason->EnableWindow(bEnabled);
+	m_DiffReason.EnableWindow(bEnabled);
 	m_Note.EnableWindow(bEnabled);
 	m_PayID.EnableWindow(bEnabled);
 	m_CustRef.EnableWindow(bEnabled);
 	m_Link.EnableWindow(bEnabled);
-	m_IRSID.EnableWindow(bEnabled);
 	
-	m_PayType->GetSelString(Text);
+	m_PayType.GetSelString(Text);
+	if(Text == "FUTU COST")
+		m_IRSID.EnableWindow(Text == "FUTU COST" || bEnabled ? TRUE : FALSE);
+	
 	if(m_bFind)
 		bEnabled = TRUE;
 	else
@@ -228,8 +202,8 @@ void CCashForm::EnableControls()
 		else
 			bEnabled = FALSE;
 
-	m_AccountTo->EnableWindow(bEnabled);
-	m_PortfolioTo->EnableWindow(bEnabled);
+	m_AccountTo.EnableWindow(bEnabled);
+	m_PortfolioTo.EnableWindow(bEnabled);
 
 	if(m_bFind || GetData().IsPowerUser() || ((Text == "COUPON PAY" || Text == "SWAP INT" || Text == "DIVIDENT P" || Text == "TAX") && UserClass <= 2))
 		bEnabled = TRUE;
@@ -237,7 +211,7 @@ void CCashForm::EnableControls()
 		bEnabled = FALSE;
 
 	m_ToDate.EnableWindow(bEnabled);
-	m_CouponPaid->EnableWindow(bEnabled);
+	m_CouponPaid.EnableWindow(bEnabled);
 }
 
 void CCashForm::InitControls()
@@ -251,14 +225,14 @@ void CCashForm::InitControls()
 	m_DataSS.SetVisibleCols(9);
 	m_DataSS.SetVisibleRows(5);
 
-    m_Portfolio = (COptComboBox*) new COptComboBox(this, IDC_CASH_PORTFOLIO_COMBO);
-	m_Account = (COptComboBox*) new COptComboBox(this, IDC_CASH_ACCOUNT_COMBO);
-	m_Currency = (COptComboBox*) new COptComboBox(this, IDC_CASH_CURRENCY_COMBO);
-	m_PayType = (COptComboBox*) new COptComboBox(this, IDC_CASH_TYPE_COMBO);
-	m_DiffReason = (COptComboBox*) new COptComboBox(this, IDC_CASH_DIFFREASON_COMBO, TRUE);   
-    m_AccountTo = (COptComboBox*) new COptComboBox(this, IDC_CASH_ACCOUNTTO_COMBO, TRUE);
-    m_PortfolioTo = (COptComboBox*) new COptComboBox(this, IDC_CASH_TOPORTFOLIO_COMBO, TRUE);
-	m_CouponPaid = (CCheckBox*) new CCheckBox(this, IDC_CASH_FULL_CHECK);
+    m_Portfolio.Setup(this, IDC_CASH_PORTFOLIO_COMBO);
+	m_Account.Setup(this, IDC_CASH_ACCOUNT_COMBO);
+	m_Currency.Setup(this, IDC_CASH_CURRENCY_COMBO);
+	m_PayType.Setup(this, IDC_CASH_TYPE_COMBO);
+	m_DiffReason.Setup(this, IDC_CASH_DIFFREASON_COMBO, TRUE);   
+    m_AccountTo.Setup(this, IDC_CASH_ACCOUNTTO_COMBO, TRUE);
+    m_PortfolioTo.Setup(this, IDC_CASH_TOPORTFOLIO_COMBO, TRUE);
+	m_CouponPaid.Setup(this, IDC_CASH_FULL_CHECK);
 
 	m_CashNum.Setup(this, IDC_CASH_CASHNUM_EDIT);
 	m_PayID.Setup(this, IDC_CASH_PAYID_EDIT);
@@ -278,10 +252,10 @@ void CCashForm::InitControls()
 	m_Asset.LimitText(10);
 
 	m_Data.Add(&m_CashNum, &m_Data.GetRec().GetCashNum());
-	m_Data.Add(m_Portfolio, &m_Data.GetRec().GetPortfolio());
-	m_Data.Add(m_Account, &m_Data.GetRec().GetAccount());
-	m_Data.Add(m_PayType, &m_Data.GetRec().GetPayType());
-	m_Data.Add(m_Currency, &m_Data.GetRec().GetCurrency());
+	m_Data.Add(&m_Portfolio, &m_Data.GetRec().GetPortfolio());
+	m_Data.Add(&m_Account, &m_Data.GetRec().GetAccount());
+	m_Data.Add(&m_PayType, &m_Data.GetRec().GetPayType());
+	m_Data.Add(&m_Currency, &m_Data.GetRec().GetCurrency());
 	m_Data.Add(&m_Asset, &m_Data.GetRec().GetAsset());
 	m_Data.Add(&m_CloseDate, &m_Data.GetRec().GetCloseDate());
 	m_Data.Add(&m_PostDate, &m_Data.GetRec().GetPostDate());
@@ -289,33 +263,33 @@ void CCashForm::InitControls()
 	m_Data.Add(&m_Amount, &m_Data.GetRec().GetAmount());
 	m_Data.Add(&m_Fxrate, &m_Data.GetRec().GetFxRate());
 	m_Data.Add(&m_Remaining, &m_Data.GetRec().GetRemain());
-	m_Data.Add(m_DiffReason, &m_Data.GetRec().GetDiffReason());
+	m_Data.Add(&m_DiffReason, &m_Data.GetRec().GetDiffReason());
 	m_Data.Add(&m_Note, &m_Data.GetRec().GetComment());
 	m_Data.Add(&m_PayID, &m_Data.GetRec().GetPayID());
 	m_Data.Add(&m_CustRef, &m_Data.GetRec().GetRef());
-	m_Data.Add(m_AccountTo, &m_Data.GetRec().GetToAccount());
-	m_Data.Add(m_PortfolioTo, &m_Data.GetRec().GetToPortfolio());
+	m_Data.Add(&m_AccountTo, &m_Data.GetRec().GetToAccount());
+	m_Data.Add(&m_PortfolioTo, &m_Data.GetRec().GetToPortfolio());
 	m_Data.Add(&m_Link, &m_Data.GetRec().GetLink());
 	m_Data.Add(&m_IRSID, &m_Data.GetRec().GetIRSID());
-	m_Data.Add(m_CouponPaid, &m_Data.GetRec().GetCouponPaid());
+	m_Data.Add(&m_CouponPaid, &m_Data.GetRec().GetCouponPaid());
 	m_Data.Add(&m_Data.GetRec().GetBookDate());
 	m_Data.Add(&m_UserClass);
 	m_Data.Add(&m_CashAssetCode);
 
 	m_Data.GetCashSubData().Add(&m_PayID, &m_Data.GetRec().GetPayID());
-	m_Data.GetCashSubData().Add(m_Portfolio, &m_Data.GetRec().GetPortfolio());
-	m_Data.GetCashSubData().Add(m_Account, &m_Data.GetRec().GetAccount());
-	m_Data.GetCashSubData().Add(m_PayType, &m_Data.GetRec().GetPayType());
-	m_Data.GetCashSubData().Add(m_Currency, &m_Data.GetRec().GetCurrency());
+	m_Data.GetCashSubData().Add(&m_Portfolio, &m_Data.GetRec().GetPortfolio());
+	m_Data.GetCashSubData().Add(&m_Account, &m_Data.GetRec().GetAccount());
+	m_Data.GetCashSubData().Add(&m_PayType, &m_Data.GetRec().GetPayType());
+	m_Data.GetCashSubData().Add(&m_Currency, &m_Data.GetRec().GetCurrency());
 	m_Data.GetCashSubData().Add(&m_Asset, &m_Data.GetRec().GetAsset());
 	m_Data.GetCashSubData().Add(&m_CloseDate, &m_Data.GetRec().GetCloseDate());
 	m_Data.GetCashSubData().Add(&m_Amount, &m_Data.GetRec().GetAmount());
 	m_Data.GetCashSubData().Add(&m_Fxrate, &m_Data.GetRec().GetFxRate());
 	m_Data.GetCashSubData().Add(&m_Remaining, &m_Data.GetRec().GetRemain());
-	m_Data.GetCashSubData().Add(m_DiffReason, &m_Data.GetRec().GetDiffReason());
+	m_Data.GetCashSubData().Add(&m_DiffReason, &m_Data.GetRec().GetDiffReason());
 	m_Data.GetCashSubData().Add(&m_Note, &m_Data.GetRec().GetComment());
 	m_Data.GetCashSubData().Add(&m_CustRef, &m_Data.GetRec().GetRef());
-	m_Data.GetCashSubData().Add(m_AccountTo, &m_Data.GetRec().GetToAccount());
+	m_Data.GetCashSubData().Add(&m_AccountTo, &m_Data.GetRec().GetToAccount());
 	m_Data.GetCashSubData().Add(&m_UserClass);
 //	m_Data.GetCashSubData().Add(m_PortfolioTo, &m_Data.GetRec().GetToPortfolio());
 //	m_Data.GetCashSubData().Add(&m_Link, &m_Data.GetRec().GetLink());
@@ -331,23 +305,23 @@ BOOL CCashForm::IsOK()
 {
     CString Text, PayType;
 
-	if(m_Currency->GetCurSel() < 0)
+	if(m_Currency.GetCurSel() < 0)
 		Text = "Must select a currency";
 
-	m_PayType->GetSelString(PayType);
+	PayType = m_PayType.GetData();
 	if(PayType.IsEmpty())
 		Text = "Must select a Payment Type";
 
 	CString Data;
 
-	m_Remaining.GetWindowText(Data);
+	Data = m_Remaining.GetData();
 	if(atof(Data) != 0)
 	{
-		if(m_DiffReason->GetCurSel() < 0)
+		if(m_DiffReason.GetCurSel() < 0)
 			Text = "Must select a reason for difference";
 	}
 	else
-		if(m_DiffReason->GetCurSel() >= 0)
+		if(m_DiffReason.GetCurSel() >= 0)
 			Text = "Must not select a reason for difference if there is no difference";
 
 	if(m_CloseDate.GetData().IsEmpty())
@@ -433,7 +407,7 @@ BOOL CCashForm::UpdateData(BOOL bSaveandValid)
 			CString CashNum;
 
 			GetData().GetOraLoader().GenerateUniqueID(CASHNUM, CashNum);
-			m_CashNum.SetWindowText(CashNum);
+			m_CashNum.SetData(CashNum);
 			m_Data.AddRow();
 		}
 		else
@@ -446,12 +420,12 @@ BOOL CCashForm::UpdateData(BOOL bSaveandValid)
 
 		GetData().LoadSupportData();
 		GetData().LoadCashData();
-		QData.CopyDBRecArrayToComboBox(GetData().GetPortfolioArr(), *m_Portfolio, 0, FALSE);
-		QData.CopyDBRecArrayToComboBox(GetData().GetPortfolioArr(), *m_PortfolioTo);
-		QData.CopyDBRecArrayToComboBox(GetData().GetCurrencyArr(), *m_Currency);
-		QData.CopyDBRecArrayToComboBox(GetData().GetAccountArr(), *m_Account, 0, FALSE);
-		QData.CopyDBRecArrayToComboBox(GetData().GetAccountArr(), *m_AccountTo);
-		QData.CopyDBRecArrayToComboBox(GetData().GetCashTypeArr(), *m_PayType);
+		GetData().GetPortfolioArr().CopyToComboBox(m_Portfolio);
+		GetData().GetPortfolioArr().CopyToComboBox(m_PortfolioTo);
+		GetData().GetCurrencyArr().CopyToComboBox(m_Currency);
+		GetData().GetAccountArr().CopyToComboBox(m_Account);
+		GetData().GetAccountArr().CopyToComboBox(m_AccountTo);
+		GetData().GetCashTypeArr().CopyToComboBox(m_PayType);
 
 		OnCashFind();
 		OnCashClear();
@@ -465,14 +439,12 @@ void CCashForm::UpdateTotalCash(long Row)
 {
 	CQData QData;
 	double Amount;
-	CString Text;
 		
-	m_Amount.GetWindowText(Text);
-	Amount = atof(QData.RemoveComma(Text));
+	Amount = atof(QData.RemoveComma(m_Amount.GetData()));
 
 	Amount -= atof(QData.RemoveComma(m_InvSS.GetSheetText(3,Row)));
 
-	m_Amount.SetWindowText(QData.WriteNumber(Amount, TRUE, 2));
+	m_Amount.SetData(QData.WriteNumber(Amount, TRUE, 2));
 }
 /////////////////////////////////////////////////////////////////////////////
 // CCashForm message handlers
@@ -498,7 +470,7 @@ void CCashForm::OnInitialUpdate()
 	GetData().LoadDates();
 
 	if(GetData().GetOraLoader().Open("SELECT DIFF_REASON FROM SEMAM.NW_REMAINING_REASONS ORDER BY DIFF_REASON"))
-		GetData().GetOraLoader().LoadComboBox(*m_DiffReason);
+		GetData().GetOraLoader().LoadComboBox(m_DiffReason);
 
 	if(GetData().GetOraLoader().Open("SELECT DEF_ACCOUNT FROM SEMAM.NW_COMBINED_PORTFOLIOS "
 									"WHERE STATUS IS NULL ORDER BY PORTFOLIO "))
@@ -508,8 +480,8 @@ void CCashForm::OnInitialUpdate()
 	GetDocument()->SetViewTitle("Cash Entry");
 	UpdateData(FALSE);
 	m_bFind = FALSE;
-	m_AccountTo->EnableWindow(FALSE);
-	m_PortfolioTo->EnableWindow(FALSE);
+	m_AccountTo.EnableWindow(FALSE);
+	m_PortfolioTo.EnableWindow(FALSE);
 	
 	EndWaitCursor();
 }
@@ -528,7 +500,7 @@ void CCashForm::OnCashClear()
 	m_Data.Refresh();
 	m_DataSS.ClearSheet();
 	m_InvSS.ClearSheet();
-	m_Portfolio->SelectString(-1, m_Fund);
+	m_Portfolio.SetData(m_Fund);
 	m_bFind = TRUE;
 	m_bInCurrMonth = TRUE;
 	m_bSameDate = TRUE;
@@ -564,29 +536,30 @@ void CCashForm::OnCashFindAsset()
 	CAssetDlg Dlg;
 
 	Dlg.m_pData = &GetData();
-	m_Asset.GetWindowText(Dlg.m_FindData.GetRec().GetAsset());
+	Dlg.m_FindData.GetRec().GetAsset() = m_Asset.GetData();
 	Dlg.m_bWithNew = FALSE;
 	Dlg.m_bCash = TRUE;
 
 	if(Dlg.DoModal() != IDOK)
 		return;
 
-	m_Asset.SetWindowText(Dlg.m_FindData.GetRec().GetAsset());
+	m_Asset.SetData(Dlg.m_FindData.GetRec().GetAsset());
 }
 
 void CCashForm::OnCashLoad() 
 {
-	CString Portfolio, Account, Currency, PostDate, Asset;
+	CString Portfolio, Account, Currency, PostDate, Asset, PmntType;
 	
 	BeginWaitCursor();
 	m_InvSS.ClearSheet();
-	m_Portfolio->GetSelString(Portfolio);
-	m_Account->GetSelString(Account);
-	m_Currency->GetSelString(Currency);
+	Portfolio = m_Portfolio.GetData();
+	Account = m_Account.GetData();
+	Currency = m_Currency.GetData();
 	PostDate = m_PostDate.GetData();
-	m_Asset.GetWindowText(Asset);
-
-	m_Data.LoadOpenTrade(Portfolio, Account, Currency, PostDate, Asset);
+	Asset = m_Asset.GetData();
+	PmntType = m_PayType.GetData();
+	
+	m_Data.LoadOpenTrade(Portfolio, Account, Currency, PostDate, Asset, PmntType);
 	EndWaitCursor();
 }
 
@@ -594,8 +567,8 @@ void CCashForm::OnUpdateCashLoad(CCmdUI* pCmdUI)
 {
 	CString PayType;
 
-	m_PayType->GetSelString(PayType);
-	pCmdUI->Enable(!m_Fund.IsEmpty() && PayType == "TRANSACT" && m_Account->GetCurSel() >= 0 && m_Currency->GetCurSel() >= 0 ? TRUE : FALSE);
+	PayType = m_PayType.GetData();
+	pCmdUI->Enable(!m_Fund.IsEmpty() && PayType == "TRANSACT"||PayType == "FUTU COST" && m_Account.GetCurSel() >= 0 && m_Currency.GetCurSel() >= 0 ? TRUE : FALSE);
 }
 
 void CCashForm::OnCashLoadCash() 
@@ -604,9 +577,9 @@ void CCashForm::OnCashLoadCash()
 
 	BeginWaitCursor();
 	m_InvSS.ClearSheet();
-	m_Portfolio->GetSelString(Portfolio);
-	m_Account->GetSelString(Account);
-	m_Currency->GetSelString(Currency);
+	Portfolio = m_Portfolio.GetData();
+	Account = m_Account.GetData();
+	Currency = m_Currency.GetData();
 	PostDate = m_PostDate.GetData();
 
 	m_Data.LoadCash(Portfolio, Account, Currency, PostDate);
@@ -629,7 +602,7 @@ void CCashForm::OnCashRefresh()
 	m_DataSS.ClearSheet();
 	m_InvSS.ClearSheet();
 	
-	m_Portfolio->SelectString(-1, m_Fund);
+	m_Portfolio.SetData(m_Fund);
 	m_Data.GetOraLoader().Today(Date);
 	m_PostDate.SetData(Date);
 	
@@ -696,29 +669,55 @@ void CCashForm::OnDblClickCashTradeList(long Col, long Row)
 	switch(m_Data.GetCashStatus())
 	{
 		case 1: // Open Trade
-			m_CloseDate.GetWindowText(CloseDate);
+			CloseDate = m_CloseDate.GetData();
 			m_Data.GetCashSubData().SetCurrentRow(Row);
 			if(!CloseDate.IsEmpty())
-				m_CloseDate.SetWindowTextA(CloseDate);
+				m_CloseDate.SetData(CloseDate);
 			m_Data.GetInvRec().SetID(m_Data.GetCashSubData().GetID());
 			m_PayID.SetData(EMPTYSTRING);
 			m_Data.LoadCashDetail();
-			m_PayType->SelectString(-1, "TRANSACT");
+			m_PayType.SetData("TRANSACT");
 			Amount = 0;
 			for(i = 1; i <= m_InvSS.GetSheetRows(); i++)
 				Amount += atof(QData.RemoveComma(m_InvSS.GetSheetText(3, i)));
-			m_Amount.SetWindowText(QData.WriteNumber(Amount, TRUE, 2));
-			m_Remaining.SetWindowText("0");
+			m_Amount.SetData(QData.WriteNumber(Amount, TRUE, 2));
+			m_Remaining.SetData("0");
 			EnableControls();
 			break;
 		case 2: // Payment instruction
 			m_Data.GetCashSubData().SetCurrentRow(Row);
 			m_Data.LoadCashDetail();
 			PayType = m_Data.GetCashSubData().GetSS()->GetSheetText(8, Row);
-			m_PayType->SelectString(-1, PayType);
+			m_PayType.SetData(PayType);
 			if(PayType == "COUPON PAY")
-				m_CouponPaid->SetCheck(1);
+				m_CouponPaid.SetCheck(1);
 			EnableControls();
+			break;
+		case 3:
+			if(Row > 0 && Row <= m_DataSS.GetSheetRows())
+			{
+				m_IRSID.SetData(m_Data.GetCashSubData().GetIDArray().GetAt(Row -1)->GetID());
+				m_Portfolio.SetData(m_DataSS.GetSheetText(1, Row));
+				m_Account.SetData(m_DataSS.GetSheetText(2, Row));
+				m_PayType.SetData("FUTU COST");
+				m_Currency.SetData(m_DataSS.GetSheetText(4, Row));
+				m_Asset.SetData(m_DataSS.GetSheetText(5, Row));
+				m_ToDate.SetData(EMPTYSTRING);
+				m_Amount.SetData(m_DataSS.GetSheetText(7, Row));
+				m_Fxrate.SetData(EMPTYSTRING);
+				m_Remaining.SetData(EMPTYSTRING);
+				m_DiffReason.SetCurSel(-1);
+				m_Note.SetData(EMPTYSTRING);
+				m_PayID.SetData(EMPTYSTRING);
+				m_CustRef.SetData(EMPTYSTRING);
+				m_AccountTo.SetCurSel(-1);
+				m_PortfolioTo.SetCurSel(-1);
+				m_Link.SetData(EMPTYSTRING);
+				m_CouponPaid.SetCheck(0);
+				m_UserClass = "1";
+			}
+			EnableControls();
+			break;
 		default:
 			break;
 	}
@@ -787,11 +786,11 @@ void CCashForm::OnUpdateCashFind(CCmdUI* pCmdUI)
 	CString Text;
 	BOOL bEnable = FALSE;
 
-    if(!m_Fund.IsEmpty() || m_Currency->GetCurSel() >= 0 || 
-		m_PayType->GetCurSel() >= 0)
+    if(!m_Fund.IsEmpty() || m_Currency.GetCurSel() >= 0 || 
+		m_PayType.GetCurSel() >= 0)
 		bEnable = TRUE;
 	
-	if(m_Remaining.GetWindowTextLength() > 0 || m_DiffReason->GetCurSel() >= 0)
+	if(m_Remaining.GetWindowTextLength() > 0 || m_DiffReason.GetCurSel() >= 0)
 		bEnable = TRUE;
 
 	if(!m_CloseDate.GetData().IsEmpty() || !m_PostDate.GetData().IsEmpty())
@@ -800,7 +799,7 @@ void CCashForm::OnUpdateCashFind(CCmdUI* pCmdUI)
 	if(m_Amount.GetWindowTextLength() > 0)
 		bEnable = TRUE;
 	
-	if(m_AccountTo->GetCurSel() >= 0 || m_PortfolioTo->GetCurSel() >= 0)
+	if(m_AccountTo.GetCurSel() >= 0 || m_PortfolioTo.GetCurSel() >= 0)
 		bEnable = TRUE;
 	
 	if(!m_CashNum.GetData().IsEmpty())
@@ -813,11 +812,11 @@ void CCashForm::OnUpdateCashFindExact(CCmdUI* pCmdUI)
 {
 	BOOL bEnable = FALSE;
 
-    if(!m_Fund.IsEmpty() || m_Currency->GetCurSel() >= 0 || 
-		m_PayType->GetCurSel() >= 0)
+    if(!m_Fund.IsEmpty() || m_Currency.GetCurSel() >= 0 || 
+		m_PayType.GetCurSel() >= 0)
 		bEnable = TRUE;
 	
-	if(m_Remaining.GetWindowTextLength() > 0 || m_DiffReason->GetCurSel() >= 0)
+	if(m_Remaining.GetWindowTextLength() > 0 || m_DiffReason.GetCurSel() >= 0)
 		bEnable = TRUE;
 
 	if(!m_CloseDate.GetData().IsEmpty() || !m_PostDate.GetData().IsEmpty())
@@ -826,7 +825,7 @@ void CCashForm::OnUpdateCashFindExact(CCmdUI* pCmdUI)
 	if(m_Amount.GetWindowTextLength() > 0)
 		bEnable = TRUE;
 	
-	if(m_AccountTo->GetCurSel() >= 0 || m_PortfolioTo->GetCurSel() >= 0)
+	if(m_AccountTo.GetCurSel() >= 0 || m_PortfolioTo.GetCurSel() >= 0)
 		bEnable = TRUE;
 	
 	if(!m_CashNum.GetData().IsEmpty())
@@ -842,18 +841,18 @@ void CCashForm::OnSelchangeCashPortfolioCombo()
 
 	int Sel;
 
-	Sel = m_Portfolio->GetCurSel();
+	Sel = m_Portfolio.GetCurSel();
 	if(Sel >= 0)
 	{
-		m_Portfolio->GetSelString(m_Fund);
+		m_Fund = m_Portfolio.GetData();
 		OnCashRefresh();
 		
 		CString Account;
 		
-		m_Portfolio->SetCurSel(Sel);
+		m_Portfolio.SetCurSel(Sel);
 		Account = m_DefAccounts.GetAt(Sel);
-		m_Account->SelectString(-1, Account);
-		m_PayType->SetFocus();
+		m_Account.SetData(Account);
+		m_PayType.SetFocus();
 	}
 	else
 		m_Fund.Empty();
@@ -866,9 +865,9 @@ void CCashForm::OnCashLoadCoupon()
 	CString PmntType;
 
 	CouponDlg.m_OraLoader = m_Data.GetOraLoader();
-	m_Portfolio->GetSelString(CouponDlg.m_Portfolio);
-	m_Currency->GetSelString(CouponDlg.m_Currency);
-	m_PayType->GetSelString(PmntType);
+	CouponDlg.m_Portfolio = m_Portfolio.GetData();
+	CouponDlg.m_Currency = m_Currency.GetData();
+	PmntType = m_PayType.GetData();
 
 	if(PmntType == "COUPON PAY")
 		CouponDlg.m_CouponType = 3; // None CDS/IRS Coupon
@@ -883,22 +882,22 @@ void CCashForm::OnCashLoadCoupon()
 
 	if(CouponDlg.DoModal() == IDOK)
 	{
-		m_Asset.SetWindowText(CouponDlg.m_Asset);
-		m_Currency->SelectString(-1, CouponDlg.m_Currency);
+		m_Asset.SetData(CouponDlg.m_Asset);
+		m_Currency.SetData(CouponDlg.m_Currency);
 		if(CouponDlg.m_Fxrate == "1")
-			m_Fxrate.SetWindowText("");
+			m_Fxrate.SetData("");
 		else
-			m_Fxrate.SetWindowText(CouponDlg.m_Fxrate);
+			m_Fxrate.SetData(CouponDlg.m_Fxrate);
 		m_ToDate.SetData(CouponDlg.m_Date);
-		m_Amount.SetWindowText(CouponDlg.m_Amount);
+		m_Amount.SetData(CouponDlg.m_Amount);
 		m_IRSID.SetData(CouponDlg.m_TransNum);
 
-		m_Remaining.SetWindowText(PmntType == "TAX" ? "0" : CouponDlg.m_Remaining);
+		m_Remaining.SetData(PmntType == "TAX" ? "0" : CouponDlg.m_Remaining);
 		if(atof(CouponDlg.m_Remaining) != 0)
-			m_DiffReason->SelectString(-1, "ROUNDING");
+			m_DiffReason.SetData("ROUNDING");
 		else
-			m_DiffReason->SetCurSel(-1);
-		m_CouponPaid->SetCheck(1);
+			m_DiffReason.SetCurSel(-1);
+		m_CouponPaid.SetCheck(1);
 		m_UserClass = "1";
 		EnableControls();
 	}
@@ -914,8 +913,8 @@ void CCashForm::OnUpdateCashLoadCoupon(CCmdUI* pCmdUI)
 
 	CString PayType;
 
-	m_PayType->GetSelString(PayType);
-	pCmdUI->Enable(!m_Fund.IsEmpty() && (PayType == "COUPON PAY" || PayType == "SWAP INT" || "DIVIDENT P" || "TAX") && m_Currency->GetCurSel() >= 0);
+	PayType = m_PayType.GetData();
+	pCmdUI->Enable(!m_Fund.IsEmpty() && (PayType == "COUPON PAY" || PayType == "SWAP INT" || "DIVIDENT P" || "TAX") && m_Currency.GetCurSel() >= 0);
 }
 
 void CCashForm::OnUpdateCashSwap(CCmdUI* pCmdUI) 
@@ -928,7 +927,7 @@ void CCashForm::OnUpdateCashSwap(CCmdUI* pCmdUI)
 	
 	CString PayType;
 
-	m_PayType->GetSelString(PayType);
+	PayType = m_PayType.GetData();
 	pCmdUI->Enable(!m_Fund.IsEmpty() && (PayType == "SWAP INT" || PayType == "FX PVALUE"));
 }
 
@@ -937,12 +936,12 @@ void CCashForm::OnCashSwap()
 	CCashIRSIDDlg Dlg;
 
 	Dlg.m_OraLoader = m_Data.GetOraLoader();
-	m_Portfolio->GetSelString(Dlg.m_Portfolio);
-	m_PayType->GetSelString(Dlg.m_PayType);
-	m_Currency->GetSelString(Dlg.m_Currency);
+	Dlg.m_Portfolio = m_Portfolio.GetData();
+	Dlg.m_PayType = m_PayType.GetData();
+	Dlg.m_Currency = m_Currency.GetData();
 	
 	if(Dlg.DoModal() == IDOK)
-		m_IRSID.SetWindowText(Dlg.m_TransNum);
+		m_IRSID.SetData(Dlg.m_TransNum);
 }
 
 void CCashForm::OnUpdateCashErrorlink(CCmdUI* pCmdUI) 
@@ -958,9 +957,9 @@ void CCashForm::OnCashErrorlink()
 	CErrorEntryLinkDlg Dlg;
 
 	Dlg.m_OraLoader = m_Data.GetOraLoader();
-	m_Portfolio->GetSelString(Dlg.m_Portfolio);
-	m_Account->GetSelString(Dlg.m_Account);
-	m_Currency->GetSelString(Dlg.m_Currency);
+	Dlg.m_Portfolio = m_Portfolio.GetData();
+	Dlg.m_Account = m_Account.GetData();
+	Dlg.m_Currency = m_Currency.GetData();
 	
 	if(Dlg.DoModal() == IDOK)
 		m_Link.SetData(Dlg.m_CashNum);
@@ -976,16 +975,16 @@ void CCashForm::OnSelchangeCashTypeCombo()
 
 	UserClass = atoi(m_UserClass);
 
-	m_PayType->GetSelString(Text);
+	Text = m_PayType.GetData();
 	if(Text == "TRANSFER" && UserClass <= 2)
 	{
-		m_AccountTo->EnableWindow(TRUE);
-		m_PortfolioTo->EnableWindow(TRUE);
+		m_AccountTo.EnableWindow(TRUE);
+		m_PortfolioTo.EnableWindow(TRUE);
 	}
 	else
 	{
-		m_AccountTo->EnableWindow(FALSE);
-		m_PortfolioTo->EnableWindow(FALSE);
+		m_AccountTo.EnableWindow(FALSE);
+		m_PortfolioTo.EnableWindow(FALSE);
 	}
 }
 
@@ -996,7 +995,7 @@ void CCashForm::OnChangeCashAmountEdit()
 	CString Text;
 	int i;
 
-	m_Amount.GetWindowText(Text);
+	Text = m_Amount.GetData();
 	Amount = atof(QData.RemoveComma(Text));
 
 	if(m_InvSS.GetSheetRows() > 1)
@@ -1004,10 +1003,10 @@ void CCashForm::OnChangeCashAmountEdit()
 		for(i = 1; i <= m_InvSS.GetSheetRows(); i++)
 			Amount -= atof(QData.RemoveComma(m_InvSS.GetSheetText(3,i)));
 
-		m_Remaining.SetWindowText(QData.WriteNumber(Amount, TRUE, 2));
+		m_Remaining.SetData(QData.WriteNumber(Amount, TRUE, 2));
 	}
 	else
-		m_Remaining.SetWindowText("0");
+		m_Remaining.SetData("0");
 }
 
 
@@ -1016,26 +1015,26 @@ void CCashForm::OnCashLoadcdscoupon()
 	CCouponDlg CouponDlg;
 
 	CouponDlg.m_OraLoader = m_Data.GetOraLoader();
-	m_Portfolio->GetSelString(CouponDlg.m_Portfolio);
-	m_Currency->GetSelString(CouponDlg.m_Currency);
+	CouponDlg.m_Portfolio = m_Portfolio.GetData();
+	CouponDlg.m_Currency = m_Currency.GetData();
 	CouponDlg.m_CouponType = 1; // CDS Coupon
 	if(CouponDlg.DoModal() == IDOK)
 	{
-		m_Asset.SetWindowText(CouponDlg.m_Asset);
-		m_Currency->SelectString(-1, CouponDlg.m_Currency);
+		m_Asset.SetData(CouponDlg.m_Asset);
+		m_Currency.SetData(CouponDlg.m_Currency);
 		if(CouponDlg.m_Fxrate == "1")
-			m_Fxrate.SetWindowText("");
+			m_Fxrate.SetData("");
 		else
-			m_Fxrate.SetWindowText(CouponDlg.m_Fxrate);
+			m_Fxrate.SetData(CouponDlg.m_Fxrate);
 		m_ToDate.SetData(CouponDlg.m_Date);
-		m_Amount.SetWindowText(CouponDlg.m_Amount);
+		m_Amount.SetData(CouponDlg.m_Amount);
 		m_IRSID.SetData(EMPTYSTRING);
-		m_Remaining.SetWindowText(CouponDlg.m_Remaining);
+		m_Remaining.SetData(CouponDlg.m_Remaining);
 		if(atof(CouponDlg.m_Remaining) != 0)
-			m_DiffReason->SelectString(-1, "ROUNDING");
+			m_DiffReason.SetData("ROUNDING");
 		else
-			m_DiffReason->SetCurSel(-1);
-		m_CouponPaid->SetCheck(1);
+			m_DiffReason.SetCurSel(-1);
+		m_CouponPaid.SetCheck(1);
 		m_UserClass = "1";
 		EnableControls();
 	}	
@@ -1051,8 +1050,8 @@ void CCashForm::OnUpdateCashLoadcdscoupon(CCmdUI* pCmdUI)
 
 	CString PayType;
 
-	m_PayType->GetSelString(PayType);
-	pCmdUI->Enable(!m_Fund.IsEmpty() && PayType == "COUPON PAY" && m_Currency->GetCurSel() >= 0);
+	PayType = m_PayType.GetData();
+	pCmdUI->Enable(!m_Fund.IsEmpty() && PayType == "COUPON PAY" && m_Currency.GetCurSel() >= 0);
 }
 
 
@@ -1082,26 +1081,26 @@ void CCashForm::OnCashLoadirscoupon()
 	CQData QData;
 
 	CouponDlg.m_OraLoader = m_Data.GetOraLoader();
-	m_Portfolio->GetSelString(CouponDlg.m_Portfolio);
-	m_Currency->GetSelString(CouponDlg.m_Currency);
+	CouponDlg.m_Portfolio = m_Portfolio.GetData();
+	CouponDlg.m_Currency = m_Currency.GetData();
 	CouponDlg.m_CouponType = 2; // IRS Coupon
 	if(CouponDlg.DoModal() == IDOK)
 	{
-		m_Asset.SetWindowText(CouponDlg.m_Asset);
-		m_Currency->SelectString(-1, CouponDlg.m_Currency);
+		m_Asset.SetData(CouponDlg.m_Asset);
+		m_Currency.SetData(CouponDlg.m_Currency);
 		if(CouponDlg.m_Fxrate == "1")
-			m_Fxrate.SetWindowText("");
+			m_Fxrate.SetData("");
 		else
-			m_Fxrate.SetWindowText(CouponDlg.m_Fxrate);
+			m_Fxrate.SetData(CouponDlg.m_Fxrate);
 		m_ToDate.SetData(CouponDlg.m_Date);
-		m_Amount.SetWindowText(CouponDlg.m_Amount);
+		m_Amount.SetData(CouponDlg.m_Amount);
 		m_IRSID.SetData(QData.RemoveComma(CouponDlg.m_TransNum));
-		m_Remaining.SetWindowText(CouponDlg.m_Remaining);
+		m_Remaining.SetData(CouponDlg.m_Remaining);
 		if(atof(CouponDlg.m_Remaining) != 0)
-			m_DiffReason->SelectString(-1, "ROUNDING");
+			m_DiffReason.SetData("ROUNDING");
 		else
-			m_DiffReason->SetCurSel(-1);
-		m_CouponPaid->SetCheck(1);
+			m_DiffReason.SetCurSel(-1);
+		m_CouponPaid.SetCheck(1);
 		m_UserClass = "1";
 		EnableControls();
 	}
@@ -1117,8 +1116,8 @@ void CCashForm::OnUpdateCashLoadirscoupon(CCmdUI *pCmdUI)
 
 	CString PayType;
 
-	m_PayType->GetSelString(PayType);
-	pCmdUI->Enable(!m_Fund.IsEmpty() && PayType == "SWAP INT" && m_Currency->GetCurSel() >= 0);
+	PayType = m_PayType.GetData();
+	pCmdUI->Enable(!m_Fund.IsEmpty() && PayType == "SWAP INT" && m_Currency.GetCurSel() >= 0);
 }
 
 void CCashForm::OnCashUploadcashentry()
@@ -1165,7 +1164,7 @@ void CCashForm::OnCashUploadcashentry()
 		
 		if(!Cash.IsEmpty())
 		{
-			if(OraLoader2.Open("SELECT MAX(CASH_NUM) + 1 FROM LIN.NW_CASH_PMNTS "))
+			if(OraLoader2.Open("SELECT MAX(CASH_NUM) + 1 FROM SEMAM.NW_CASH_PMNTS "))
 			{
 				CashNum = OraLoader2.GetDBString(0);
 				CashNum = QData.WriteNumber(CashNum, FALSE, 0);
