@@ -49,18 +49,18 @@ public:
 	CDBSheet m_IntSS;
 	CDBSheet m_HoldingSS;
 
-	CCheckBox *m_Bond;
-	CCheckBox *m_Accrue;
-	CCheckBox *m_PrePaid;
-	CCheckBox *m_UnListed;
-	CCheckBox *m_OTCClear;
-	CCheckBox *m_Forward;
-	CCheckBox *m_Active;
-	CCheckBox *m_1256;
-	CCheckBox *m_BelowRating;
-	CCheckBox *m_144A;
-	CCheckBox *m_Margin;
-	CCheckBox *m_FRA;
+	CCheckBox m_Bond;
+	CCheckBox m_Accrue;
+	CCheckBox m_PrePaid;
+	CCheckBox m_UnListed;
+	CCheckBox m_OTCClear;
+	CCheckBox m_Forward;
+	CCheckBox m_Active;
+	CCheckBox m_1256;
+	CCheckBox m_BelowRating;
+	CCheckBox m_144A;
+	CCheckBox m_Margin;
+	CCheckBox m_FRA;
 	CCntlEdit m_Asset;
 	CCntlEdit m_AssetDesc;
 	CCntlEdit m_Common;
@@ -85,25 +85,25 @@ public:
 	CCntlEdit m_Underline;
 	CCntlEdit m_UnderlineID;
 	CCntlEdit m_AdminID;
-	COptComboBox* m_Industry;
-	COptComboBox* m_Country;
-	COptComboBox* m_ProfileCountry;
-	COptComboBox* m_Currency;
-	COptComboBox* m_Currency2;
-	COptComboBox* m_Class;
-	COptComboBox* m_ProfileClass;
-	COptComboBox* m_RateBasis;
-	COptComboBox* m_RateType;
-	COptComboBox* m_Category;
-	COptComboBox* m_Issuer;
-	COptComboBox* m_Method;
-	COptComboBox* m_Liquidity;
-	COptComboBox* m_PFClass;
-	COptComboBox* m_PFSubClass;
-	COptComboBox* m_CitiClass;
-	COptComboBox* m_BlmKey;
-	COptComboBox* m_Account;
-	COptComboBox* m_FutureType;
+	COptComboBox m_Industry;
+	COptComboBox m_Country;
+	COptComboBox m_ProfileCountry;
+	COptComboBox m_Currency;
+	COptComboBox m_Currency2;
+	COptComboBox m_Class;
+	COptComboBox m_ProfileClass;
+	COptComboBox m_RateBasis;
+	COptComboBox m_RateType;
+	COptComboBox m_Category;
+	COptComboBox m_Issuer;
+	COptComboBox m_Method;
+	COptComboBox m_Liquidity;
+	COptComboBox m_PFClass;
+	COptComboBox m_PFSubClass;
+	COptComboBox m_CitiClass;
+	COptComboBox m_BlmKey;
+	COptComboBox m_Account;
+	COptComboBox m_FutureType;
 	
 	CMCComboBox m_Index;
 	CMCComboBox m_Bucket;
@@ -129,7 +129,7 @@ public:
 	CNumEdit m_Amort;
 	CNumEdit m_Cap;
 	CNumEdit m_Plus;
-	COptComboBox* m_Action;
+	COptComboBox m_Action;
 
 	BOOL m_bLoaded;
 	unsigned m_CurrID;
@@ -161,8 +161,9 @@ public:
 
 // Implementation
 protected:
-	virtual ~CMaintenance();
+	virtual ~CMaintenance() {}
 	BOOL IsUnique(CWnd &Ctrl, LPCTSTR FieldName, LPCTSTR DescFieldName, BOOL bAdd);
+	BOOL Is1256(const CString Currency);
 	BOOL IsAssetOK(BOOL nAdd = TRUE);
 	BOOL IsInterestOK();
 	void SetRateControls();

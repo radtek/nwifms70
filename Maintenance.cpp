@@ -392,6 +392,21 @@ void CMaintenance::InitControls()
 	m_Data.GetSRowCtrl().Add(&m_Action, &m_Data.GetIntRec().GetAction());
 }
 
+BOOL CMaintenance::Is1256(const CString Currency)
+{
+	COraLoader OraLoader;
+	CQData QData;
+	CString Data;
+
+	if(m_Class.GetData() != "CURRENCY FWDS")
+		return FALSE;
+
+	OraLoader = GetData().GetOraLoader();
+	Data = QData.GetQueryText(m_Currency.GetData());
+	
+	return OraLoader.GetCount("SELECT COUNT(*) FROM SEMAM.NW_CURRENCY WHERE CURRENCY = " + Data) > 0 ? TRUE : FALSE;
+}
+
 BOOL CMaintenance::IsAssetOK(BOOL bAdd)
 {
 	CQData QData;
@@ -495,9 +510,9 @@ BOOL CMaintenance::IsAssetOK(BOOL bAdd)
 
 	if(m_1256.GetCheck() == 0)
 	{
-		Data = m_Currency.GetData();
-		if(Class == "CURRENCY FWDS" && (Data == "AUD" || Data == "CAD" || Data == "EUR" || Data == "CHF" || Data == "GBP" || Data == "MXN"))
-			Text = "1256 was not checked";
+		if(Class == "CURRENCY FWDS")
+			if(Is1256(m_Currency.GetData()) || Is1256(m_Currency2.GetData()))
+				Text = "1256 was not checked";
 	}
 
 	if(m_144A.GetCheck() == 1)
@@ -715,7 +730,7 @@ BOOL CMaintenance::UpdateData(BOOL bSaveandValid)
 											"SEMAM.NW_PAYMENT_FREQ C WHERE B.PAYMENT_FREQ = A.FIXED_FREQ "
 											"AND C.PAYMENT_FREQ = A.FLOAT_FREQ ORDER BY 1 ");
 			GetData().GetOraLoader().LoadMCComboBox(m_IRSTemplate);
-			GetData().GetOraLoader().Open("SELECT EXCH_CODE, EXCHANGE FROM SEMAM.NW_ASSET_EXCHANGE ORDER BY 1 ");
+			GetData().GetOraLoader().Open("SELECT EXCH_CODE, EXCHANGE, IMG_EXCH_CODE, MIC_CODE FROM SEMAM.NW_ASSET_EXCHANGE ORDER BY 1 ");
 			GetData().GetOraLoader().LoadMCComboBox(m_Exchange);
 
 			GetData().GetPFClassArr().CopyToComboBox(m_PFClass);
@@ -1350,7 +1365,7 @@ void CMaintenance::OnMaintFillRate()
 
 void CMaintenance::OnUpdateMaintSecFee(CCmdUI* pCmdUI)
 {
-	if(GetData().IsPowerUser() || GetData().IsOperation())
+	if(GetData().IsPowerUser() && GetData().IsOperation())
 		pCmdUI->Enable(TRUE);
 	else
 		pCmdUI->Enable(FALSE);
@@ -1358,7 +1373,7 @@ void CMaintenance::OnUpdateMaintSecFee(CCmdUI* pCmdUI)
 
 void CMaintenance::OnUpdateMaintOrFee(CCmdUI *pCmdUI)
 {
-	if(GetData().IsPowerUser() || GetData().IsOperation())
+	if(GetData().IsPowerUser() && GetData().IsOperation())
 		pCmdUI->Enable(TRUE);
 	else
 		pCmdUI->Enable(FALSE);

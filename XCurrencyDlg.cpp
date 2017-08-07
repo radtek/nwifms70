@@ -21,26 +21,7 @@ CXCurrencyDlg::CXCurrencyDlg(CWnd* pParent /*=NULL*/)
 	: CDialog(CXCurrencyDlg::IDD, pParent)
 {
 	//{{AFX_DATA_INIT(CXCurrencyDlg)
-	m_CategoryCombo = NULL;
-	m_CounterpartyCombo = NULL;
-	m_CurrencyCombo = NULL;
-	m_ValueDateCombo = NULL;
-	m_PortfolioCombo = NULL;
 	//}}AFX_DATA_INIT
-}
-
-CXCurrencyDlg::~CXCurrencyDlg()
-{
-	if(m_CategoryCombo)
-		delete m_CategoryCombo;
-	if(m_CounterpartyCombo)
-		delete m_CounterpartyCombo;
-	if(m_CurrencyCombo)
-		delete m_CurrencyCombo;
-	if(m_ValueDateCombo)
-		delete m_ValueDateCombo;
-	if(m_PortfolioCombo)
-		delete m_PortfolioCombo;
 }
 
 void CXCurrencyDlg::DoDataExchange(CDataExchange* pDX)
@@ -66,40 +47,35 @@ END_MESSAGE_MAP()
 
 void CXCurrencyDlg::ComputeData()
 {
-	CString Text;
 	CQData QData;
 
 	double uw_amount, nom_amount, nom_amount2, price;
 
-	m_UnWindNominalEdit.GetWindowText(Text);
-	uw_amount = atof(QData.RemoveComma(Text));
-	m_PriceEdit.GetWindowText(Text);
-	price = atof(QData.RemoveComma(Text));
+	uw_amount = atof(QData.RemoveComma(m_UnWindNominalEdit.GetData()));
+	price = atof(QData.RemoveComma(m_PriceEdit.GetData()));
 
 	if(uw_amount != 0 && price != 0)
 	{
-		m_NominalEdit.GetWindowText(Text);
-		nom_amount = atof(QData.RemoveComma(Text));
-		m_Nominal2Edit.GetWindowText(Text);
-		nom_amount2 = atof(QData.RemoveComma(Text));
+		nom_amount = atof(QData.RemoveComma(m_NominalEdit.GetData()));
+		nom_amount2 = atof(QData.RemoveComma(m_Nominal2Edit.GetData()));
 		if(nom_amount >= 0)
 		{
-			m_UnWindNominal2Edit.SetWindowText(QData.WriteNumber(uw_amount*price, TRUE, 2));
-			m_NetEdit.SetWindowText(QData.WriteNumber(fabs(nom_amount) - fabs(uw_amount), TRUE, 2));
-			m_Net2Edit.SetWindowText(QData.WriteNumber(fabs(nom_amount*price) - fabs(nom_amount2), TRUE, 2));
+			m_UnWindNominal2Edit.SetData(QData.WriteNumber(uw_amount*price, TRUE, 2));
+			m_NetEdit.SetData(QData.WriteNumber(fabs(nom_amount) - fabs(uw_amount), TRUE, 2));
+			m_Net2Edit.SetData(QData.WriteNumber(fabs(nom_amount*price) - fabs(nom_amount2), TRUE, 2));
 		}
 		else
 		{
-			m_UnWindNominal2Edit.SetWindowText(QData.WriteNumber(-1*uw_amount*price, TRUE, 2));
-			m_NetEdit.SetWindowText(QData.WriteNumber(fabs(uw_amount) - fabs(nom_amount), TRUE, 2));
-			m_Net2Edit.SetWindowText(QData.WriteNumber(fabs(nom_amount2) - fabs(nom_amount*price), TRUE, 2));
+			m_UnWindNominal2Edit.SetData(QData.WriteNumber(-1*uw_amount*price, TRUE, 2));
+			m_NetEdit.SetData(QData.WriteNumber(fabs(uw_amount) - fabs(nom_amount), TRUE, 2));
+			m_Net2Edit.SetData(QData.WriteNumber(fabs(nom_amount2) - fabs(nom_amount*price), TRUE, 2));
 		}
 	}
 	else
 	{
-		m_UnWindNominal2Edit.SetWindowText("");
-		m_NetEdit.SetWindowText("");
-		m_Net2Edit.SetWindowText("");
+		m_UnWindNominal2Edit.SetData("");
+		m_NetEdit.SetData("");
+		m_Net2Edit.SetData("");
 	}
 }
 
@@ -109,8 +85,8 @@ void CXCurrencyDlg::ComputeNominal(int Row, int Row2)
 
 	if(m_SS.GetSheetRows() <= 0)
 	{
-		m_NominalEdit.SetWindowText("");
-		m_Nominal2Edit.SetWindowText("");
+		m_NominalEdit.SetData("");
+		m_Nominal2Edit.SetData("");
 	}
 
 	if(Row <= Row2)
@@ -133,14 +109,14 @@ void CXCurrencyDlg::ComputeNominal(int Row, int Row2)
 		nom_amount2 += atof(QData.RemoveComma(m_SS.GetSheetText(8, i)));
 	}
 	
-	m_NominalEdit.SetWindowText(QData.WriteNumber(nom_amount, TRUE, 2));
-	m_UnWindNominalEdit.SetWindowText(QData.WriteNumber(fabs(nom_amount), TRUE, 2));
-	m_Nominal2Edit.SetWindowText(QData.WriteNumber(nom_amount2, TRUE, 2));
+	m_NominalEdit.SetData(QData.WriteNumber(nom_amount, TRUE, 2));
+	m_UnWindNominalEdit.SetData(QData.WriteNumber(fabs(nom_amount), TRUE, 2));
+	m_Nominal2Edit.SetData(QData.WriteNumber(nom_amount2, TRUE, 2));
 }
 
 void CXCurrencyDlg::EnableButton()
 {
-	if(m_CounterpartyCombo->GetCurSel() >= 0 && m_CurrencyCombo->GetCurSel() >= 0 && m_ValueDateCombo->GetCurSel() >= 0)
+	if(m_CounterpartyCombo.GetCurSel() >= 0 && m_CurrencyCombo.GetCurSel() >= 0 && m_ValueDateCombo.GetCurSel() >= 0)
 		GetDlgItem(IDC_XCURRENCY_LOAD_BUTTON)->EnableWindow(TRUE);
 	else
 		GetDlgItem(IDC_XCURRENCY_LOAD_BUTTON)->EnableWindow(FALSE);
@@ -164,11 +140,11 @@ BOOL CXCurrencyDlg::OnInitDialog()
 	m_SS.SetVisibleCols(10);
 	m_SS.SetVisibleRows(10);
 	
-	m_CategoryCombo = (COptComboBox *) new COptComboBox(this, IDC_XCURRENCY_CATEGORY_COMBO);
-	m_CounterpartyCombo = (COptComboBox *) new COptComboBox(this, IDC_XCURRENCY_CP_COMBO);
-	m_CurrencyCombo = (COptComboBox *) new COptComboBox(this, IDC_XCURRENCY_CURRENCY_COMBO);
-	m_ValueDateCombo = (COptComboBox *) new COptComboBox(this, IDC_XCURRENCY_VDATE_COMBO);
-	m_PortfolioCombo = (COptComboBox *) new COptComboBox(this, IDC_XCURRENCY_PORTFOLIO_COMBO, TRUE);
+	m_CategoryCombo.Setup(this, IDC_XCURRENCY_CATEGORY_COMBO);
+	m_CounterpartyCombo.Setup(this, IDC_XCURRENCY_CP_COMBO);
+	m_CurrencyCombo.Setup(this, IDC_XCURRENCY_CURRENCY_COMBO);
+	m_ValueDateCombo.Setup(this, IDC_XCURRENCY_VDATE_COMBO);
+	m_PortfolioCombo.Setup(this, IDC_XCURRENCY_PORTFOLIO_COMBO, TRUE);
 
 	m_NominalEdit.Setup(this, IDC_XCURRENCY_AMOUNT_EDIT);
 	m_Nominal2Edit.Setup(this, IDC_XCURRENCY_AMOUNT2_EDIT);
@@ -190,11 +166,11 @@ BOOL CXCurrencyDlg::OnInitDialog()
 								"AND A.CURRENCY != 'USD' "
 								"AND A.VALUE_DATE >= TRUNC(SYSDATE) ");
 		m_OraLoader.Open();
-		m_OraLoader.LoadComboBox(*m_CategoryCombo);
+		m_OraLoader.LoadComboBox(m_CategoryCombo);
 	}
 	else
 	{
-		m_CategoryCombo->ShowWindow(FALSE);
+		m_CategoryCombo.ShowWindow(FALSE);
 		GetDlgItem(IDC_XCURRENCY_CATEGORY_STATIC)->ShowWindow(FALSE);
 
 		m_OraLoader.GetSql().Format("SELECT DISTINCT NVL(ASSIGN_CP, COUNTERPARTY) "
@@ -206,13 +182,13 @@ BOOL CXCurrencyDlg::OnInitDialog()
 								"AND A.VALUE_DATE >= TRUNC(SYSDATE) "
 								"AND A.TRANS_TYPE IN ('FOREX', 'SECURITIES') ");
 		m_OraLoader.Open();
-		m_OraLoader.LoadComboBox(*m_CounterpartyCombo);
+		m_OraLoader.LoadComboBox(m_CounterpartyCombo);
 	}
 	
 	if(m_UserClass != 3) /* Operation Transaction process */
 	{	
 		GetDlgItem(IDC_XCURRENCY_PORTFOLIO_STATIC)->ShowWindow(FALSE);
-		m_PortfolioCombo->ShowWindow(FALSE);
+		m_PortfolioCombo.ShowWindow(FALSE);
 	}
 
 	GetDlgItem(IDC_XCURRENCY_LOAD_BUTTON)->EnableWindow(FALSE);
@@ -224,124 +200,122 @@ BOOL CXCurrencyDlg::OnInitDialog()
 
 void CXCurrencyDlg::OnSelchangeXcurrencyCategoryCombo() 
 {
-	m_CounterpartyCombo->ResetContent();
+	m_CounterpartyCombo.ResetContent();
 
-	if(m_CategoryCombo->GetCurSel() >= 0)
+	if(m_CategoryCombo.GetCurSel() >= 0)
 	{
 		BeginWaitCursor();
 		
 		CString Category;
 
-		m_CategoryCombo->GetSelString(Category);
-		m_OraLoader.GetSql().Format("SELECT DISTINCT NVL(ASSIGN_CP, COUNTERPARTY) "
-								"FROM SEMAM.NW_TR_TICKETS A, SEMAM.NW_TR_INV B, SEMAM.NW_ASSETS C "
-								"WHERE A.TRANS_NUM = B.TRANS_NUM "
-								"AND A.ASSET_CODE = C.ASS_CODE "
-								"AND C.ASS_INDUSTRY = 'CURRENCY FWDS' "
-								"AND C.ASS_CATEGORY = '%s' "
-								"AND A.CURRENCY != 'USD' "
-								"AND A.VALUE_DATE >= TRUNC(SYSDATE) "
-								"AND A.TRANS_TYPE IN ('FOREX', 'SECURITIES') ", (const char *) Category);
-		m_OraLoader.Open();
-		m_OraLoader.LoadComboBox(*m_CounterpartyCombo);
+		Category = m_CategoryCombo.GetData();
+		m_OraLoader.Open("SELECT DISTINCT NVL(ASSIGN_CP, COUNTERPARTY) "
+						"FROM SEMAM.NW_TR_TICKETS A, SEMAM.NW_TR_INV B, SEMAM.NW_ASSETS C "
+						"WHERE A.TRANS_NUM = B.TRANS_NUM "
+						"AND A.ASSET_CODE = C.ASS_CODE "
+						"AND C.ASS_INDUSTRY = 'CURRENCY FWDS' "
+						"AND C.ASS_CATEGORY = '" + Category + "' "
+						"AND A.CURRENCY != 'USD' "
+						"AND A.VALUE_DATE >= TRUNC(SYSDATE) "
+						"AND A.TRANS_TYPE IN ('FOREX', 'SECURITIES') ");
+		
+		m_OraLoader.LoadComboBox(m_CounterpartyCombo);
 
 		EndWaitCursor();
 	}
 	else
 	{		
-		m_CurrencyCombo->ResetContent();
-		m_ValueDateCombo->ResetContent();
+		m_CurrencyCombo.ResetContent();
+		m_ValueDateCombo.ResetContent();
 	}
 }
 
 void CXCurrencyDlg::OnSelchangeXcurrencyCpCombo() 
 {
-	m_CurrencyCombo->ResetContent();
+	m_CurrencyCombo.ResetContent();
 
-	if(m_CounterpartyCombo->GetCurSel() >= 0)
+	if(m_CounterpartyCombo.GetCurSel() >= 0)
 	{
 		BeginWaitCursor();
 
 		CString Category, CP;
 
-		m_CounterpartyCombo->GetSelString(CP);
+		CP = m_CounterpartyCombo.GetData();
 		if(m_UserClass == 1)
 		{
-			m_CategoryCombo->GetSelString(Category);
-			m_OraLoader.GetSql().Format("SELECT DISTINCT A.CURRENCY "
-								"FROM SEMAM.NW_CF_TICKETS A, SEMAM.NW_TR_INV B, SEMAM.NW_ASSETS C "
-								"WHERE A.TRANS_NUM = B.TRANS_NUM "
-								"AND A.ASSET_CODE = C.ASS_CODE "
-								"AND C.ASS_INDUSTRY = 'CURRENCY FWDS' "
-								"AND C.ASS_CATEGORY = '%s' "
-								"AND A.CURRENCY != 'USD' "
-								"AND A.VALUE_DATE >= TRUNC(SYSDATE) "
-								"AND NVL(ASSIGN_CP, A.COUNTERPARTY) = '%s' "
-								"AND A.TRANS_TYPE IN ('FOREX', 'SECURITIES') ", (const char *) Category, (const char *) CP);
+			Category = m_CategoryCombo.GetData();
+			m_OraLoader.GetSql() = "SELECT DISTINCT A.CURRENCY "
+									"FROM SEMAM.NW_CF_TICKETS A, SEMAM.NW_TR_INV B, SEMAM.NW_ASSETS C "
+									"WHERE A.TRANS_NUM = B.TRANS_NUM "
+									"AND A.ASSET_CODE = C.ASS_CODE "
+									"AND C.ASS_INDUSTRY = 'CURRENCY FWDS' "
+									"AND C.ASS_CATEGORY = '" + Category + "' "
+									"AND A.CURRENCY != 'USD' "
+									"AND A.VALUE_DATE >= TRUNC(SYSDATE) "
+									"AND NVL(ASSIGN_CP, A.COUNTERPARTY) = '" + CP + "' "
+									"AND A.TRANS_TYPE IN ('FOREX', 'SECURITIES') ";
 		}
 		else
-			m_OraLoader.GetSql().Format("SELECT DISTINCT A.CURRENCY "
-								"FROM SEMAM.NW_CF_TICKETS A, SEMAM.NW_TR_INV B, SEMAM.NW_ASSETS C "
-								"WHERE A.TRANS_NUM = B.TRANS_NUM "
-								"AND A.ASSET_CODE = C.ASS_CODE "
-								"AND C.ASS_INDUSTRY = 'CURRENCY FWDS' "
-								"AND A.CURRENCY != 'USD' "
-								"AND A.VALUE_DATE >= TRUNC(SYSDATE) "
-								"AND NVL(ASSIGN_CP, A.COUNTERPARTY) = '%s' "
-								"AND A.TRANS_TYPE IN ('FOREX', 'SECURITIES') ", (const char *) CP);
+			m_OraLoader.GetSql() = "SELECT DISTINCT A.CURRENCY "
+									"FROM SEMAM.NW_CF_TICKETS A, SEMAM.NW_TR_INV B, SEMAM.NW_ASSETS C "
+									"WHERE A.TRANS_NUM = B.TRANS_NUM "
+									"AND A.ASSET_CODE = C.ASS_CODE "
+									"AND C.ASS_INDUSTRY = 'CURRENCY FWDS' "
+									"AND A.CURRENCY != 'USD' "
+									"AND A.VALUE_DATE >= TRUNC(SYSDATE) "
+									"AND NVL(ASSIGN_CP, A.COUNTERPARTY) = '" + CP + "' "
+									"AND A.TRANS_TYPE IN ('FOREX', 'SECURITIES') ";
 
 		m_OraLoader.Open();
-		m_OraLoader.LoadComboBox(*m_CurrencyCombo);
+		m_OraLoader.LoadComboBox(m_CurrencyCombo);
 
 		EndWaitCursor();
 	}
 	else
-		m_ValueDateCombo->ResetContent();
+		m_ValueDateCombo.ResetContent();
 
 	EnableButton();
 }
 
 void CXCurrencyDlg::OnSelchangeXcurrencyCurrencyCombo() 
 {
-	m_ValueDateCombo->ResetContent();
+	m_ValueDateCombo.ResetContent();
 
-	if(m_CounterpartyCombo->GetCurSel() >= 0 && m_CurrencyCombo->GetCurSel() >= 0)
+	if(m_CounterpartyCombo.GetCurSel() >= 0 && m_CurrencyCombo.GetCurSel() >= 0)
 	{
 		BeginWaitCursor();
 
 		CString Category, CP, Currency;
 
-		m_CategoryCombo->GetSelString(Category);
-		m_CounterpartyCombo->GetSelString(CP);
-		m_CurrencyCombo->GetSelString(Currency);
+		Category = m_CategoryCombo.GetData();
+		CP = m_CounterpartyCombo.GetData();
+		Currency = m_CurrencyCombo.GetData();
 
 		if(m_UserClass == 1) /* Trader */
 		{
-			m_CategoryCombo->GetSelString(Category);
-			m_OraLoader.GetSql().Format("SELECT DISTINCT A.VALUE_DATE "
-								"FROM SEMAM.NW_CF_TICKETS A, SEMAM.NW_TR_INV B, SEMAM.NW_ASSETS C "
-								"WHERE A.TRANS_NUM = B.TRANS_NUM "
-								"AND A.ASSET_CODE = C.ASS_CODE "
-								"AND C.ASS_INDUSTRY = 'CURRENCY FWDS' "
-								"AND C.ASS_CATEGORY = '%s' "
-								"AND A.CURRENCY = '%s' "
-								"AND A.VALUE_DATE >= TRUNC(SYSDATE) "
-								"AND NVL(ASSIGN_CP, A.COUNTERPARTY) = '%s' "
-								"AND A.TRANS_TYPE IN ('FOREX', 'SECURITIES') ", (const char *) Category, 
-								(const char *) Currency, (const char *) CP);
+			m_OraLoader.GetSql() = "SELECT DISTINCT A.VALUE_DATE "
+									"FROM SEMAM.NW_CF_TICKETS A, SEMAM.NW_TR_INV B, SEMAM.NW_ASSETS C "
+									"WHERE A.TRANS_NUM = B.TRANS_NUM "
+									"AND A.ASSET_CODE = C.ASS_CODE "
+									"AND C.ASS_INDUSTRY = 'CURRENCY FWDS' "
+									"AND C.ASS_CATEGORY = '" + Category + "' "
+									"AND A.CURRENCY = '" + Currency + "' "
+									"AND A.VALUE_DATE >= TRUNC(SYSDATE) "
+									"AND NVL(ASSIGN_CP, A.COUNTERPARTY) = '" + CP + "' "
+									"AND A.TRANS_TYPE IN ('FOREX', 'SECURITIES') ";
 		}
 		else
-			m_OraLoader.GetSql().Format("SELECT DISTINCT A.VALUE_DATE "
-								"FROM SEMAM.NW_CF_TICKETS A, SEMAM.NW_TR_INV B, SEMAM.NW_ASSETS C "
-								"WHERE A.TRANS_NUM = B.TRANS_NUM "
-								"AND A.ASSET_CODE = C.ASS_CODE "
-								"AND C.ASS_INDUSTRY = 'CURRENCY FWDS' "
-								"AND A.CURRENCY = '%s' "
-								"AND A.VALUE_DATE >= TRUNC(SYSDATE) "
-								"AND NVL(ASSIGN_CP, A.COUNTERPARTY) = '%s' "
-								"AND A.TRANS_TYPE IN ('FOREX', 'SECURITIES') ", (const char *) Currency, (const char *) CP);
+			m_OraLoader.GetSql() = "SELECT DISTINCT A.VALUE_DATE "
+									"FROM SEMAM.NW_CF_TICKETS A, SEMAM.NW_TR_INV B, SEMAM.NW_ASSETS C "
+									"WHERE A.TRANS_NUM = B.TRANS_NUM "
+									"AND A.ASSET_CODE = C.ASS_CODE "
+									"AND C.ASS_INDUSTRY = 'CURRENCY FWDS' "
+									"AND A.CURRENCY = '" + Currency + "' "
+									"AND A.VALUE_DATE >= TRUNC(SYSDATE) "
+									"AND NVL(ASSIGN_CP, A.COUNTERPARTY) = '" + CP + "' "
+									"AND A.TRANS_TYPE IN ('FOREX', 'SECURITIES') ";
 		m_OraLoader.Open();
-		m_OraLoader.LoadComboBox(*m_ValueDateCombo);
+		m_OraLoader.LoadComboBox(m_ValueDateCombo);
 		EndWaitCursor();
 	}
 
@@ -350,53 +324,51 @@ void CXCurrencyDlg::OnSelchangeXcurrencyCurrencyCombo()
 
 void CXCurrencyDlg::OnChangeXcurrencyVdateCombo() 
 {
-	if(m_UserClass == 3 && m_CounterpartyCombo->GetCurSel() >= 0 && 
-		m_CurrencyCombo->GetCurSel() >= 0 && m_ValueDateCombo->GetCurSel() >= 0)
+	if(m_UserClass == 3 && m_CounterpartyCombo.GetCurSel() >= 0 && 
+		m_CurrencyCombo.GetCurSel() >= 0 && m_ValueDateCombo.GetCurSel() >= 0)
 	{
 		BeginWaitCursor();
 
 		CQData QData;
 		CString Category, CP, Currency, ValueDate;
 
-		m_CounterpartyCombo->GetSelString(CP);
-		m_CurrencyCombo->GetSelString(Currency);
-		m_ValueDateCombo->GetSelString(ValueDate);
+		CP = m_CounterpartyCombo.GetData();
+		Currency = m_CurrencyCombo.GetData();
+		ValueDate = m_ValueDateCombo.GetData();
 		
 		if(m_UserClass == 1)
 		{
-			m_CategoryCombo->GetSelString(Category);
-			m_OraLoader.GetSql().Format("SELECT DISTINCT A.PORTFOLIO "
-								"FROM SEMAM.NW_CF_TICKETS A, SEMAM.NW_TR_INV B, SEMAM.NW_ASSETS C "
-								"WHERE A.TRANS_NUM = B.TRANS_NUM "
-								"AND A.ASSET_CODE = C.ASS_CODE "
-								"AND C.ASS_INDUSTRY = 'CURRENCY FWDS' "
-								"AND C.ASS_CATEGORY = '%s' "
-								"AND A.CURRENCY = '%s' "
-								"AND A.VALUE_DATE >= TRUNC(SYSDATE) "
-								"AND NVL(ASSIGN_CP, A.COUNTERPARTY) = '%s' "
-								"AND A.TRANS_TYPE IN ('FOREX', 'SECURITIES') "
-								"AND A.VALUE_DATE = %s ", (const char *) Category, (const char *) Currency, 
-								(const char *) CP, QData.GetQueryDate(ValueDate));
+			Category = m_CategoryCombo.GetData();
+			m_OraLoader.GetSql() = "SELECT DISTINCT A.PORTFOLIO "
+									"FROM SEMAM.NW_CF_TICKETS A, SEMAM.NW_TR_INV B, SEMAM.NW_ASSETS C "
+									"WHERE A.TRANS_NUM = B.TRANS_NUM "
+									"AND A.ASSET_CODE = C.ASS_CODE "
+									"AND C.ASS_INDUSTRY = 'CURRENCY FWDS' "
+									"AND C.ASS_CATEGORY = '" + Category + "' "
+									"AND A.CURRENCY = '" + Currency + "' "
+									"AND A.VALUE_DATE >= TRUNC(SYSDATE) "
+									"AND NVL(ASSIGN_CP, A.COUNTERPARTY) = '" + CP + "' "
+									"AND A.TRANS_TYPE IN ('FOREX', 'SECURITIES') "
+									"AND A.VALUE_DATE = " + QData.GetQueryDate(ValueDate);
 		}
 		else
-			m_OraLoader.GetSql().Format("SELECT DISTINCT A.PORTFOLIO "
-								"FROM SEMAM.NW_CF_TICKETS A, SEMAM.NW_TR_INV B, SEMAM.NW_ASSETS C "
-								"WHERE A.TRANS_NUM = B.TRANS_NUM "
-								"AND A.ASSET_CODE = C.ASS_CODE "
-								"AND C.ASS_INDUSTRY = 'CURRENCY FWDS' "
-								"AND A.CURRENCY = '%s' "
-								"AND A.VALUE_DATE >= TRUNC(SYSDATE) "
-								"AND NVL(ASSIGN_CP, A.COUNTERPARTY) = '%s' "
-								"AND A.TRANS_TYPE IN ('FOREX', 'SECURITIES') "
-								"AND A.VALUE_DATE = %s ", (const char *) Currency, (const char *) CP, 
-								QData.GetQueryDate(ValueDate));
+			m_OraLoader.GetSql() = "SELECT DISTINCT A.PORTFOLIO "
+									"FROM SEMAM.NW_CF_TICKETS A, SEMAM.NW_TR_INV B, SEMAM.NW_ASSETS C "
+									"WHERE A.TRANS_NUM = B.TRANS_NUM "
+									"AND A.ASSET_CODE = C.ASS_CODE "
+									"AND C.ASS_INDUSTRY = 'CURRENCY FWDS' "
+									"AND A.CURRENCY = '" + Currency + "' "
+									"AND A.VALUE_DATE >= TRUNC(SYSDATE) "
+									"AND NVL(ASSIGN_CP, A.COUNTERPARTY) = '" + CP + "' "
+									"AND A.TRANS_TYPE IN ('FOREX', 'SECURITIES') "
+									"AND A.VALUE_DATE = " + QData.GetQueryDate(ValueDate);
 		
 		m_OraLoader.Open();
-		m_OraLoader.LoadComboBox(*m_PortfolioCombo);
+		m_OraLoader.LoadComboBox(m_PortfolioCombo);
 		EndWaitCursor();
 	}
 	else
-		m_PortfolioCombo->ResetContent();
+		m_PortfolioCombo.ResetContent();
 	
 	EnableButton();
 }
@@ -414,86 +386,84 @@ void CXCurrencyDlg::OnChangeXcurrencyUnwindAmountEdit()
 void CXCurrencyDlg::OnXcurrencyLoadButton() 
 {
 	CString Category, CP, Currency, ValueDate, Portfolio;
-	const char *p;
 	CQData QData;
 	COraLoader OraLoader(GetData().GetOraLoader());
 
 	BeginWaitCursor();
-	m_UnWindNominalEdit.SetWindowText("");
-	m_UnWindNominal2Edit.SetWindowText("");
-	m_PriceEdit.SetWindowText("");
+	m_UnWindNominalEdit.SetData("");
+	m_UnWindNominal2Edit.SetData("");
+	m_PriceEdit.SetData("");
 
-	m_CounterpartyCombo->GetSelString(CP);
-	m_CurrencyCombo->GetSelString(Currency);
-	m_ValueDateCombo->GetSelString(ValueDate);
-	p = QData.GetQueryDate(ValueDate);
+	CP = m_CounterpartyCombo.GetData();
+	Currency = m_CurrencyCombo.GetData();
+	ValueDate = QData.GetQueryDate(m_ValueDateCombo.GetData());
 
 	switch(m_UserClass)
 	{
 		case 1:
-			m_CategoryCombo->GetSelString(Category);
-			OraLoader.GetSql().Format("SELECT PORTFOLIO, A.ASSET_CODE, A.TRANS_TYPE, TRADE_DATE, A.TRANS_NUM, "
-				"DECODE(TRANS_TYPE, 'FOREX', 0, DECODE(TRANS_DIRECTION, 'P', 1, 'S', -1)*B.NOM_AMOUNT) \"NOM_AMOUNT\", "
-				"DECODE(TRANS_TYPE, 'FOREX', 1/FXRATE, PRICE) \"PRICE\", "
-				"DECODE(TRANS_TYPE, 'FOREX', -1, PRICE)*DECODE(TRANS_DIRECTION, 'P', -1, 'S', 1)*B.NOM_AMOUNT \"NOM_AMOUNT2\", "
-				"NVL(ASSIGN_CP, COUNTERPARTY) \"COUNTERPARTY\", A.CURRENCY, VALUE_DATE "
-				"FROM SEMAM.NW_TR_TICKETS A, SEMAM.NW_TR_INV B, SEMAM.NW_ASSETS C "
-				"WHERE A.TRANS_NUM = B.TRANS_NUM "
-				"AND B.TR_DESC = 'BOOKING' "
-				"AND A.ASSET_CODE = C.ASS_CODE "
-				"AND A.TRANS_TYPE IN ('FOREX', 'SECURITIES') "
-				"AND C.ASS_CATEGORY = '%s' "
-				"AND NVL(ASSIGN_CP, A.COUNTERPARTY) = '%s' "
-				"AND A.CURRENCY = '%s' "
-				"AND A.VALUE_DATE = %s "
-				"ORDER BY 1, 2, 3, 4, 5", (const char *) Category, (const char *) CP, (const char *) Currency, p);
+			Category = m_CategoryCombo.GetData();
+			OraLoader.GetSql() = "SELECT PORTFOLIO, A.ASSET_CODE, A.TRANS_TYPE, TRADE_DATE, A.TRANS_NUM, "
+									"DECODE(TRANS_TYPE, 'FOREX', 0, DECODE(TRANS_DIRECTION, 'P', 1, 'S', -1)*B.NOM_AMOUNT) \"NOM_AMOUNT\", "
+									"DECODE(TRANS_TYPE, 'FOREX', 1/FXRATE, PRICE) \"PRICE\", "
+									"DECODE(TRANS_TYPE, 'FOREX', -1, PRICE)*DECODE(TRANS_DIRECTION, 'P', -1, 'S', 1)*B.NOM_AMOUNT \"NOM_AMOUNT2\", "
+									"NVL(ASSIGN_CP, COUNTERPARTY) \"COUNTERPARTY\", A.CURRENCY, VALUE_DATE "
+									"FROM SEMAM.NW_TR_TICKETS A, SEMAM.NW_TR_INV B, SEMAM.NW_ASSETS C "
+									"WHERE A.TRANS_NUM = B.TRANS_NUM "
+									"AND B.TR_DESC = 'BOOKING' "
+									"AND A.ASSET_CODE = C.ASS_CODE "
+									"AND A.TRANS_TYPE IN ('FOREX', 'SECURITIES') "
+									"AND C.ASS_CATEGORY = '" + Category + "' "
+									"AND NVL(ASSIGN_CP, A.COUNTERPARTY) = '" + CP + "' "
+									"AND A.CURRENCY = '" + Currency + "' "
+									"AND A.VALUE_DATE = " + ValueDate + 
+									" ORDER BY 1, 2, 3, 4, 5";
 			break;
 		case 2:
-			OraLoader.GetSql().Format("SELECT PORTFOLIO, A.ASSET_CODE, A.TRANS_TYPE, TRADE_DATE, A.TRANS_NUM, "
-				"DECODE(TRANS_TYPE, 'FOREX', 0, DECODE(TRANS_DIRECTION, 'P', 1, 'S', -1)*B.NOM_AMOUNT) \"NOM_AMOUNT\", "
-				"DECODE(TRANS_TYPE, 'FOREX', 1/FXRATE, PRICE) \"PRICE\", "
-				"DECODE(TRANS_TYPE, 'FOREX', -1, PRICE)*DECODE(TRANS_DIRECTION, 'P', -1, 'S', 1)*B.NOM_AMOUNT \"NOM_AMOUNT2\", "
-				"NVL(ASSIGN_CP, COUNTERPARTY) \"COUNTERPARTY\", A.CURRENCY, VALUE_DATE "
-				"FROM SEMAM.NW_TR_TICKETS A, SEMAM.NW_TR_INV B "
-				"WHERE A.TRANS_NUM = B.TRANS_NUM "
-				"AND B.TR_DESC = 'BOOKING' "
-				"AND A.TRANS_TYPE IN ('FOREX', 'SECURITIES') "
-				"AND NVL(ASSIGN_CP, A.COUNTERPARTY) = '%s' "
-				"AND A.CURRENCY = '%s' "
-				"AND A.VALUE_DATE = %s " 
-				"ORDER BY 1, 2, 3, 4  ", (const char *) CP, (const char *) Currency, p);
+			OraLoader.GetSql() = "SELECT PORTFOLIO, A.ASSET_CODE, A.TRANS_TYPE, TRADE_DATE, A.TRANS_NUM, "
+									"DECODE(TRANS_TYPE, 'FOREX', 0, DECODE(TRANS_DIRECTION, 'P', 1, 'S', -1)*B.NOM_AMOUNT) \"NOM_AMOUNT\", "
+									"DECODE(TRANS_TYPE, 'FOREX', 1/FXRATE, PRICE) \"PRICE\", "
+									"DECODE(TRANS_TYPE, 'FOREX', -1, PRICE)*DECODE(TRANS_DIRECTION, 'P', -1, 'S', 1)*B.NOM_AMOUNT \"NOM_AMOUNT2\", "
+									"NVL(ASSIGN_CP, COUNTERPARTY) \"COUNTERPARTY\", A.CURRENCY, VALUE_DATE "
+									"FROM SEMAM.NW_TR_TICKETS A, SEMAM.NW_TR_INV B "
+									"WHERE A.TRANS_NUM = B.TRANS_NUM "
+									"AND B.TR_DESC = 'BOOKING' "
+									"AND A.TRANS_TYPE IN ('FOREX', 'SECURITIES') "
+									"AND NVL(ASSIGN_CP, A.COUNTERPARTY) = '" + CP + "' "
+									"AND A.CURRENCY = '" + Currency + "' "
+									"AND A.VALUE_DATE = " + ValueDate + 
+									" ORDER BY 1, 2, 3, 4 ";
 			break;
 		case 3:
-			m_PortfolioCombo->GetSelString(Portfolio);
+			Portfolio = m_PortfolioCombo.GetData();
 			if(Portfolio.IsEmpty())
-				OraLoader.GetSql().Format("SELECT PORTFOLIO, A.ASSET_CODE, A.TRANS_TYPE, TRADE_DATE, A.TRANS_NUM, "
-					"DECODE(TRANS_TYPE, 'FOREX', 0, DECODE(TRANS_DIRECTION, 'P', 1, 'S', -1)*B.NOM_AMOUNT) \"NOM_AMOUNT\", "
-					"DECODE(TRANS_TYPE, 'FOREX', 1/FXRATE, PRICE) \"PRICE\", "
-					"DECODE(TRANS_TYPE, 'FOREX', -1, PRICE)*DECODE(TRANS_DIRECTION, 'P', -1, 'S', 1)*B.NOM_AMOUNT \"NOM_AMOUNT2\", "
-					"NVL(ASSIGN_CP, COUNTERPARTY) \"COUNTERPARTY\", A.CURRENCY, VALUE_DATE "
-					"FROM SEMAM.NW_TR_TICKETS A, SEMAM.NW_TR_INV B "
-					"WHERE A.TRANS_NUM = B.TRANS_NUM "
-					"AND B.TR_DESC = 'BOOKING' "
-					"AND A.TRANS_TYPE IN ('FOREX', 'SECURITIES') "
-					"AND NVL(ASSIGN_CP, A.COUNTERPARTY) = '%s' "
-					"AND A.CURRENCY = '%s' "
-					"AND A.VALUE_DATE = %s "
-					"ORDER BY 1, 2, 3, 4, 5  ", (const char *) CP, (const char *) Currency, p);
+				OraLoader.GetSql() = "SELECT PORTFOLIO, A.ASSET_CODE, A.TRANS_TYPE, TRADE_DATE, A.TRANS_NUM, "
+										"DECODE(TRANS_TYPE, 'FOREX', 0, DECODE(TRANS_DIRECTION, 'P', 1, 'S', -1)*B.NOM_AMOUNT) \"NOM_AMOUNT\", "
+										"DECODE(TRANS_TYPE, 'FOREX', 1/FXRATE, PRICE) \"PRICE\", "
+										"DECODE(TRANS_TYPE, 'FOREX', -1, PRICE)*DECODE(TRANS_DIRECTION, 'P', -1, 'S', 1)*B.NOM_AMOUNT \"NOM_AMOUNT2\", "
+										"NVL(ASSIGN_CP, COUNTERPARTY) \"COUNTERPARTY\", A.CURRENCY, VALUE_DATE "
+										"FROM SEMAM.NW_TR_TICKETS A, SEMAM.NW_TR_INV B "
+										"WHERE A.TRANS_NUM = B.TRANS_NUM "
+										"AND B.TR_DESC = 'BOOKING' "
+										"AND A.TRANS_TYPE IN ('FOREX', 'SECURITIES') "
+										"AND NVL(ASSIGN_CP, A.COUNTERPARTY) = '" + CP + "' "
+										"AND A.CURRENCY = '" + Currency + "' "
+										"AND A.VALUE_DATE = " + ValueDate + 
+										" ORDER BY 1, 2, 3, 4, 5 ";
 			else
-				OraLoader.GetSql().Format("SELECT PORTFOLIO, A.ASSET_CODE, A.TRANS_TYPE, TRADE_DATE, A.TRANS_NUM, "
-					"DECODE(TRANS_TYPE, 'FOREX', 0, DECODE(TRANS_DIRECTION, 'P', 1, 'S', -1)*B.NOM_AMOUNT) \"NOM_AMOUNT\", "
-					"DECODE(TRANS_TYPE, 'FOREX', 1/FXRATE, PRICE) \"PRICE\", "
-					"DECODE(TRANS_TYPE, 'FOREX', -1, PRICE)*DECODE(TRANS_DIRECTION, 'P', -1, 'S', 1)*B.NOM_AMOUNT \"NOM_AMOUNT2\", "
-					"NVL(ASSIGN_CP, COUNTERPARTY) \"COUNTERPARTY\", A.CURRENCY, VALUE_DATE "
-					"FROM SEMAM.NW_TR_TICKETS A, SEMAM.NW_TR_INV B "
-					"WHERE A.TRANS_NUM = B.TRANS_NUM "
-					"AND B.TR_DESC = 'BOOKING' "
-					"AND A.TRANS_TYPE IN ('FOREX', 'SECURITIES') "
-					"AND NVL(ASSIGN_CP, A.COUNTERPARTY) = '%s' "
-					"AND A.CURRENCY = '%s' "
-					"AND A.VALUE_DATE = %s "
-					"AND A.PORTFOLIO = '%s' "
-					"ORDER BY 1, 2, 3, 4  ", (const char *) CP, (const char *) Currency, p, (const char *) Portfolio);
+				OraLoader.GetSql() = "SELECT PORTFOLIO, A.ASSET_CODE, A.TRANS_TYPE, TRADE_DATE, A.TRANS_NUM, "
+										"DECODE(TRANS_TYPE, 'FOREX', 0, DECODE(TRANS_DIRECTION, 'P', 1, 'S', -1)*B.NOM_AMOUNT) \"NOM_AMOUNT\", "
+										"DECODE(TRANS_TYPE, 'FOREX', 1/FXRATE, PRICE) \"PRICE\", "
+										"DECODE(TRANS_TYPE, 'FOREX', -1, PRICE)*DECODE(TRANS_DIRECTION, 'P', -1, 'S', 1)*B.NOM_AMOUNT \"NOM_AMOUNT2\", "
+										"NVL(ASSIGN_CP, COUNTERPARTY) \"COUNTERPARTY\", A.CURRENCY, VALUE_DATE "
+										"FROM SEMAM.NW_TR_TICKETS A, SEMAM.NW_TR_INV B "
+										"WHERE A.TRANS_NUM = B.TRANS_NUM "
+										"AND B.TR_DESC = 'BOOKING' "
+										"AND A.TRANS_TYPE IN ('FOREX', 'SECURITIES') "
+										"AND NVL(ASSIGN_CP, A.COUNTERPARTY) = '" + CP + "' "
+										"AND A.CURRENCY = '" + Currency + "' "
+										"AND A.VALUE_DATE = " + ValueDate + 
+										" AND A.PORTFOLIO = '" + Portfolio + "' "
+										"ORDER BY 1, 2, 3, 4 ";
 			break;
 		default:
 			break;

@@ -48,9 +48,15 @@ void COrFeeDlg::UpdateData(BOOL bAdd)
 		return;
 	}
 
-	if(!m_OrFee.GetData().IsEmpty())
+	if(m_OrFee.GetData().IsEmpty())
 	{
-		MessageBox("Invalid Fee");
+		MessageBox("Invalid OR Fee");
+		return;
+	}
+
+	if(m_OCCFee.GetData().IsEmpty())
+	{
+		MessageBox("Invalid OCC Fee");
 		return;
 	}
 

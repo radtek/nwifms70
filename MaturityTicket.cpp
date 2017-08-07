@@ -54,6 +54,7 @@ BEGIN_MESSAGE_MAP(CMaturityTicket, CFormView)
 	ON_UPDATE_COMMAND_UI(ID_MATURITY_PROCESS_TRADE, &CMaturityTicket::OnUpdateMaturityProcessTrade)
 	//}}AFX_MSG_MAP
 	ON_EN_CHANGE(IDC_MATURITY_SETFX_EDIT, &CMaturityTicket::OnEnChangeMaturitySetfxEdit)
+	ON_EN_CHANGE(IDC_MATURITY_SETMATURITY_EDIT, &CMaturityTicket::OnEnChangeMaturitySetmaturityEdit)
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -77,6 +78,52 @@ CNWIFMS70Doc* CMaturityTicket::GetDocument() // non-debug version is inline
 }
 #endif //_DEBUG
 
+void CMaturityTicket::ComputeValue()
+{
+	double Fxrate;
+	CQData QData;
+
+	Fxrate = m_Val.GetFxRate();
+	if(Fxrate <= 0)
+		Fxrate = 1;
+
+	if(m_Val.GetType() == INTSWAP)
+	{		
+		m_RecCurrency.SetData(m_Val.GetFxRate() > 0 ? USD : m_Currency.GetData());
+		m_RecCash.SetData(atof(QData.RemoveComma(m_InvAmount.GetData()))/Fxrate);
+		m_RecInterest.SetData(0);
+		m_RecAccretion.SetData(0);
+		m_RecTotal.SetData(m_RecCash.GetData());
+	}
+	else
+		if(m_Val.GetType() == REPO || m_Val.GetType() == LEVERAGE)
+		{
+			m_Val.ComputeLevAmount(TRUE);
+			if(strcmp(m_Val.GetType(), LEVERAGE) == 0)
+				m_RecCash.SetData(m_Val.GetNomAmount()/Fxrate);
+			else
+				m_RecCash.SetData(m_Val.GetLevAmount()/Fxrate);
+
+			m_RecAccretion.SetData(0);
+			if(m_Maturity.GetData().IsEmpty() && m_InvValueDate.GetData().IsEmpty() && m_SetMaturity.GetData().IsEmpty())
+				m_RecInterest.SetData(0);
+			else
+				m_RecInterest.SetData(m_Val.GetLevInterest()/Fxrate);
+
+			if(m_Val.GetType() == LEVERAGE)
+				m_RecTotal.SetData((m_Val.GetNomAmount() + m_Val.GetLevInterest())/Fxrate);
+			else
+				m_RecTotal.SetData((m_Val.GetLevAmount() + m_Val.GetLevInterest())/Fxrate);
+		}
+		else
+		{
+			m_RecCurrency.SetData(Fxrate > 0 ? USD : m_Currency.GetData());
+			m_RecCash.SetData(m_Val.GetValue()/Fxrate);
+			m_RecInterest.SetData(m_Val.GetPrePaidInt()/Fxrate);
+			m_RecAccretion.SetData(m_Val.GetPrePaidAccretionValue()/Fxrate);
+			m_RecTotal.SetData((m_Val.GetValue() + m_Val.GetPrePaid() + m_Val.GetPrePaidAccretionValue())/Fxrate);
+		}
+}
 
 void CMaturityTicket::InitControls()
 {
@@ -160,6 +207,36 @@ void CMaturityTicket::InitControls()
 	m_SetFx.Setup(this, IDC_MATURITY_SETFX_EDIT);
 	m_SetAmount.Setup(this, IDC_MATURITY_SETCASH_EDIT, NULL, TRUE);
 	m_SetMaturity.Setup(this, IDC_MATURITY_SETMATURITY_EDIT);
+}
+
+void CMaturityTicket::SetupAssetInfo()
+{
+	double Fxrate, LevRate, Amount, Price;
+	CString Date;
+	CQData QData;
+	COraLoader OraLoader;
+	
+	OraLoader.SetDB(&theDB);
+	Amount = atof(QData.RemoveComma(m_InvAmount.GetData()));
+	Price = atof(QData.RemoveComma(m_Price.GetData()));
+	
+	if(m_Fxrate.GetData().IsEmpty() && m_SetFx.GetData().IsEmpty())
+		Fxrate = 1;
+	else
+		if(m_SetFx.GetData().IsEmpty())
+			Fxrate = atof(QData.RemoveComma(m_Fxrate.GetData()));
+		else
+			Fxrate = atof(QData.RemoveComma(m_SetFx.GetData()));
+	
+	LevRate = atof(QData.RemoveComma(m_Rate.GetData()));
+	
+	Date = m_SetMaturity.GetData();
+	if(Date.IsEmpty())
+		Date = m_Maturity.GetData().IsEmpty() ? m_InvValueDate.GetData() : m_Maturity.GetData();
+
+	if(!Date.IsEmpty())
+		m_Val.Setup(OraLoader, m_TransType.GetData(), m_Dir.GetData(), m_Asset.GetData(), m_ValueDate.GetData(), 
+					Date, Amount, Price, Fxrate, m_RateBasis.GetData(), LevRate, m_Formula.GetData());
 }
 
 BOOL CMaturityTicket::UpdateData(BOOL bSaveandValid)
@@ -353,6 +430,9 @@ void CMaturityTicket::OnDblClickMaturityInvList(long Col, long Row)
 		m_InvAccount.SetData(m_InvSS.GetSheetText(12, Row));
 		m_InvAssignCP.SetData(m_InvSS.GetSheetText(13, Row));
 		m_InvAssignCT.SetData(m_InvSS.GetSheetText(14, Row));
+		
+		SetupAssetInfo();
+		ComputeValue();
 	}
 	else
 	{
@@ -400,19 +480,18 @@ void CMaturityTicket::OnMaturityLoadTrade()
 
 	OraLoader = GetData().GetOraLoader();
 
-	OraLoader.Open("SELECT A.PROCESSED, B.TRANS_NUM, B.PORTFOLIO, B.TICKET_NUM, B.COUNTERPARTY, "
-					"B.ASSET_CODE, B.TRADER_INI, B.TRADE_DATE, B.VALUE_DATE, B.TRANS_TYPE, "
-					"B.TRANS_DIRECTION, B.NOM_AMOUNT, B.PRICE, B.CURRENCY, B.FXRATE, B.CON_CODE, "
-					"B.DEAL_TYPE, B.BR_FEES, B.SOFTDOLLAR, B.LEV_RATE, B.TR_RATE, B.RATE_BASIS, "
-					"B.MATURITY_DATE, B.FLOAT_RATE_FORMULA, B.ORIG_SW_BOOKING, B.ORIG_SW_MATURITY, "
-					"B.CUSTODIAN, B.HAN_DETAIL1, B.HAN_DETAIL2, B.CP_TRADE_ID, B.DOC_REQ, "
+	OraLoader.Open("SELECT A.PROCESSED, B.TRANS_NUM, B.PORTFOLIO, B.TICKET_NUM, B.COUNTERPARTY, B.ASSET_CODE, "
+					"B.TRADER_INI, B.TRADE_DATE, B.VALUE_DATE, B.TRANS_TYPE, B.TRANS_DIRECTION, B.NOM_AMOUNT, "
+					"B.PRICE, B.CURRENCY, B.FXRATE, B.CON_CODE, B.DEAL_TYPE, B.BR_FEES, B.SOFTDOLLAR, B.LEV_RATE, "
+					"B.TR_RATE, B.RATE_BASIS, B.MATURITY_DATE, B.FLOAT_RATE_FORMULA, B.ORIG_SW_BOOKING, "
+					"B.ORIG_SW_MATURITY, B.CUSTODIAN, B.HAN_DETAIL1, B.HAN_DETAIL2, B.CP_TRADE_ID, B.DOC_REQ, "
 					"B.DOC_RECVD, B.CONFIRM, ASS_DESC, ASS_CURRENCY, A.MATURITY, "
-					"DECODE(B.TRANS_TYPE, 'INT. SWAP', 0, TO_NUMBER(NULL)) \"SET_AMOUNT\", "
-					"A.INV_NUM "
-					"FROM SEMAM.NW_MATURITY_TRADE A "
-					"JOIN SEMAM.NW_TR_TICKETS B ON (A.TRANS_NUM = B.TRANS_NUM) "
-					"JOIN SEMAM.NW_ASSETS C ON (B.ASSET_CODE = C.ASS_CODE) "
-					"WHERE A.PROCESSED IS NULL AND A.SIGN IS NOT NULL "
+					"DECODE(B.TRANS_TYPE, 'INT. SWAP', 0, TO_NUMBER(NULL)) \"SET_AMOUNT\", A.INV_NUM "
+					"FROM SEMAM.NW_MATURITY_TRADE A, SEMAM.NW_TR_TICKETS B, SEMAM.NW_ASSETS C "
+					"WHERE B.TRANS_NUM = A.TRANS_NUM "
+					"AND C.ASS_CODE = B.ASSET_CODE "
+					"AND A.PROCESSED IS NULL "
+					"AND A.SIGN IS NOT NULL "
 					"ORDER BY 1, 2, 3 ");
 	
 	OraLoader.GetFieldArray().GetAt(1)->SetWithComma(FALSE);
@@ -515,4 +594,13 @@ void CMaturityTicket::OnEnChangeMaturitySetfxEdit()
 		Currency = m_Currency.GetData();
 
 	m_SetCurrency.SetData(Currency);
+	SetupAssetInfo();
+	ComputeValue();
+}
+
+
+void CMaturityTicket::OnEnChangeMaturitySetmaturityEdit()
+{
+	SetupAssetInfo();
+	ComputeValue();
 }

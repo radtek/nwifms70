@@ -385,6 +385,8 @@ void CAllocation::OnDblClickAllocationList(long Col, long Row)
 {
 	if(Row >= 1 && Row <= m_SS.GetSheetRows())
 	{
+		OnUpdateButton();
+
 		m_Data.SetCurrentRow(Row);
 		if(m_Data.GetAutoRepo())
 		{
@@ -566,6 +568,7 @@ void CAllocation::OnOK()
 	CDBRec Rec;
 	CString Price, DownPymnt;
 
+	OnUpdateButton();
 	Price = m_Price.GetData();
 	m_RecArray.RemoveAll();
 	for(int i = 1; i <= m_SS.GetSheetRows(); i ++)
