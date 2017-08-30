@@ -24,54 +24,8 @@ COrderEntry::COrderEntry()
 	: CFormView(COrderEntry::IDD)
 {
 	//{{AFX_DATA_INIT(COrderEntry)
-	m_TRS = NULL;
-	m_IPO = NULL;
-	m_MarketOrder = NULL;
-	m_SameDay = NULL;
-	m_PartialFill = NULL;
-	m_Discretionary = NULL;
-	m_Expired = NULL;
-	m_Cancelled = NULL;
-
-    m_TransType = NULL;
-    m_CP = NULL;
-    m_Currency = NULL;
-	m_BestExecution = NULL;
-//	m_Reason = NULL;
-
 	m_bLoaded = FALSE;
 	//}}AFX_DATA_INIT
-}
-
-COrderEntry::~COrderEntry()
-{
-	if(m_TRS)
-		delete m_TRS;
-	if(m_IPO)
-		delete m_IPO;
-	if(m_MarketOrder)
-		delete m_MarketOrder;
-	if(m_SameDay)
-		delete m_SameDay;
-	if(m_PartialFill)
-		delete m_PartialFill;
-	if(m_Discretionary)
-		delete m_Discretionary;
-	if(m_Expired)
-		delete m_Expired;
-	if(m_Cancelled)
-		delete m_Cancelled;
-
-    if(m_TransType)
-		delete m_TransType;
-    if(m_CP)
-		delete m_CP;
-    if(m_Currency)
-		delete m_Currency;
-	if(m_BestExecution)
-		delete m_BestExecution;
-//	if(m_Reason)
-//		delete m_Reason;
 }
 
 void COrderEntry::DoDataExchange(CDataExchange* pDX)
@@ -129,18 +83,18 @@ void COrderEntry::EnableCtrls()
 {
 	CString TransType, Dir;
 
-	m_TransType->GetSelString(TransType);
-	m_Dir.GetSelString(Dir);
+	TransType = m_TransType.GetData();
+	Dir = m_Dir.GetData();
 	GetData().DefineTransType(TransType, Dir);
 
 	GetDlgItem(IDC_ORDER_STRIKE_STATIC)->ShowWindow(TransType == CALL || TransType == PUT ? TRUE : FALSE);
 	m_Strike.ShowWindow(TransType == CALL || TransType == PUT ? TRUE : FALSE);
-	GetDlgItem(IDC_ORDER_RATE_STATIC)->ShowWindow(TransType == REPO || TransType == INTSWAP || (TransType == SECURITIES && m_TRS->GetCheck()) ? TRUE : FALSE);
-	m_Rate.ShowWindow(TransType == REPO || TransType == INTSWAP || (TransType == SECURITIES && m_TRS->GetCheck()) ? TRUE : FALSE);
+	GetDlgItem(IDC_ORDER_RATE_STATIC)->ShowWindow(TransType == REPO || TransType == INTSWAP || (TransType == SECURITIES && m_TRS.GetCheck()) ? TRUE : FALSE);
+	m_Rate.ShowWindow(TransType == REPO || TransType == INTSWAP || (TransType == SECURITIES && m_TRS.GetCheck()) ? TRUE : FALSE);
 	GetDlgItem(IDC_ORDER_PRICE_STATIC)->ShowWindow(TransType == FOREX ? FALSE : TRUE);
 	m_Price.ShowWindow(TransType == FOREX ? FALSE : TRUE);
-	GetDlgItem(IDC_ORDER_MATURITY_STATIC)->ShowWindow(TransType == CALL || TransType == PUT || TransType == REPO || TransType == INTSWAP || (TransType == SECURITIES && (Dir == B || Dir == L || m_TRS->GetCheck())));
-	m_Maturity.ShowWindow(TransType == CALL || TransType == PUT || TransType == REPO || TransType == INTSWAP || (TransType == SECURITIES && (Dir == B || Dir == L || m_TRS->GetCheck())));
+	GetDlgItem(IDC_ORDER_MATURITY_STATIC)->ShowWindow(TransType == CALL || TransType == PUT || TransType == REPO || TransType == INTSWAP || (TransType == SECURITIES && (Dir == B || Dir == L || m_TRS.GetCheck())));
+	m_Maturity.ShowWindow(TransType == CALL || TransType == PUT || TransType == REPO || TransType == INTSWAP || (TransType == SECURITIES && (Dir == B || Dir == L || m_TRS.GetCheck())));
 }
 
 void COrderEntry::InitControls()
@@ -153,20 +107,20 @@ void COrderEntry::InitControls()
 	m_SS.SetSheetRows(0);
 	m_SS.SetSheetCurRow(-1);
 
-	m_TRS = new CCheckBox(this, IDC_ORDER_TRS_CHECK, TRS);
-	m_IPO = new CCheckBox(this, IDC_ORDER_IPO_CHECK, Y);
-	m_MarketOrder = new CCheckBox(this, IDC_ORDER_MARKET_CHECK, Y);
-	m_SameDay = new CCheckBox(this, IDC_ORDER_SAMEDAY_CHECK, Y);
-	m_PartialFill = new CCheckBox(this, IDC_ORDER_PARTIAL_CHECK, Y);
-	m_Discretionary = new CCheckBox(this, IDC_ORDER_DISCRETIONARY_CHECK, Y);
-	m_Discretionary->SetCheck(1);
-	m_Expired = new CCheckBox(this, IDC_ORDER_EXPIRED_CHECK, Y);
-	m_Cancelled = new CCheckBox(this, IDC_ORDER_CANCEL_CHECK, Y);
+	m_TRS.Setup(this, IDC_ORDER_TRS_CHECK, TRS);
+	m_IPO.Setup(this, IDC_ORDER_IPO_CHECK, Y);
+	m_MarketOrder.Setup(this, IDC_ORDER_MARKET_CHECK, Y);
+	m_SameDay.Setup(this, IDC_ORDER_SAMEDAY_CHECK, Y);
+	m_PartialFill.Setup(this, IDC_ORDER_PARTIAL_CHECK, Y);
+	m_Discretionary.Setup(this, IDC_ORDER_DISCRETIONARY_CHECK, Y);
+	m_Discretionary.SetCheck(1);
+	m_Expired.Setup(this, IDC_ORDER_EXPIRED_CHECK, Y);
+	m_Cancelled.Setup(this, IDC_ORDER_CANCEL_CHECK, Y);
 
-    m_TransType = new COptComboBox(this, IDC_ORDER_TRANSTYPE_COMBO);
-    m_CP = new COptComboBox(this, IDC_ORDER_COUNTERPARTY_COMBO);
-    m_Currency = new COptComboBox(this, IDC_ORDER_CURRENCY_COMBO);
-	m_BestExecution = new COptComboBox(this, IDC_ORDER_BESTEXECUTION_COMBO);
+    m_TransType.Setup(this, IDC_ORDER_TRANSTYPE_COMBO);
+    m_CP.Setup(this, IDC_ORDER_COUNTERPARTY_COMBO);
+    m_Currency.Setup(this, IDC_ORDER_CURRENCY_COMBO);
+	m_BestExecution.Setup(this, IDC_ORDER_BESTEXECUTION_COMBO);
 //	m_Reason = new COptComboBox(this, IDC_ORDER_REASON_COMBO);
 
 	m_OrderID.Setup(this, IDC_ORDER_ID_EDIT);
@@ -195,46 +149,46 @@ void COrderEntry::InitControls()
 	pOrderRec = &m_Data.GetOrderRec();
 	m_Data.Add(&m_OrderDate, &pOrderRec->GetOrderDate());
 	m_Data.Add(&m_OrderID, &pOrderRec->GetOrderID());
-	m_Data.Add(m_TransType, &pOrderRec->GetTransType());
+	m_Data.Add(&m_TransType, &pOrderRec->GetTransType());
 	m_Data.Add(&m_Dir, &pOrderRec->GetDir());
 	m_Data.Add(&m_Asset, &pOrderRec->GetAsset());
 	m_Data.Add(&m_Strike, &pOrderRec->GetStrike());
 	m_Data.Add(&m_Rate, &pOrderRec->GetRate());;
 	m_Data.Add(&m_Maturity, &pOrderRec->GetMaturity());
-	m_Data.Add(m_Currency, &pOrderRec->GetCurrency());
+	m_Data.Add(&m_Currency, &pOrderRec->GetCurrency());
 	m_Data.Add(&m_Fxrate, &pOrderRec->GetFxrate());
 	m_Data.Add(&m_Amount, &pOrderRec->GetNomAmount());
 	m_Data.Add(&m_Price, &pOrderRec->GetPrice());
-	m_Data.Add(m_CP, &pOrderRec->GetCP());
+	m_Data.Add(&m_CP, &pOrderRec->GetCP());
 	m_Data.Add(&pOrderRec->GetRefTicket());
 	m_Data.Add(&m_Trader, &pOrderRec->GetTrader());
 //	m_Data.Add(m_Reason, &pOrderRec->GetReason());
 	m_Data.Add(&m_Note, &pOrderRec->GetNote());
 	m_Data.Add(&m_AAMethod, &pOrderRec->GetAAMethod());
-	m_Data.Add(m_BestExecution, &pOrderRec->GetBestExecution());
-	m_Data.Add(m_TRS, &pOrderRec->GetTRS());
-	m_Data.Add(m_IPO, &pOrderRec->GetIPO());
-	m_Data.Add(m_MarketOrder, &pOrderRec->GetMarketOrder());
-	m_Data.Add(m_SameDay, &pOrderRec->GetSameDay());
-	m_Data.Add(m_PartialFill, &pOrderRec->GetPartialFill());
-	m_Data.Add(m_Discretionary, &pOrderRec->GetDiscretionary());
-	m_Data.Add(m_Expired, &pOrderRec->GetExpired());
-	m_Data.Add(m_Cancelled, &pOrderRec->GetCancelled());
+	m_Data.Add(&m_BestExecution, &pOrderRec->GetBestExecution());
+	m_Data.Add(&m_TRS, &pOrderRec->GetTRS());
+	m_Data.Add(&m_IPO, &pOrderRec->GetIPO());
+	m_Data.Add(&m_MarketOrder, &pOrderRec->GetMarketOrder());
+	m_Data.Add(&m_SameDay, &pOrderRec->GetSameDay());
+	m_Data.Add(&m_PartialFill, &pOrderRec->GetPartialFill());
+	m_Data.Add(&m_Discretionary, &pOrderRec->GetDiscretionary());
+	m_Data.Add(&m_Expired, &pOrderRec->GetExpired());
+	m_Data.Add(&m_Cancelled, &pOrderRec->GetCancelled());
 }
 
 BOOL COrderEntry::IsOK()
 {
 	CString Text, Method, TransType, Currency, Nominal, Price, Fxrate;
 	
-	if(m_TransType->GetCurSel() < 0)
+	if(m_TransType.GetCurSel() < 0)
 		Text = "Invalid Trans Type, Must enter Trans Type";
 	if(m_Dir.GetCurSel() < 0)
 		Text = "Invalid direction, Must enter dir";
-	if(m_Currency->GetCurSel() < 0)
+	if(m_Currency.GetCurSel() < 0)
 		Text = "Invalid currency, Must enter currency";
 	if(m_Amount.GetWindowTextLength() <= 0)
 		Text = "Invalid nominal, Must enter nominal";
-	if(m_CP->GetCurSel() < 0)
+	if(m_CP.GetCurSel() < 0)
 		Text = "Invalid counterparty, Must enter counterparty";
 	if(m_Trader.GetCurSel() < 0)
 		Text = "Invalid trader, Must enter trade";
@@ -242,7 +196,7 @@ BOOL COrderEntry::IsOK()
 //		Text = "Invalid reason, Must enter reason";
 	if(m_AAMethod.GetCurSel() < 0)
 		Text = "Invalid AA method, Must enter AA method";
-	if(m_BestExecution->GetCurSel() < 0)
+	if(m_BestExecution.GetCurSel() < 0)
 		Text = "Invalid Best Execution, Must enter Best Execution";
 
 	if(!Text.IsEmpty())
@@ -282,7 +236,7 @@ BOOL COrderEntry::UpdateData(BOOL bSaveandValid)
 	if(!bSaveandValid)
 	{
 		BeginWaitCursor();
-		CQData QData;
+
 		COraLoader OraLoader;
 		CStringArray Data;
 
@@ -293,7 +247,7 @@ BOOL COrderEntry::UpdateData(BOOL bSaveandValid)
 		{
 			GetData().LoadSupportData();
 
-			GetData().GetTransTypeArr().CopyToComboBox(*m_TransType); /* Trans Type */
+			GetData().GetTransTypeArr().CopyToComboBox(m_TransType); /* Trans Type */
 			GetData().GetTransDirArr().CopyToMCComboBox(m_Dir);
 			Data.Add("SS");
 			Data.Add("SELL SHORT");
@@ -302,14 +256,14 @@ BOOL COrderEntry::UpdateData(BOOL bSaveandValid)
 			Data.Add("CS");
 			Data.Add("COVER SHORT");
 			m_Dir.AddString(Data);
-			QData.CopyDBRecArrayToComboBox(GetData().GetCurrencyArr(), *m_Currency, 0, FALSE);	/* Currency */
-			GetData().GetContactList().CopyKeyToComboBox(*m_CP);
+			GetData().GetCurrencyArr().CopyToComboBox(m_Currency);	/* Currency */
+			GetData().GetContactList().CopyKeyToComboBox(m_CP);
 			OraLoader.Open("SELECT TRADER_INI, TRADER FROM SEMAM.NW_TRADERS WHERE ACTIVE = 'Y' ORDER BY 1 ");
 			OraLoader.LoadMCComboBox(m_Trader); /* Trader */
 			OraLoader.Open("SELECT AA_METHOD, AA_DESC, RATIO_A, RATIO_B, RATIO_C, RATIO_D FROM SEMAM.NW_AA_METHOD_V ORDER BY 1");
 			m_AAMethod.ResetContent();
 			OraLoader.LoadMCComboBox(m_AAMethod);
-			GetData().GetBestExecutionArr().CopyToComboBox(*m_BestExecution);
+			GetData().GetBestExecutionArr().CopyToComboBox(m_BestExecution);
 //			OraLoader.Open("SELECT REASON FROM SEMAM.NW_ORDER_REASON ORDER BY 1 ");
 //			OraLoader.LoadComboBox(*m_Reason);
 			m_bLoaded = TRUE;
@@ -332,19 +286,19 @@ int COrderEntry::VerifyRisk(CString &Text)
 	
 	m_AAMethod.GetSelString(Method);
 
-	if(Method != "BNAMTR"||m_TRS->GetCheck())
+	if(Method != "BNAMTR"||m_TRS.GetCheck())
 		return 0;
 
-	m_Asset.GetWindowTextA(Asset);
+	Asset = m_Asset.GetData();
 	if(Asset != m_Risk.GetAsset())
 		m_Risk.LoadRisk(Asset, m_OrderID.GetData(), FALSE);
 
-	m_TransType->GetSelString(TransType);
-	m_Dir.GetSelString(Dir);
-	m_Currency->GetSelString(Currency);
-	m_Amount.GetWindowText(Nominal);
-	m_Price.GetWindowText(Price);
-	m_Fxrate.GetWindowText(Fxrate);
+	TransType = m_TransType.GetData();
+	Dir = m_Dir.GetData();
+	Currency = m_Currency.GetData();
+	Nominal = m_Amount.GetData();
+	Price = m_Price.GetData();
+	Fxrate = m_Fxrate.GetData();
 	ValueDate = m_OrderDate.GetData();
 
 	if(Dir == S || Dir == "SS")
@@ -404,35 +358,35 @@ void COrderEntry::OnOrderFindAsset()
 	BOOL bChange = FALSE;
 	CQData QData;
 
-	TransType = m_TransType->GetSelString(TransType);
+	TransType = m_TransType.GetData();
 	
 	Dlg.m_pData = &GetData();
-	m_Asset.GetWindowText(Dlg.m_FindData.GetRec().GetAsset());
-	m_AssetDesc.GetWindowText(Dlg.m_FindData.GetRec().GetDesc());
+	Dlg.m_FindData.SetTicketBooking(TRUE);
+	Dlg.m_FindData.GetRec().GetAsset() = m_Asset.GetData();
+	Dlg.m_FindData.GetRec().GetDesc() = m_AssetDesc.GetData();
 
 	Dlg.m_bTicket = TRUE;
-
 	if(Dlg.DoModal() == IDOK)
 	{
 		pRec = &Dlg.m_FindData.GetRec();
-		m_Asset.SetWindowText(pRec->GetAsset());
-		m_AssetDesc.SetWindowText(pRec->GetDesc());
-		m_AssetCurrency.SetWindowText(pRec->GetCurrency());
+		m_Asset.SetData(pRec->GetAsset());
+		m_AssetDesc.SetData(pRec->GetDesc());
+		m_AssetCurrency.SetData(pRec->GetCurrency());
 		
-		m_Currency->GetSelString(Text);
+		Text = m_Currency.GetData();
 
 		if(Text.IsEmpty() || (Text != pRec->GetCurrency() && 
 			MessageBox("Note: Trading Currency is Different from Asset Currency! Do you want to synchonize them ?", "Warning", MB_YESNO) == IDYES))
-			m_Currency->SelectString(-1, pRec->GetCurrency());
+			m_Currency.SetData(pRec->GetCurrency());
 		
-		m_Currency->GetSelString(Text);
-		m_Fxrate.GetWindowText(Nominal);
+		Text = m_Currency.GetData();
+		Nominal = m_Fxrate.GetData();
 		if(Text != "USD" && Nominal == "1")
-			m_Fxrate.SetWindowText(EMPTYSTRING);
+			m_Fxrate.SetData(EMPTYSTRING);
 		
 		if(Dlg.m_nActionID == FINDACTION_UNWIND || Dlg.m_nActionID == FINDACTION_OPTEX)
 		{
-			m_Amount.GetWindowText(Text);
+			Text = m_Amount.GetData();
 			if(Dlg.m_FindData.GetNominal() != Text && m_Amount.GetWindowTextLength() > 0)
 			{
 				if(MessageBox("Do you want to change current nom_amount (Y/N)?", "Order Entry", MB_YESNO) == IDYES)
@@ -441,7 +395,7 @@ void COrderEntry::OnOrderFindAsset()
 		}
 		
 		TransType = Dlg.m_FindData.GetTransType();
-		m_TransType->SelectString(0, TransType);
+		m_TransType.SetData(TransType);
 		Dir = Dlg.m_FindData.GetDir();
 		Nominal = Dlg.m_FindData.GetNominal();
 
@@ -451,14 +405,14 @@ void COrderEntry::OnOrderFindAsset()
 				if(TransType == CDS || TransType == SECURITIES || TransType == CALL || TransType == PUT)
 				{
 					if(Dir == P || Dir.IsEmpty())
-						m_Dir.SelectString(0, P);
+						m_Dir.SetData(P);
 					else
-						m_Dir.SelectString(0, "SS");
+						m_Dir.SetData("SS");
 				}
 
 				if(TransType == CALL ||	TransType == PUT)
 				{
-					m_Strike.SetWindowText(Dlg.m_FindData.GetStrike());
+					m_Strike.SetData(Dlg.m_FindData.GetStrike());
 					m_Maturity.SetData(Dlg.m_FindData.GetRec().GetMaturity());
 				}
 				else
@@ -469,18 +423,18 @@ void COrderEntry::OnOrderFindAsset()
 				if(TransType == CDS || TransType == SECURITIES || TransType == CALL || TransType == PUT)
 				{
 					if(Dir == P)
-						m_Dir.SelectString(0, S);
+						m_Dir.SetData(S);
 					else
-						m_Dir.SelectString(0, "CS");
+						m_Dir.SetData("CS");
 
 					if(bChange || m_Amount.GetWindowTextLength() == 0)
-						m_Amount.SetWindowText(Dlg.m_FindData.GetNominal());
+						m_Amount.SetData(Dlg.m_FindData.GetNominal());
 				}
 					
 				if(TransType == CALL || TransType == PUT)
 				{
-					m_Strike.SetWindowText(Dlg.m_FindData.GetStrike());
-					m_Maturity.SetWindowText(Dlg.m_FindData.GetRec().GetMaturity());
+					m_Strike.SetData(Dlg.m_FindData.GetStrike());
+					m_Maturity.SetData(Dlg.m_FindData.GetRec().GetMaturity());
 					m_Data.GetOrderRec().GetRefTicket() = Dlg.m_FindData.GetTicket();
 				}
 				else
@@ -493,23 +447,23 @@ void COrderEntry::OnOrderFindAsset()
 					if(Dir == P) // We bought options
 					{
 						if(TransType == CALL)
-							m_Dir.SelectString(0, P);
+							m_Dir.SetData(P);
 						else
 							if(TransType == PUT)
-								m_Dir.SelectString(0, S);
+								m_Dir.SetData(S);
 					}
 					else
 					{
 						if(TransType == CALL)
-							m_Dir.SelectString(0, S);
+							m_Dir.SetData(S);
 						else
 							if(TransType == PUT)
-								m_Dir.SelectString(0, P);
+								m_Dir.SetData(P);
 					}
 					
-					m_TransType->SelectString(0, SECURITIES);
-					m_Amount.SetWindowText(Dlg.m_FindData.GetNominal());
-					m_Price.SetWindowText(Dlg.m_FindData.GetStrike());
+					m_TransType.SetData(SECURITIES);
+					m_Amount.SetData(Dlg.m_FindData.GetNominal());
+					m_Price.SetData(Dlg.m_FindData.GetStrike());
 					m_Data.GetOrderRec().GetRefTicket() = Dlg.m_FindData.GetTicket();
 				}
 				break;
@@ -518,12 +472,12 @@ void COrderEntry::OnOrderFindAsset()
 		}
 	}
 
-	m_Asset.GetWindowText(Asset);
+	Asset = m_Asset.GetData();
 	if(TransType == FOREX && Asset == "NEW ASSET")
 	{
-		m_Asset.SetWindowText("");
-		m_AssetDesc.SetWindowText("");
-		m_AssetCurrency.SetWindowText("");
+		m_Asset.SetData(EMPTYSTRING);
+		m_AssetDesc.SetData(EMPTYSTRING);
+		m_AssetCurrency.SetData(EMPTYSTRING);
 	}
 	
 	EnableCtrls();
@@ -582,12 +536,12 @@ void COrderEntry::OnOrderRefresh()
 	m_Data.Refresh();
 	GetData().LoadDates();
 	m_OrderDate.SetData(GetData().GetDate());
-	m_TransType->SelectString(-1, SECURITIES);
-	m_Currency->SetCurSel(m_Currency->FindString(-1, USD));
-	m_Fxrate.SetWindowText("1");
-	m_Trader.SelectString(-1, GetData().GetTraderIni());
-	m_MarketOrder->SetCheck(1);
-	m_IPO->SetCheck(0);
+	m_TransType.SetData(SECURITIES);
+	m_Currency.SetCurSel(m_Currency.FindString(-1, USD));
+	m_Fxrate.SetData("1");
+	m_Trader.SetData(GetData().GetTraderIni());
+	m_MarketOrder.SetCheck(1);
+	m_IPO.SetCheck(0);
 	OnIPOCheck();
 	m_SS.SheetAutoFit();
 
@@ -597,17 +551,17 @@ void COrderEntry::OnOrderRefresh()
 
 void COrderEntry::OnIPOCheck() 
 {
-	m_MarketOrder->SetCheck(1);
+	m_MarketOrder.SetCheck(1);
 
-	if(m_IPO->GetCheck())
+	if(m_IPO.GetCheck())
 	{
-		m_SameDay->SetCheck(0);
-		m_PartialFill->SetCheck(1);
+		m_SameDay.SetCheck(0);
+		m_PartialFill.SetCheck(1);
 	}
 	else
 	{
-		m_SameDay->SetCheck(1);
-		m_PartialFill->SetCheck(1);
+		m_SameDay.SetCheck(1);
+		m_PartialFill.SetCheck(1);
 	}
 }
 
@@ -615,23 +569,19 @@ void COrderEntry::OnSetfocusAssetEdit()
 {
 	CString TransType;
 
-	m_TransType->GetSelString(TransType);
+	TransType = m_TransType.GetData();
 	if(TransType == FOREX || m_Asset.GetWindowTextLength() > 0)
 		return;
 
-	m_Asset.SetWindowText(NEWASSET);	
+	m_Asset.SetData(NEWASSET);	
 	OnOrderFindAsset();	
 }
 
 
 void COrderEntry::OnCbnSelchangeOrderCurrencyCombo()
 {
-	CString Curr;
-
-	m_Currency->GetSelString(Curr);
-	
-	if(Curr == USD)
-		m_Fxrate.SetWindowText("1");
+	if(m_Currency.GetData() == USD)
+		m_Fxrate.SetData("1");
 }
 
 
@@ -646,14 +596,14 @@ void COrderEntry::OnOrderContract()
 	CContractConvertor Dlg;
 	int Status;
 
-	m_Asset.GetWindowText(Dlg.m_AssetStr);
+	Dlg.m_AssetStr = m_Asset.GetData();
 	Dlg.m_OraLoader.SetDB(GetData().GetOraLoader().GetDB());
 	Status = Dlg.DoModal();
 	
 	if(Status != IDOK)
 		return;
 
-	m_Amount.SetWindowText(Dlg.m_NominalStr);
+	m_Amount.SetData(Dlg.m_NominalStr);
 }
 
 

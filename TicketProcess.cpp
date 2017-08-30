@@ -1068,6 +1068,7 @@ void CTicketProcess::OnProcessFindAsset()
 	CQData QData;
 
 	Dlg.m_pData = &GetData();
+	Dlg.m_FindData.SetTicketBooking(TRUE);
 	Dlg.m_FindData.GetRec().GetAsset() = m_Asset.GetData();
 	Dlg.m_FindData.GetRec().GetDesc() = m_AssetDesc.GetData();
 	Dlg.m_FindData.GetRec().GetOptTicker() = m_OptTicker.GetData();

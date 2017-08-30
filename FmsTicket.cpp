@@ -1057,7 +1057,7 @@ void CFmsTicket::OnTransFindasset()
 		Dlg.m_FindData.GetRec().GetDesc() = m_AssetDesc.GetData();
 		Dlg.m_FindData.GetRec().GetOptTicker() = m_OptTicker.GetData();
 	}
-	
+
 	if(Dlg.DoModal() != IDOK)
 		return;
 

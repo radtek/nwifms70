@@ -35,6 +35,7 @@ int CAssetFindData::LoadDBData(BOOL bInitial)
 			"FROM SEMAM.ALL_ASSETS_V A ";
 
 	Data = m_Rec.GetAsset(); // AssetCode
+
 	if(Data.IsEmpty())
 		Data = NEWASSET;
 
@@ -50,9 +51,19 @@ int CAssetFindData::LoadDBData(BOOL bInitial)
 
 		GetOraLoader().Open(Sql);
 		GetOraLoader().RecToQueryRec(QRec, Rec, NULL, PERCENT);
-		Sql += " WHERE NVL(MATURITY_DATE, SYSDATE) > TRUNC(SYSDATE) ";
-		GetOraLoader().SetSqlSearchInfo(Sql, QRec, NULL, TRUE);
+		if(GetTicketBooking())
+		{
+			Sql += " WHERE NVL(MATURITY_DATE, SYSDATE) > TRUNC(SYSDATE) - 14 ";
+			GetOraLoader().SetSqlSearchInfo(Sql, QRec, NULL, TRUE);
+		}
+		else
+		{
+			Sql += " WHERE ";
+			GetOraLoader().SetSqlSearchInfo(Sql, QRec, NULL, FALSE);
+		}
+
 		Sql += " ORDER BY 1, 34 ";
+MessageBox(NULL, Sql, NULL, MB_OK);
 		GetOraLoader().Open(Sql);
 	}
 

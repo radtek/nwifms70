@@ -32,11 +32,12 @@ protected:
 	CString m_AssignCP;
 	CString m_Trader;
 	BOOL m_bWithNew;
+	BOOL m_bTicketBooking;
 
 public:
-	CAssetFindData() { SetWithNew(); }
+	CAssetFindData() { SetWithNew(); SetTicketBooking(FALSE); }
 	CAssetFindData(COraLoader &OraLoader, CDBSheet *pSS, BOOL bWithNew = TRUE) 
-		: CRowCtrl(pSS) { SetOraLoader(OraLoader); SetWithNew(bWithNew); }
+		: CRowCtrl(pSS) { SetOraLoader(OraLoader); SetWithNew(bWithNew); SetTicketBooking(FALSE); }
 	~CAssetFindData() {}
 	
 	BOOL IsRowOK();
@@ -48,6 +49,8 @@ public:
 			{ CRowCtrl::Setup(pSS), SetOraLoader(OraLoader); SetWithNew(bWithNew); }
 	void SetWithNew(BOOL bWithNew = TRUE) { m_bWithNew = bWithNew; }
 	BOOL GetWithNew() { return m_bWithNew; }
+	void SetTicketBooking(BOOL bTicketBooking) { m_bTicketBooking = bTicketBooking; }
+	BOOL GetTicketBooking() { return m_bTicketBooking; }
 	
 	CAssetRec &GetRec() { return m_Rec; }
 	void SetRecArray(CStringArray &Rec);
