@@ -63,7 +63,7 @@ int CAssetFindData::LoadDBData(BOOL bInitial)
 		}
 
 		Sql += " ORDER BY 1, 34 ";
-MessageBox(NULL, Sql, NULL, MB_OK);
+
 		GetOraLoader().Open(Sql);
 	}
 

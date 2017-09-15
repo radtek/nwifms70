@@ -303,7 +303,11 @@ void CCashForm::InitControls()
 
 BOOL CCashForm::IsOK()
 {
-    CString Text, PayType;
+    CString Data, Text, PayType, Sql;
+	COraLoader OraLoader;
+	CQData QData;
+
+	OraLoader = GetData().GetOraLoader();
 
 	if(m_Currency.GetCurSel() < 0)
 		Text = "Must select a currency";
@@ -311,8 +315,6 @@ BOOL CCashForm::IsOK()
 	PayType = m_PayType.GetData();
 	if(PayType.IsEmpty())
 		Text = "Must select a Payment Type";
-
-	CString Data;
 
 	Data = m_Remaining.GetData();
 	if(atof(Data) != 0)
@@ -353,8 +355,39 @@ BOOL CCashForm::IsOK()
 
 	if(PayType == "SWAP INT" || PayType == "COUPON PAY" || PayType == "DIVIDENT P")
 	{
-		if(m_ToDate.GetWindowTextLength() <= 0 && m_PayID.GetData().IsEmpty())
-			Text = "Must enter an entry from load coupons";
+		if(m_PayID.GetData().IsEmpty())
+		{
+			if(m_ToDate.GetData().IsEmpty())
+				Text = "Must enter Coupon Date";
+			else{
+				Data = m_Asset.GetData();
+				if(Data.IsEmpty())
+					Text = "Must enter Asset.";
+				else
+				{
+					Data = QData.GetQueryText(Data);
+					
+					if(PayType == "DIVIDENT P" || PayType == "COUPON PAY")
+						Sql = "SELECT COUNT(*) FROM SEMAM.NW_ASSETS WHERE ASS_CODE = " + Data;
+					else
+						if(PayType == "COUPON PAY")
+							Sql = "SELECT COUNT(*) FROM SEMAM.NW_ASSETS WHERE ASS_ACCRUABLE = 'Y' AND ASS_CODE = " + Data;
+						else
+						{
+							Sql = "SELECT COUNT(*) FROM SEMAM.NW_TR_TICKETS A, SEMAM.NW_ASSETS B "
+									"WHERE B.ASS_CODE = A.ASSET_CODE AND ASS_ACCRUABLE = 'Y' "
+									"AND A.TRANS_TYPE = 'INT. SWAP' "
+									"AND A.ASSET_CODE = " + Data + 
+									" AND A.TRANS_NUM = ";
+							Sql += QData.GetQueryNumber(m_IRSID.GetData());
+						}
+		
+					if(OraLoader.GetCount(Sql) <= 0)
+						Text = "Must Enter Asset and/or Trans Num.";
+			
+				}
+			}
+		}
 	}
 
 	if(PayType == "TRANSACT")

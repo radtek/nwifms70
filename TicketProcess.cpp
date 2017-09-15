@@ -1173,7 +1173,7 @@ void CTicketProcess::OnProcessFindAsset()
 					{
 						m_Strike.SetData(Dlg.m_FindData.GetStrike());
 						m_OptExpDate.SetData(Dlg.m_FindData.GetRec().GetMaturity());
-						m_OptTicker.SetData(Dlg.m_FindData.GetTicket());
+						m_OptTicker.SetData(Dlg.m_FindData.GetOptTick());
 						m_OptID.SetData(Dlg.m_FindData.GetOptID());
 						m_DeliveryDate.SetData(Dlg.m_FindData.GetDeliveryDate());
 						m_OptSet.SetData(Dlg.m_FindData.GetOptSetCode());
