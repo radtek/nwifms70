@@ -156,7 +156,7 @@ void CFXCategoryDlg::OnBnClickedFxcatLoadButton()
 				"WHERE B.TICKET_NUM(+) = A.TICKET_NUM "
 				"AND C.TRADER_INI(+) = A.TRADER_INI "
 				"AND A.TRANS_TYPE IN ('FOREX') "
-				"AND A.ASSET_CODE IS NULL "
+				"AND (A.ASSET_CODE IS NULL OR A.ASSET_CODE = 'NEW ASSET') "
 				"AND A.TICKET_NUM = " + Text;
 	}
 	else
@@ -168,7 +168,7 @@ void CFXCategoryDlg::OnBnClickedFxcatLoadButton()
 				"WHERE B.TICKET_NUM(+) = A.TICKET_NUM "
 				"AND C.TRADER_INI(+) = A.TRADER_INI "
 				"AND A.TRANS_TYPE IN ('FOREX') "
-				"AND A.ASSET_CODE IS NULL "
+				"AND (A.ASSET_CODE IS NULL OR A.ASSET_CODE = 'NEW ASSET') "
 				"AND A.TRADE_DATE = " + Text;
 	}
 

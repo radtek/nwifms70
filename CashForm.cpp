@@ -367,16 +367,18 @@ BOOL CCashForm::IsOK()
 				{
 					Data = QData.GetQueryText(Data);
 					
-					if(PayType == "DIVIDENT P" || PayType == "COUPON PAY")
+					if(PayType == "DIVIDENT P")
 						Sql = "SELECT COUNT(*) FROM SEMAM.NW_ASSETS WHERE ASS_CODE = " + Data;
 					else
 						if(PayType == "COUPON PAY")
-							Sql = "SELECT COUNT(*) FROM SEMAM.NW_ASSETS WHERE ASS_ACCRUABLE = 'Y' AND ASS_CODE = " + Data;
+							Sql = "SELECT COUNT(*) FROM SEMAM.NW_ASSETS A, SEMAM.NW_ASS_PERIODS B WHERE B.ASS_CODE = A.ASS_CODE AND ASS_ACCRUABLE = 'Y' AND ASS_CODE = " + Data;
 						else
 						{
-							Sql = "SELECT COUNT(*) FROM SEMAM.NW_TR_TICKETS A, SEMAM.NW_ASSETS B "
-									"WHERE B.ASS_CODE = A.ASSET_CODE AND ASS_ACCRUABLE = 'Y' "
-									"AND A.TRANS_TYPE = 'INT. SWAP' "
+							Sql = "SELECT COUNT(*) FROM SEMAM.NW_TR_TICKETS A, SEMAM.NW_ASSETS B, SEMAM.NW_ASS_PERIODS C "
+									"WHERE B.ASS_CODE = A.ASSET_CODE "
+									"AND C.ASS_CODE = B.ASS_CODE "
+									"AND B.ASS_ACCRUABLE = 'Y' "
+									"AND C.TRANS_TYPE = 'INT. SWAP' "
 									"AND A.ASSET_CODE = " + Data + 
 									" AND A.TRANS_NUM = ";
 							Sql += QData.GetQueryNumber(m_IRSID.GetData());
