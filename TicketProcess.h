@@ -178,7 +178,7 @@ protected:
 	void ProcessVerifyRisk();
 	void UpdateAsset();
 	void UpdateCash();
-	void UpdateTradeDates(BOOL bEuroBond = FALSE);
+	void UpdateTradeDates();
 	int VerifyRisk(CString &Text);
 
 #ifdef _DEBUG

@@ -357,9 +357,10 @@ BOOL CCashForm::IsOK()
 	{
 		if(m_PayID.GetData().IsEmpty())
 		{
-			if(m_ToDate.GetData().IsEmpty())
+			if((PayType == "SWAP INT" || PayType == "COUPON PAY") && m_ToDate.GetData().IsEmpty())
 				Text = "Must enter Coupon Date";
-			else{
+			else
+			{
 				Data = m_Asset.GetData();
 				if(Data.IsEmpty())
 					Text = "Must enter Asset.";
@@ -371,14 +372,14 @@ BOOL CCashForm::IsOK()
 						Sql = "SELECT COUNT(*) FROM SEMAM.NW_ASSETS WHERE ASS_CODE = " + Data;
 					else
 						if(PayType == "COUPON PAY")
-							Sql = "SELECT COUNT(*) FROM SEMAM.NW_ASSETS A, SEMAM.NW_ASS_PERIODS B WHERE B.ASS_CODE = A.ASS_CODE AND ASS_ACCRUABLE = 'Y' AND ASS_CODE = " + Data;
+							Sql = "SELECT COUNT(*) FROM SEMAM.NW_ASSETS A, SEMAM.NW_ASS_PERIODS B WHERE B.ASS_CODE = A.ASS_CODE AND ASS_ACCRUABLE = 'Y' AND A.ASS_CODE = " + Data;
 						else
 						{
 							Sql = "SELECT COUNT(*) FROM SEMAM.NW_TR_TICKETS A, SEMAM.NW_ASSETS B, SEMAM.NW_ASS_PERIODS C "
 									"WHERE B.ASS_CODE = A.ASSET_CODE "
 									"AND C.ASS_CODE = B.ASS_CODE "
 									"AND B.ASS_ACCRUABLE = 'Y' "
-									"AND C.TRANS_TYPE = 'INT. SWAP' "
+									"AND A.TRANS_TYPE = 'INT. SWAP' "
 									"AND A.ASSET_CODE = " + Data + 
 									" AND A.TRANS_NUM = ";
 							Sql += QData.GetQueryNumber(m_IRSID.GetData());

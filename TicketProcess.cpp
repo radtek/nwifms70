@@ -849,18 +849,13 @@ BOOL CTicketProcess::UpdateData(BOOL bSaveandValid)
 	return TRUE;
 }
 
-void CTicketProcess::UpdateTradeDates(BOOL bEuroBond) 
+void CTicketProcess::UpdateTradeDates() 
 {
-	CString Date, TransType;
-
-	TransType = m_TransType.GetData();
+	CString Date;
 
 	m_TradeDate.SetData(GetData().GetOraLoader().Today(Date));
 
-	m_ValueDate.SetData(GetData().GetOraLoader().GetValueDate(Date, TransType, m_Listed.GetCheck(), m_Future == "F" ? TRUE : FALSE));
-	
-	if(bEuroBond)
-		m_ValueDate.SetData(GetData().GetPlus2Date());
+	m_ValueDate.SetData(GetData().GetOraLoader().GetValueDate(Date, m_TransType.GetData(), m_Asset.GetData(), m_Listed.GetCheck()));
 }
 
 int CTicketProcess::VerifyRisk(CString &Text)
@@ -1064,7 +1059,7 @@ void CTicketProcess::OnProcessFindAsset()
 {
 	CAssetDlg Dlg;
 	CString TransType, Dir, Text;
-	BOOL bChange = FALSE, bValueDateChangable = TRUE;
+	BOOL bChange = FALSE;
 	CQData QData;
 
 	Dlg.m_pData = &GetData();
@@ -1136,8 +1131,6 @@ void CTicketProcess::OnProcessFindAsset()
 
 
 		Dir = Dlg.m_FindData.GetDir();
-		if(TransType == SECURITIES && Dlg.m_FindData.GetRec().GetClass() == "CURRENCY FWDS" || TransType == FOREX)
-			bValueDateChangable = FALSE;
 
 		switch(Dlg.m_nActionID)
 		{
@@ -1220,12 +1213,7 @@ void CTicketProcess::OnProcessFindAsset()
 		m_TradeDate.SetData(GetData().GetDate());
 	
 	if(m_sImgID.IsEmpty())
-	{
-		if(bValueDateChangable)
-			UpdateTradeDates(Dlg.m_EuropeBond == "Y");
-		else
-			m_ValueDate.SetData(Dlg.m_FindData.GetRec().GetMaturity());
-	}
+		UpdateTradeDates();
 	
 	Text = m_Asset.GetData();
 
@@ -1380,15 +1368,13 @@ void CTicketProcess::OnUpdateProcessFindItem(CCmdUI* pCmdUI)
 
 void CTicketProcess::OnProcessListedCheck() 
 {
-	CString Date, TransType;
+	CString Date;
 
 	Date = m_TradeDate.GetData();
 	if(Date != GetData().GetDate()) // Automatic change dates only when entry date is today
 		return;
 
-	TransType = m_TransType.GetData();
-
-	m_ValueDate.SetData(GetData().GetOraLoader().GetValueDate(Date, TransType, m_Listed.GetCheck()));
+	m_ValueDate.SetData(GetData().GetOraLoader().GetValueDate(Date, m_TransType.GetData(), m_Asset.GetData(), m_Listed.GetCheck()));
 
 	m_OrFee.ShowWindow(m_Listed.GetCheck() ? SW_SHOW : SW_HIDE);
 }

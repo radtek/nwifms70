@@ -921,12 +921,11 @@ void CConfirmView::OnSetfocusConfirmDealEdit()
 
 void CConfirmView::OnConfirmListedCheck() 
 {
-	CString Date, TransType;
+	CString Date;
 
 	Date = m_TradeDate.GetData();
-	TransType = m_TransType.GetData();
 
-	m_ValueDate.SetData(GetData().GetOraLoader().GetValueDate(Date, TransType, m_Listed.GetCheck()));
+	m_ValueDate.SetData(GetData().GetOraLoader().GetValueDate(Date, m_TransType.GetData(), m_Asset.GetData(), m_Listed.GetCheck()));
 
 	if(!m_OrFee.GetReadOnly())
 		m_OrFee.EnableWindow(m_Listed.GetCheck());
@@ -1041,9 +1040,6 @@ void CConfirmView::OnConfirmFindasset()
 	else
 		m_OptTicker.SetData(EMPTYSTRING);		
 
-	if(TransType == SECURITIES && Dlg.m_FindData.GetRec().GetClass() == "CURRENCY FWDS" || TransType == FOREX)
-		bValueDateChangable = FALSE;
-
 	Currency = m_Currency.GetData();
 	if(Currency.IsEmpty() || 
 		(Currency != Dlg.m_FindData.GetRec().GetCurrency() &&
@@ -1057,12 +1053,7 @@ void CConfirmView::OnConfirmFindasset()
 	if(m_TradeDate.GetData().IsEmpty())
 		m_TradeDate.SetData(GetData().GetDate());
 
-	if(bValueDateChangable)
-	{
-		m_ValueDate.SetData(GetData().GetOraLoader().GetValueDate(m_TradeDate.GetData(), TransType, m_Listed.GetCheck(), Dlg.m_Future == "F" ? TRUE : FALSE));	
-		if(Dlg.m_EuropeBond == "Y")
-			m_ValueDate.SetData(GetData().GetPlus2Date());
-	}
+	m_ValueDate.SetData(GetData().GetOraLoader().GetValueDate(m_TradeDate.GetData(), TransType, m_Asset.GetData(), m_Listed.GetCheck()));	
 	
 	EnableCtrls();
 	m_TransType.SetFocus();

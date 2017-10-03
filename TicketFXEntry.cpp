@@ -964,12 +964,11 @@ void CTicketFXEntry::OnSelchangeTranstypeCombo()
 	OnSelchangeTransdirCombo();
 	OnListedCheck();
 
-	CString Date, TransType;
-	
-	TransType = m_TransType.GetData();
+	CString Date;
+
 	m_TradeDate.SetData(GetData().GetOraLoader().Today(Date));
 
-	m_ValueDate.SetData(GetData().GetOraLoader().GetValueDate(Date, TransType, m_Listed.GetCheck()));
+	m_ValueDate.SetData(GetData().GetOraLoader().GetValueDate(Date, m_TransType.GetData(), m_Asset.GetData(), m_Listed.GetCheck()));
 }
 
 void CTicketFXEntry::OnSelchangeTransdirCombo() 
@@ -1290,15 +1289,13 @@ void CTicketFXEntry::OnUpdateEntryCopyTicket(CCmdUI* pCmdUI)
 
 void CTicketFXEntry::OnListedCheck() 
 {
-	CString Date, TransType;
+	CString Date;
 
 	Date = m_TradeDate.GetData();
 	if(Date != GetData().GetDate()) // Automatic change dates only when entry date is today
 		return;
 
-	TransType = m_TransType.GetData();
-
-	m_ValueDate.SetData(GetData().GetOraLoader().GetValueDate(Date, TransType, m_Listed.GetCheck()));
+	m_ValueDate.SetData(GetData().GetOraLoader().GetValueDate(Date, m_TransType.GetData(), m_Asset.GetData(), m_Listed.GetCheck()));
 }
 
 void CTicketFXEntry::OnSelChangeAssetCombo() 

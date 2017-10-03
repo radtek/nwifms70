@@ -1099,16 +1099,11 @@ void CTicketEntry::UpdateRatio()
 
 void CTicketEntry::UpdateTradeDates(BOOL bEuroBond) 
 {
-	CString Date, TransType;
-
-	TransType = m_TransType.GetData();
+	CString Date;
 
 	m_TradeDate.SetData(GetData().GetOraLoader().Today(Date));
 
-	m_ValueDate.SetData(GetData().GetOraLoader().GetValueDate(Date, TransType, m_Listed.GetCheck(), m_Future == "F" ? TRUE : FALSE));
-	
-	if(bEuroBond)
-		m_ValueDate.SetData(GetData().GetPlus2Date());
+	m_ValueDate.SetData(GetData().GetOraLoader().GetValueDate(Date, m_TransType.GetData(), m_Asset.GetData(), m_Listed.GetCheck()));
 }
 
 int CTicketEntry::VerifyRisk(CString &Text)
@@ -1559,7 +1554,7 @@ void CTicketEntry::OnListedCheck()
 
 	TransType = m_TransType.GetData();
 
-	m_ValueDate.SetData(GetData().GetOraLoader().GetValueDate(Date, TransType, m_Listed.GetCheck(), m_Future == "F" ? TRUE : FALSE));
+	m_ValueDate.SetData(GetData().GetOraLoader().GetValueDate(Date, TransType, m_Asset.GetData(), m_Listed.GetCheck()));
 }
 
 void CTicketEntry::OnSetfocusAssetEdit() 
