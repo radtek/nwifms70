@@ -942,6 +942,9 @@ void CTicketProcess::OnDblClickProcessTicketList(long Col, long Row)
 		}
 		if(m_AllocSS.GetSheetRows() > 0)
 			m_Custodian = m_AllocSS.GetSheetText(4, 1); // Get Custodian
+
+		if(m_TransType.GetData() == FOREX && m_Asset.GetData() == "NEW ASSET")
+			m_Asset.SetData(EMPTYSTRING);
 	}
 	else
 	{
