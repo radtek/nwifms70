@@ -372,6 +372,7 @@ BOOL CConfirmData::UpdateSRow()
 
 void CConfirmData::SetupAssetInfo(CAssetVal &Val)
 {		
+	CQData QData;
 	CString Date, Fx;
 
 	if(GetTicket().GetTransType() == REPO || GetTicket().GetTransType() == LEVERAGE || 
@@ -388,23 +389,15 @@ void CConfirmData::SetupAssetInfo(CAssetVal &Val)
 	else
 		Date = GetTicket().GetValueDate();
 
-/*	if(GetInv().GetForexRef().GetLength() > 0)
+	if(GetInv().GetCrossRate().GetLength() > 0)
 	{
-		GetOraLoader().GetSql().Format("SELECT FXRATE FROM SEMAM.NW_TR_TICKETS "
-						"WHERE TRANS_NUM = %s ", (LPCTSTR ) GetInv().GetForexRef());
-		GetOraLoader().Open();
-		GetOraLoader().LoadTextString(Fx);
-	}
-	else */
-		if(GetInv().GetCrossRate().GetLength() > 0)
-		{
-			if(GetTicket().GetFxRate().GetLength() > 0)
-				Fx.Format("%.9lf", atof(GetTicket().GetFxRate())*atof(GetInv().GetCrossRate()));
-			else
-				Fx = GetInv().GetCrossRate();
-		}
+		if(GetTicket().GetFxRate().GetLength() > 0)
+			Fx = QData.WriteNumber(atof(GetTicket().GetFxRate())*atof(GetInv().GetCrossRate()), FALSE);
 		else
-			Fx = GetTicket().GetFxRate();
+			Fx = GetInv().GetCrossRate();
+	}
+	else
+		Fx = GetTicket().GetFxRate();
 
 	Val.Setup(GetOraLoader(), GetTicket().GetTransType(), GetTicket().GetDir(), 
 			GetInv().GetAsset(), GetTicket().GetValueDate(), Date, GetInv().GetNomAmount(), 
