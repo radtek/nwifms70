@@ -41,7 +41,7 @@ public:
 	CDBSheet m_InvSS;
 	CDBSheet m_DataSS;
 
-	CCheckBox *m_CouponPaid;
+	CCheckBox m_CouponPaid;
 
 	CMaskIDEdit m_CashNum;
 	CMaskIDEdit m_PayID;
@@ -52,13 +52,13 @@ public:
 	CMaskDateEdit m_PostDate;
 	CMaskDateEdit m_ToDate;
 
-	COptComboBox *m_Portfolio;
-	COptComboBox *m_Account;
-	COptComboBox *m_Currency;
-	COptComboBox *m_PayType;
-	COptComboBox *m_DiffReason;
-	COptComboBox *m_AccountTo;
-	COptComboBox *m_PortfolioTo;
+	COptComboBox m_Portfolio;
+	COptComboBox m_Account;
+	COptComboBox m_Currency;
+	COptComboBox m_PayType;
+	COptComboBox m_DiffReason;
+	COptComboBox m_AccountTo;
+	COptComboBox m_PortfolioTo;
 
 	CCntlEdit m_CustRef;
 	CCntlEdit m_Note;
@@ -103,7 +103,7 @@ public:
 
 // Implementation
 protected:
-	virtual ~CCashForm();
+	virtual ~CCashForm() {} 
 	BOOL IsOK();
 
 #ifdef _DEBUG
@@ -157,6 +157,7 @@ public:
 	afx_msg void OnCashLoadirscoupon();
 	afx_msg void OnUpdateCashLoadirscoupon(CCmdUI *pCmdUI);
 	afx_msg void OnCashUploadcashentry();
+	afx_msg void OnEnChangeCashAssetEdit();
 };
 
 #ifndef _DEBUG  // debug version in WFMSView.cpp

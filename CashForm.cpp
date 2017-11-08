@@ -83,6 +83,7 @@ BEGIN_MESSAGE_MAP(CCashForm, CFormView)
 	ON_COMMAND(ID_CASH_LOADIRSCOUPON, &CCashForm::OnCashLoadirscoupon)
 	ON_UPDATE_COMMAND_UI(ID_CASH_LOADIRSCOUPON, &CCashForm::OnUpdateCashLoadirscoupon)
 	ON_COMMAND(ID_CASH_UPLOADCASHENTRY, &CCashForm::OnCashUploadcashentry)
+	ON_EN_CHANGE(IDC_CASH_ASSET_EDIT, &CCashForm::OnEnChangeCashAssetEdit)
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -405,6 +406,13 @@ BOOL CCashForm::IsOK()
 			Text = "Must enter an Asset Code";
 	}
 
+	if(!m_Asset.GetData().IsEmpty())
+	{
+		Data = QData.GetQueryText(m_Asset.GetData());
+		if(OraLoader.GetCount("SELECT COUNT(*) FROM SEMAM.NW_ASSETS WHERE ASS_CODE = " + Data) <= 0)
+			Text = "Invalid Asset Code";
+	}
+
 	if(!Text.IsEmpty())
 		MessageBox(Text);
 
@@ -604,7 +612,7 @@ void CCashForm::OnUpdateCashLoad(CCmdUI* pCmdUI)
 	CString PayType;
 
 	PayType = m_PayType.GetData();
-	pCmdUI->Enable(!m_Fund.IsEmpty() && PayType == "TRANSACT"||PayType == "FUTU COST" && m_Account.GetCurSel() >= 0 && m_Currency.GetCurSel() >= 0 ? TRUE : FALSE);
+	pCmdUI->Enable(!m_Fund.IsEmpty() && PayType == "TRANSACT" || PayType == "FUTU COST" && m_Account.GetCurSel() >= 0 && m_Currency.GetCurSel() >= 0 ? TRUE : FALSE);
 }
 
 void CCashForm::OnCashLoadCash() 
@@ -950,7 +958,7 @@ void CCashForm::OnUpdateCashLoadCoupon(CCmdUI* pCmdUI)
 	CString PayType;
 
 	PayType = m_PayType.GetData();
-	pCmdUI->Enable(!m_Fund.IsEmpty() && (PayType == "COUPON PAY" || PayType == "SWAP INT" || "DIVIDENT P" || "TAX") && m_Currency.GetCurSel() >= 0);
+	pCmdUI->Enable(!m_Fund.IsEmpty() && (PayType == "COUPON PAY" || PayType == "SWAP INT" || PayType == "DIVIDENT P" || PayType == "TAX") && m_Currency.GetCurSel() >= 0);
 }
 
 void CCashForm::OnUpdateCashSwap(CCmdUI* pCmdUI) 
@@ -1044,7 +1052,6 @@ void CCashForm::OnChangeCashAmountEdit()
 	else
 		m_Remaining.SetData("0");
 }
-
 
 void CCashForm::OnCashLoadcdscoupon() 
 {
@@ -1243,4 +1250,13 @@ void CCashForm::OnCashUploadcashentry()
 	Fund.Format("Total %d Cash Items Processed. ", Count);
 
 	MessageBox(Fund, "Cash Upload");
+}
+
+void CCashForm::OnEnChangeCashAssetEdit()
+{
+	CString Data;
+
+	Data = m_Asset.GetData();
+	if(Data == "MGMT FEES" || Data == "MISC. FEES" || Data == "CUSTO FEES" || Data == "O/N INTRST" || Data == "ADMIN FEES")
+		m_PayType.SetData("INCOME/EXP");
 }
