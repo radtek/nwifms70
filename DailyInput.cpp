@@ -1138,7 +1138,7 @@ void CDailyInput::SetSheetCellColor(int Row, PriceStatus_t &Status)
 		m_SS.SetBackColor(RGB(192, 192, 192));
 	m_SS.SetBlockMode(FALSE);
 	
-	if(Status.m_bOverLimit) // Exceeds limit
+/*	if(Status.m_bOverLimit) // Exceeds limit
 	{
 		m_SS.SetCol(1);
 		m_SS.SetCol2(m_nEditCol);
@@ -1165,7 +1165,18 @@ void CDailyInput::SetSheetCellColor(int Row, PriceStatus_t &Status)
 		default: // Price unchange
 			m_SS.SetBackColor(RGB(255, 255, 255));  // Normal
 			break;
-	}
+	} */
+
+	m_SS.SetCol(m_nEditCol + 1);
+	m_SS.SetCol2(m_nEditCol + 2);
+	m_SS.SetRow(Row);
+	m_SS.SetRow2(Row);
+	m_SS.SetBlockMode(TRUE);
+
+	if(Status.m_bOverLimit) // Exceeds Limit
+		m_SS.SetBackColor(RGB(255, 0, 0));
+	else
+		m_SS.SetBackColor(RGB(255, 255, 255));
 
 	m_SS.SetBlockMode(FALSE);
 }
