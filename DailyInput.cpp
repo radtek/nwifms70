@@ -133,6 +133,10 @@ BEGIN_MESSAGE_MAP(CDailyInput, CFormView)
 	ON_UPDATE_COMMAND_UI(ID_DAILY_QUICKFXRATE, &CDailyInput::OnUpdateDailyQuickfxrate)
 	ON_UPDATE_COMMAND_UI(ID_DAILY_QUICKPRICE, &CDailyInput::OnUpdateDailyQuickprice)
 	ON_UPDATE_COMMAND_UI(ID_DAILY_QUICKDIVIDEND, &CDailyInput::OnUpdateDailyQuickdividend)
+	ON_COMMAND(ID_DAILY_QUICKOPTPRICE, &CDailyInput::OnDailyQuickoptprice)
+	ON_COMMAND(ID_DAILY_QUICKSWAPPRICE, &CDailyInput::OnDailyQuickswapprice)
+	ON_UPDATE_COMMAND_UI(ID_DAILY_QUICKSWAPPRICE, &CDailyInput::OnUpdateDailyQuickswapprice)
+	ON_UPDATE_COMMAND_UI(ID_DAILY_QUICKOPTPRICE, &CDailyInput::OnUpdateDailyQuickoptprice)
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -1399,7 +1403,7 @@ void CDailyInput::OnDailyInputVarFactor()
 void CDailyInput::OnDailyInputPrice() 
 {
 	m_nEditCol = 4;	
-	DoInput(TRUE, 5, INPUT_PRICE, 0); // Price must be >= 0, 5% Limit
+	DoInput(TRUE, 3, INPUT_PRICE, 0); // Price must be >= 0, 5% Limit
 }
 
 void CDailyInput::OnDailyInputCost() 
@@ -1905,9 +1909,8 @@ void CDailyInput::OnDailyQuickfxrate()
 	CBlmFxrate BlmFxrate;
 	int Count;
 
-if(BLOOMBERG_AVAILABLE)
-	MessageBox("BLM OK");
-	Count = BlmFxrate.GetOraLoader().GetCount("SELECT COUNT(*) FROM SEMAM.NW_EXRATES WHERE INDATE = '" + BlmFxrate.GetDate() + "' ");
+	if(BLOOMBERG_AVAILABLE)
+		Count = BlmFxrate.GetOraLoader().GetCount("SELECT COUNT(*) FROM SEMAM.NW_EXRATES WHERE INDATE = '" + BlmFxrate.GetDate() + "' ");
 
 	if(Count > 0)
 	{
@@ -1940,7 +1943,7 @@ void CDailyInput::OnDailyQuickprice()
 	Count = BlmPrice.GetOraLoader().GetCount("SELECT COUNT(*) FROM SEMAM.NW_MARKET_PRICES WHERE PR_DATE = '" + BlmPrice.GetDate() + "' ");
 	if(Count > 0)
 	{
-		if(MessageBox("Prices have been loaded. Do you want to over write them ?", "Quick Exrate", MB_YESNO) == IDYES)
+		if(MessageBox("Prices have been loaded. Do you want to over write them ?", "Quick Price", MB_YESNO) == IDYES)
 			bOverRite = TRUE;
 		else
 			return;
@@ -1951,13 +1954,6 @@ void CDailyInput::OnDailyQuickprice()
 		BlmPrice.GetOraLoader().ExecuteSql("DELETE SEMAM.NW_MARKET_PRICES WHERE PR_DATE = '" + BlmPrice.GetDate() + "' ");
 	BlmPrice.LoadLivePrices(BLM_LOAD_SECURITIES);
 	
-	if(bOverRite)
-		BlmPrice.GetOraLoader().ExecuteSql("DELETE SEMAM.NW_OPT_PRICES WHERE MM_DATE = '" + BlmPrice.GetDate() + "' ");
-	BlmPrice.LoadLivePrices(BLM_LOAD_OPTION);
-	
-	if(bOverRite)
-		BlmPrice.GetOraLoader().ExecuteSql("DELETE SEMAM.NW_DEAL_NAV WHERE INDATE = '" + BlmPrice.GetDate() + "' ");
-	BlmPrice.LoadLivePrices(BLM_LOAD_IRS);
 	EndWaitCursor();
 }
 
@@ -1987,3 +1983,82 @@ void CDailyInput::OnUpdateDailyQuickdividend(CCmdUI *pCmdUI)
 {
 	pCmdUI->Enable(BLOOMBERG_AVAILABLE);
 }
+
+
+void CDailyInput::OnDailyQuickoptprice()
+{
+	CBlmPrice BlmPrice;
+	BOOL bOverRite = FALSE;
+	int Count;
+
+	Count = BlmPrice.GetOraLoader().GetCount("SELECT COUNT(*) FROM SEMAM.NW_EXRATES WHERE INDATE = '" + BlmPrice.GetDate() + "' ");
+
+	if(Count <= 0)
+	{
+		MessageBox("Please load Exrates first!", "Quick Price", MB_OK);
+		return;
+	}
+
+	Count = BlmPrice.GetOraLoader().GetCount("SELECT COUNT(*) FROM SEMAM.NW_OPT_PRICES WHERE MM_DATE = '" + BlmPrice.GetDate() + "' ");
+	if(Count > 0)
+	{
+		if(MessageBox("Option Prices have been loaded. Do you want to over write them ?", "Quick Option Price", MB_YESNO) == IDYES)
+			bOverRite = TRUE;
+		else
+			return;
+	}
+
+	BeginWaitCursor();
+
+	if(bOverRite)
+		BlmPrice.GetOraLoader().ExecuteSql("DELETE SEMAM.NW_OPT_PRICES WHERE MM_DATE = '" + BlmPrice.GetDate() + "' ");
+	BlmPrice.LoadLivePrices(BLM_LOAD_OPTION);
+	
+	EndWaitCursor();
+}
+
+
+void CDailyInput::OnDailyQuickswapprice()
+{
+	CBlmPrice BlmPrice;
+	BOOL bOverRite = FALSE;
+	int Count;
+
+	Count = BlmPrice.GetOraLoader().GetCount("SELECT COUNT(*) FROM SEMAM.NW_EXRATES WHERE INDATE = '" + BlmPrice.GetDate() + "' ");
+
+	if(Count <= 0)
+	{
+		MessageBox("Please load Exrates first!", "Quick Price", MB_OK);
+		return;
+	}
+
+	Count = BlmPrice.GetOraLoader().GetCount("SELECT COUNT(*) FROM SEMAM.NW_DEAL_NAV WHERE INDATE = '" + BlmPrice.GetDate() + "' ");
+	if(Count > 0)
+	{
+		if(MessageBox("IRS Prices have been loaded. Do you want to over write them ?", "Quick Swap Price", MB_YESNO) == IDYES)
+			bOverRite = TRUE;
+		else
+			return;
+	}
+
+	BeginWaitCursor();
+
+	if(bOverRite)
+		BlmPrice.GetOraLoader().ExecuteSql("DELETE SEMAM.NW_DEAL_NAV WHERE INDATE = '" + BlmPrice.GetDate() + "' ");
+	BlmPrice.LoadLivePrices(BLM_LOAD_IRS);
+	
+	EndWaitCursor();
+}
+
+void CDailyInput::OnUpdateDailyQuickoptprice(CCmdUI *pCmdUI)
+{
+	pCmdUI->Enable(BLOOMBERG_AVAILABLE);
+}
+
+void CDailyInput::OnUpdateDailyQuickswapprice(CCmdUI *pCmdUI)
+{
+	pCmdUI->Enable(BLOOMBERG_AVAILABLE);
+}
+
+
+
