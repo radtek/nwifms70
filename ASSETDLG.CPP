@@ -21,39 +21,11 @@ CAssetDlg::CAssetDlg(CWnd* pParent /*=NULL*/)
 	: CDialog(CAssetDlg::IDD, pParent)
 {
 	//{{AFX_DATA_INIT(CAssetDlg)
-	m_ClassCombo = NULL;
-	m_CountryCombo = NULL;
-	m_CurrencyCombo = NULL;
-	m_IndustryCombo = NULL;
-	m_BucketCombo = NULL;
-	m_CategoryCombo = NULL;
-	m_TransTypeCombo = NULL;
-	m_DirCombo = NULL;
 	m_bWithNew = TRUE;
 	m_bCash = FALSE;
 	m_nActionID = FINDACTION_OK;
 	m_bTicket = FALSE;
 	//}}AFX_DATA_INIT
-}
-
-CAssetDlg::~CAssetDlg()
-{
-	if(m_ClassCombo)
-		delete m_ClassCombo;
-	if(m_CountryCombo)
-		delete m_CountryCombo;
-	if(m_CurrencyCombo)
-		delete m_CurrencyCombo;
-	if(m_IndustryCombo)
-		delete m_IndustryCombo;
-	if(m_BucketCombo)
-		delete m_BucketCombo;
-	if(m_CategoryCombo)
-		delete m_CategoryCombo;
-	if(m_TransTypeCombo)
-		delete m_TransTypeCombo;
-	if(m_DirCombo)
-		delete m_DirCombo;
 }
 
 void CAssetDlg::DoDataExchange(CDataExchange* pDX)
@@ -107,7 +79,7 @@ void CAssetDlg::EnableButtons(BOOL bEnable)
 		GetDlgItem(IDOK)->EnableWindow(bEnable);
 		if(m_bTicket)
 		{
-			m_TransTypeCombo->GetSelString(TransType);
+			TransType = m_TransTypeCombo.GetData();
 			if(TransType == CDS || TransType == SECURITIES || TransType == CALL || TransType == PUT)
 			{
 				GetDlgItem(IDC_ASSETDLG_ADDPOS_BUTTON)->EnableWindow(bEnable);
@@ -131,13 +103,13 @@ void CAssetDlg::EnableCtrls(BOOL bEnable)
 	m_SedolEdit.EnableWindow(bEnable);
 	m_StrikeEdit.EnableWindow(bEnable);
 
-	m_CountryCombo->EnableWindow(bEnable);
-	m_CurrencyCombo->EnableWindow(bEnable);
-	m_ClassCombo->EnableWindow(bEnable);
-	m_IndustryCombo->EnableWindow(bEnable);
-	m_CategoryCombo->EnableWindow(bEnable);
-	m_BucketCombo->EnableWindow(bEnable);
-	m_TransTypeCombo->EnableWindow(bEnable);
+	m_CountryCombo.EnableWindow(bEnable);
+	m_CurrencyCombo.EnableWindow(bEnable);
+	m_ClassCombo.EnableWindow(bEnable);
+	m_IndustryCombo.EnableWindow(bEnable);
+	m_CategoryCombo.EnableWindow(bEnable);
+	m_BucketCombo.EnableWindow(bEnable);
+	m_TransTypeCombo.EnableWindow(bEnable);
 
 	m_MaturityEdit.EnableWindow(bEnable);
 	m_SourceEdit.EnableWindow(bEnable);
@@ -153,47 +125,45 @@ void CAssetDlg::EnableFind(CEdit& Edit, BOOL bAsset)
 	}
 }
 
-void CAssetDlg::EnableFind(COptComboBox* Combo)
+void CAssetDlg::EnableFind(COptComboBox &Combo)
 {
 	if(m_AssetEdit.GetWindowTextLength() > 0)
 		return;
 
 	SetControls(FALSE);
-	GetDlgItem(IDC_ASSETDLG_FIND_BUTTON)->EnableWindow(Combo->GetCurSel() >= 0 ? TRUE : FALSE);
+	GetDlgItem(IDC_ASSETDLG_FIND_BUTTON)->EnableWindow(Combo.GetCurSel() >= 0 ? TRUE : FALSE);
 }
 
 void CAssetDlg::SetControls(BOOL bAsset)
 {
-	CString Text;
 	LPCTSTR p = EMPTYSTRING;
 	
-	m_AssetEdit.GetWindowText(Text);
-	if(Text == NEWASSET)
+	if(m_AssetEdit.GetData() == NEWASSET)
 		return;
 
 	if(bAsset)
 	{
-		m_CommonEdit.SetWindowText(p);
-		m_CusipEdit.SetWindowText(p);
-		m_IsinEdit.SetWindowText(p);
-		m_SedolEdit.SetWindowText(p);
-		m_ClassCombo->SetCurSel(-1);
-		m_CountryCombo->SetCurSel(-1);
-		m_CurrencyCombo->SetCurSel(-1);
-		m_IndustryCombo->SetCurSel(-1);
-		m_BucketCombo->SetCurSel(-1);
-		m_CategoryCombo->SetCurSel(-1);
-		m_TransTypeCombo->SetCurSel(-1);
-		m_DirCombo->SetCurSel(-1);
+		m_CommonEdit.SetData(p);
+		m_CusipEdit.SetData(p);
+		m_IsinEdit.SetData(p);
+		m_SedolEdit.SetData(p);
+		m_ClassCombo.SetCurSel(-1);
+		m_CountryCombo.SetCurSel(-1);
+		m_CurrencyCombo.SetCurSel(-1);
+		m_IndustryCombo.SetCurSel(-1);
+		m_BucketCombo.SetCurSel(-1);
+		m_CategoryCombo.SetCurSel(-1);
+		m_TransTypeCombo.SetCurSel(-1);
+		m_DirCombo.SetCurSel(-1);
 		m_MaturityEdit.SetData(p);
-		m_SourceEdit.SetWindowText(p);
-		m_PositionEdit.SetWindowText(p);
-		m_StrikeEdit.SetWindowText(p);
+		m_SourceEdit.SetData(p);
+		m_PositionEdit.SetData(p);
+		m_StrikeEdit.SetData(p);
 	}
 	else
 	{
-		m_AssetEdit.SetWindowText(p);
-		m_AssetDescEdit.SetWindowText(p);		
+		m_AssetEdit.SetData(p);
+		m_AssetDescEdit.SetData(p);		
 	}
 }
 
@@ -218,14 +188,14 @@ BOOL CAssetDlg::OnInitDialog()
 	m_HoldingSS.SetVisibleCols(7);
 	m_HoldingSS.SetVisibleRows(4);
 
-	m_ClassCombo = (COptComboBox*) new COptComboBox(this, IDC_ASSETDLG_CLASS_COMBO, TRUE);
-	m_CountryCombo = (COptComboBox*) new COptComboBox(this, IDC_ASSETDLG_COUNTRY_COMBO, TRUE);
-	m_CurrencyCombo = (COptComboBox*) new COptComboBox(this, IDC_ASSETDLG_CURRENCY_COMBO, TRUE);
-	m_IndustryCombo = (COptComboBox*) new COptComboBox(this, IDC_ASSETDLG_INDUSTRY_COMBO, TRUE);
-	m_BucketCombo = (COptComboBox*) new COptComboBox(this, IDC_ASSETDLG_BUCKET_COMBO, TRUE);
-	m_CategoryCombo = (COptComboBox*) new COptComboBox(this, IDC_ASSETDLG_CATEGORY_COMBO, TRUE);
-	m_TransTypeCombo = (COptComboBox*) new COptComboBox(this, IDC_ASSETDLG_TRANSTYPE_COMBO, TRUE);
-	m_DirCombo = (COptComboBox*) new COptComboBox(this, IDC_ASSETDLG_DIR_COMBO, TRUE);
+	m_ClassCombo.Setup(this, IDC_ASSETDLG_CLASS_COMBO, TRUE);
+	m_CountryCombo.Setup(this, IDC_ASSETDLG_COUNTRY_COMBO, TRUE);
+	m_CurrencyCombo.Setup(this, IDC_ASSETDLG_CURRENCY_COMBO, TRUE);
+	m_IndustryCombo.Setup(this, IDC_ASSETDLG_INDUSTRY_COMBO, TRUE);
+	m_BucketCombo.Setup(this, IDC_ASSETDLG_BUCKET_COMBO, TRUE);
+	m_CategoryCombo.Setup(this, IDC_ASSETDLG_CATEGORY_COMBO, TRUE);
+	m_TransTypeCombo.Setup(this, IDC_ASSETDLG_TRANSTYPE_COMBO, TRUE);
+	m_DirCombo.Setup(this, IDC_ASSETDLG_DIR_COMBO, TRUE);
 
 	m_AssetEdit.Setup(this, IDC_ASSETDLG_ASSET_EDIT);
 	m_AssetEdit.LimitText(10);
@@ -259,15 +229,15 @@ BOOL CAssetDlg::OnInitDialog()
 	m_FindData.Add(&m_AssetEdit, &m_FindData.GetRec().GetAsset());
 	m_FindData.Add(&m_AssetDescEdit, &m_FindData.GetRec().GetDesc());
 	m_FindData.Add(&m_AssetDesc2Edit, &m_FindData.GetRec().GetDesc2());
-	m_FindData.Add(m_CountryCombo, &m_FindData.GetRec().GetCountry());
-	m_FindData.Add(m_CurrencyCombo, &m_FindData.GetRec().GetCurrency());
-	m_FindData.Add(m_TransTypeCombo, &m_FindData.GetTransType());
+	m_FindData.Add(&m_CountryCombo, &m_FindData.GetRec().GetCountry());
+	m_FindData.Add(&m_CurrencyCombo, &m_FindData.GetRec().GetCurrency());
+	m_FindData.Add(&m_TransTypeCombo, &m_FindData.GetTransType());
 	m_FindData.Add(&m_StrikeEdit, &m_FindData.GetStrike());
 	m_FindData.Add(&m_MaturityEdit, &m_FindData.GetRec().GetMaturity());
-	m_FindData.Add(m_CategoryCombo, &m_FindData.GetRec().GetCategory());
-	m_FindData.Add(m_ClassCombo, &m_FindData.GetRec().GetClass());
-	m_FindData.Add(m_BucketCombo, &m_FindData.GetRec().GetBucket());
-	m_FindData.Add(m_IndustryCombo, &m_FindData.GetRec().GetIndustry());
+	m_FindData.Add(&m_CategoryCombo, &m_FindData.GetRec().GetCategory());
+	m_FindData.Add(&m_ClassCombo, &m_FindData.GetRec().GetClass());
+	m_FindData.Add(&m_BucketCombo, &m_FindData.GetRec().GetBucket());
+	m_FindData.Add(&m_IndustryCombo, &m_FindData.GetRec().GetIndustry());
 	m_FindData.Add(&m_CommonEdit, &m_FindData.GetRec().GetCommon());
 	m_FindData.Add(&m_CusipEdit, &m_FindData.GetRec().GetCusip());
 	m_FindData.Add(&m_IsinEdit, &m_FindData.GetRec().GetIsin());
@@ -278,7 +248,7 @@ BOOL CAssetDlg::OnInitDialog()
 	m_FindData.Add(&m_TicketEdit, &m_FindData.GetTicket());
 	m_FindData.Add(&m_Underline);
 	m_FindData.Add(&m_UnderlineID);
-	m_FindData.Add(m_DirCombo, &m_FindData.GetDir());
+	m_FindData.Add(&m_DirCombo, &m_FindData.GetDir());
 	m_FindData.Add(&m_PositionEdit, &m_FindData.GetNominal());
 	m_FindData.Add(&m_Future);
 	m_FindData.Add(&m_EuropeBond);
@@ -289,34 +259,35 @@ BOOL CAssetDlg::OnInitDialog()
 	m_FindData.Add(&m_FindData.GetAssignCP());
 	m_FindData.Add(&m_FindData.GetTrader());
 	m_FindData.Add(&m_OptListed);
+	m_FindData.Add(&m_Rev);
 
 	GetData().LoadAssetData();
-	QData.CopyDBRecArrayToComboBox(GetData().GetTransTypeArr(), *m_TransTypeCombo, 0, FALSE);
-	QData.CopyDBRecArrayToComboBox(GetData().GetTransDirArr(), *m_DirCombo, 0, FALSE);
-	QData.CopyDBRecArrayToComboBox(GetData().GetAssetTypeArr(), *m_ClassCombo, 0, FALSE);
-	QData.CopyDBRecArrayToComboBox(GetData().GetCountryArr(), *m_CountryCombo, 0, FALSE);
-	QData.CopyDBRecArrayToComboBox(GetData().GetCurrencyArr(), *m_CurrencyCombo, FALSE);
-	QData.CopyDBRecArrayToComboBox(GetData().GetIndustryArr(), *m_IndustryCombo, FALSE);
-	QData.CopyDBRecArrayToComboBox(GetData().GetBucketArr(), *m_BucketCombo, 1, FALSE);
-	QData.CopyDBRecArrayToComboBox(GetData().GetCategoryArr(), *m_CategoryCombo, 0, FALSE);
+	QData.CopyDBRecArrayToComboBox(GetData().GetTransTypeArr(), m_TransTypeCombo, 0, FALSE);
+	QData.CopyDBRecArrayToComboBox(GetData().GetTransDirArr(), m_DirCombo, 0, FALSE);
+	QData.CopyDBRecArrayToComboBox(GetData().GetAssetTypeArr(), m_ClassCombo, 0, FALSE);
+	QData.CopyDBRecArrayToComboBox(GetData().GetCountryArr(), m_CountryCombo, 0, FALSE);
+	QData.CopyDBRecArrayToComboBox(GetData().GetCurrencyArr(), m_CurrencyCombo, FALSE);
+	QData.CopyDBRecArrayToComboBox(GetData().GetIndustryArr(), m_IndustryCombo, FALSE);
+	QData.CopyDBRecArrayToComboBox(GetData().GetBucketArr(), m_BucketCombo, 1, FALSE);
+	QData.CopyDBRecArrayToComboBox(GetData().GetCategoryArr(), m_CategoryCombo, 0, FALSE);
 
 	if(m_FindData.GetRec().GetAsset().IsEmpty())
 		m_FindData.GetRec().SetAsset(NEWASSET);
 
 	if(m_FindData.GetRec().GetAsset() == NEWASSET)
 	{
-		m_AssetEdit.SetWindowText(EMPTYSTRING);
-		m_AssetDescEdit.SetWindowText(EMPTYSTRING);
+		m_AssetEdit.SetData(EMPTYSTRING);
+		m_AssetDescEdit.SetData(EMPTYSTRING);
 	}
 	else
 	{
-		m_AssetEdit.SetWindowText(m_FindData.GetRec().GetAsset());
-		m_AssetDescEdit.SetWindowText(m_FindData.GetRec().GetDesc());
+		m_AssetEdit.SetData(m_FindData.GetRec().GetAsset());
+		m_AssetDescEdit.SetData(m_FindData.GetRec().GetDesc());
 	}
  
 	m_FindData.LoadDBData(TRUE);
 	
-	m_ItemsEdit.SetWindowText(QData.WriteNumber(m_SS.GetSheetRows()));
+	m_ItemsEdit.SetData(QData.WriteNumber(m_SS.GetSheetRows()));
 
 	GetDlgItem(IDC_ASSETDLG_FIND_BUTTON)->EnableWindow(FALSE);
 	
@@ -336,7 +307,7 @@ void CAssetDlg::OnFindButton()
 	m_FindData.UpdateData();
 	m_FindData.LoadDBData();
 	Text.Format("%d", m_SS.GetSheetRows());
-	m_ItemsEdit.SetWindowText(Text);
+	m_ItemsEdit.SetData(Text);
 	
 	if(m_SS.GetSheetRows() <= 0)
 	{
@@ -396,7 +367,7 @@ void CAssetDlg::OnDblClickItemList(long Col, long Row)
 		
 		m_FindData.SetCurrentRow(Row);
 		
-		m_AssetEdit.GetWindowText(Asset);
+		Asset = m_AssetEdit.GetData();
 		m_FindData.LoadHoldings(Asset, m_HoldingSS);
 	}
 	else

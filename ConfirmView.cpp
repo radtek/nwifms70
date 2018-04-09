@@ -89,6 +89,7 @@ BEGIN_MESSAGE_MAP(CConfirmView, CFormView)
 	ON_UPDATE_COMMAND_UI(ID_CONFIRM_OTHERFEE, &CConfirmView::OnUpdateConfirmOtherfee)
 	ON_COMMAND(ID_CONFIRM_OTHERFEE, &CConfirmView::OnConfirmOtherfee)
 	ON_EN_SETFOCUS(IDC_CONFIRM_BINARY_EDIT, &CConfirmView::OnEnSetfocusConfirmBinaryEdit)
+	ON_EN_CHANGE(IDC_CONFIRM_PRICE_EDIT, &CConfirmView::OnEnChangeConfirmPriceEdit)
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -377,6 +378,8 @@ void CConfirmView::InitControls()
 	m_ValueDate.Setup(this, IDC_CONFIRM_VALUEDATE_EDIT);
 	m_Amount.Setup(this, IDC_CONFIRM_NOMINAL_EDIT);
 	m_Fxrate.Setup(this, IDC_CONFIRM_FXRATE_EDIT);
+	m_IMFxrate.Setup(this, IDC_CONFIRM_IMFX_EDIT);
+	m_IMFxrate.SetReadOnly();
 	m_BrFee.Setup(this, IDC_CONFIRM_COMMISSION_EDIT, NULL, 2);
 	m_SoftDollar.Setup(this, IDC_CONFIRM_SOFTDOLLAR_EDIT, NULL, 2);
 	m_OtherFee.Setup(this, IDC_CONFIRM_OTHERFEE_EDIT, NULL, 2);
@@ -530,7 +533,8 @@ void CConfirmView::InitControls()
 	m_Data.Add(&m_Data.GetTicket().GetVersion());
 	m_Data.Add(&m_AssetDesc, &m_Data.GetTicket().GetAssetDesc());
 	m_Data.Add(&m_AssetCurr, &m_Data.GetTicket().GetAssetCurr());
-	m_Data.Add(&m_Data.GetTicket().GetAssetClass()); 
+	m_Data.Add(&m_Data.GetTicket().GetAssetClass());
+	m_Data.Add(&m_Rev);
 
 	m_Data.GetSRowCtrl().Add(&m_InvAsset, &m_Data.GetInv().GetAsset());
 	m_Data.GetSRowCtrl().Add(&m_InvTrDesc, &m_Data.GetInv().GetTrDesc());
@@ -860,6 +864,7 @@ void CConfirmView::OnDblClickConfirmTicketList(long Col, long Row)
 		OnConfirmRefresh();
 	}
 
+	OnEnChangeConfirmPriceEdit();
 	ChangeShortLabel();
 }
 
@@ -1027,10 +1032,11 @@ void CConfirmView::OnConfirmFindasset()
 	m_Asset.SetData(Dlg.m_FindData.GetRec().GetAsset());
 	m_AssetDesc.SetData(Dlg.m_FindData.GetRec().GetDesc());
 	m_AssetCurr.SetData(Dlg.m_FindData.GetRec().GetCurrency());
+	m_Rev = Dlg.m_Rev;
+	m_Data.GetTicket().GetAssetClass() = Dlg.m_FindData.GetRec().GetClass();
 	m_Trader.SetData(Dlg.m_FindData.GetTrader());
 	m_Custodian.SetData(Dlg.m_FindData.GetCustodian());
 
-	
 	TransType = m_TransType.GetData();
 	if(TransType == CALL || TransType == PUT || TransType == SPRSWCLL || TransType == SPRSWPUT)
 	{
@@ -1056,6 +1062,10 @@ void CConfirmView::OnConfirmFindasset()
 	m_ValueDate.SetData(GetData().GetOraLoader().GetValueDate(m_TradeDate.GetData(), TransType, m_Asset.GetData(), m_Listed.GetCheck()));	
 	
 	EnableCtrls();
+
+	if(!m_Price.GetData().IsEmpty())
+		OnEnChangeConfirmPriceEdit();
+
 	m_TransType.SetFocus();
 }
 
@@ -1410,4 +1420,11 @@ void CConfirmView::OnEnSetfocusConfirmBinaryEdit()
 
 	if(TransType == CALL || TransType == PUT)
 		m_nCurrID = IDC_CONFIRM_BINARY_EDIT;
+}
+
+void CConfirmView::OnEnChangeConfirmPriceEdit()
+{
+	CQData QData;
+
+	m_IMFxrate.SetData(QData.GetImpliedFxrate(m_Data.GetTicket().GetAssetClass(), m_Currency.GetData(), m_Rev, m_Price.GetData()));
 }

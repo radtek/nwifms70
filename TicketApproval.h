@@ -73,7 +73,7 @@ public:
 	CCntlEdit m_FloatRate;
 	CCntlEdit m_FloatBasis;
 	CCntlEdit m_FloatMaturity;
-	CCntlEdit m_Price;
+	CNumEdit m_Price;
 	CCntlEdit m_GiveupCP;
 	CCntlEdit m_Note;
 	CCntlEdit m_Note2;
@@ -100,11 +100,14 @@ public:
 	CCntlEdit m_Ratio;
 	CCntlEdit m_Binary;
 	CCntlEdit m_ETrade;
+	CNumEdit m_IMFxrate;
 
 	CNumEdit m_PrevVAR;
 	CNumEdit m_CurrVAR;
 	CNumEdit m_VARLimit;
 	CString m_CurrAsset;
+
+	CString m_Rev;
 	//}}AFX_DATA
 
 // Attributes
@@ -135,6 +138,7 @@ protected:
 public:
 	void InitControls();
 	void LoadSNote();
+	void ImpliedFxrate();
 	BOOL UpdateData(BOOL bSaveAndValid = TRUE);
 
 protected:

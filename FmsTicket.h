@@ -81,6 +81,7 @@ public:
 	CNumEdit m_SoftDollar;
 	CNumEdit m_OtherFee;
 	CNumEdit m_VAR;
+	CNumEdit m_IMFxrate;
 	CCntlEdit m_Note;
 	CCntlEdit m_Note2;
 	CCntlEdit m_Binary;
@@ -144,6 +145,7 @@ public:
 	UINT m_nCurrID;
 	int m_Mode;
 	CString m_Port;
+	CString m_Rev;
 	BOOL m_bInCurrMonth;
 	BOOL m_bSameDate;
 	//}}AFX_DATA
@@ -241,6 +243,7 @@ public:
 	afx_msg void OnEnSetfocusTicketBinaryEdit();
 	afx_msg void OnTransCc();
 	afx_msg void OnUpdateTransCc(CCmdUI *pCmdUI);
+	afx_msg void OnEnChangeTicketPriceEdit();
 };
 
 #ifndef _DEBUG  // debug version in WFMSView.cpp

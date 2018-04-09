@@ -397,6 +397,8 @@ void CTicketProcess::InitControls()
 
 	m_Amount.Setup(this, IDC_PROCESS_AMOUNT_EDIT);
 	m_FxRate.Setup(this, IDC_PROCESS_FXRATE_EDIT);
+	m_IMFxrate.Setup(this, IDC_PROCESS_IMFX_EDIT);
+	m_IMFxrate.SetReadOnly();
 
 	m_TradeDate.Setup(this, IDC_PROCESS_TRADEDATE_EDIT);
 	m_ExecTime.Setup(this, IDC_PROCESS_EXECTIME_EDIT);
@@ -558,6 +560,7 @@ void CTicketProcess::InitControls()
 	m_Data.Add(&pTicket->GetOriNominal());
 	m_Data.Add(&pTicket->GetCPTradeID());
 	m_Data.Add(&m_sImgID);
+	m_Data.Add(&m_Rev);
 
 	CRawInvRec *pInv;
 	pInv = &m_Data.GetRawInv();
@@ -953,6 +956,8 @@ void CTicketProcess::OnDblClickProcessTicketList(long Col, long Row)
 		m_sBooker.Empty();
 	}
 
+	OnEnChangeProcessPriceEdit();
+
 	ChangeShortLabel();
 
 	UpdateAsset();
@@ -1079,8 +1084,11 @@ void CTicketProcess::OnProcessFindAsset()
 		m_Asset.SetData(Dlg.m_FindData.GetRec().GetAsset());
 		m_AssetDesc.SetData(Dlg.m_FindData.GetRec().GetDesc());
 		m_AssetCurr.SetData(Dlg.m_FindData.GetRec().GetCurrency());
+		m_Data.GetRawTicket().GetAssetClass() = Dlg.m_FindData.GetRec().GetClass();
+		m_Rev = Dlg.m_Rev;
 		m_Trader.SetData(Dlg.m_FindData.GetTrader());
 		m_Custodian = Dlg.m_FindData.GetCustodian();
+
 
 		m_Data.GetRawTicket().SetAssetClass(Dlg.m_FindData.GetRec().GetClass());
 		m_Future = Dlg.m_Future;
@@ -1224,6 +1232,10 @@ void CTicketProcess::OnProcessFindAsset()
 		m_Asset.SetData("");
 
 	EnableCtrls();
+
+	if(!m_Price.GetData().IsEmpty())
+		OnEnChangeProcessPriceEdit();
+
 	m_TransType.SetFocus();
 }
 
@@ -1703,7 +1715,7 @@ void CTicketProcess::OnCbnSelchangeProcessAaCombo()
 		return;
 	}
 
-	OraLoader.ExecuteSql("DELETE SEMAM.NW_RAW_TICKET_DETAIL WHERE TICKET_NUM = " + sTicket);
+	OraLoader.ExecuteSql("DELETE FROM SEMAM.NW_RAW_TICKET_DETAIL WHERE TICKET_NUM = " + sTicket);
 
 	OraLoader.ExecuteSql("INSERT INTO SEMAM.NW_RAW_TICKET_DETAIL (TICKET_NUM, PORTFOLIO, NOM_AMOUNT) "
 						"SELECT " + sTicket + ", PORTFOLIO, ROUND(" + sAmount + "*ALLOC/100, 0) "
@@ -1745,6 +1757,10 @@ void CTicketProcess::OnEnChangeProcessPriceEdit()
 {
 	if(m_Price.GetModify())
 		ProcessVerifyRisk();
+
+	CQData QData;
+
+	m_IMFxrate.SetData(QData.GetImpliedFxrate(m_Data.GetRawTicket().GetAssetClass(), m_Currency.GetData(), m_Rev, m_Price.GetData()));
 }
 
 void CTicketProcess::OnEnKillfocusProcessAssetEdit()

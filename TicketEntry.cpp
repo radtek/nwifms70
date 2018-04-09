@@ -499,6 +499,8 @@ void CTicketEntry::InitControls()
 	m_OptID.Setup(this, IDC_ENTRY_BLMID_EDIT);
 	m_OptID.LimitText(25);
 	m_FxRate.Setup(this, IDC_ENTRY_FXRATE_EDIT);
+	m_IMFxrate.Setup(this, IDC_ENTRY_IMFX_EDIT);
+	m_IMFxrate.SetReadOnly();
 	m_Rate.Setup(this, IDC_ENTRY_REPORATE_EDIT);
 	m_Rate.LimitText(15);
 	m_FloatRate.Setup(this, IDC_ENTRY_FLOAT_RATE_EDIT);
@@ -594,6 +596,7 @@ void CTicketEntry::InitControls()
 	m_Data.Add(&pTicket->GetAssetSource());
 	m_Data.Add(&pTicket->GetAssetCoupon());
 	m_Data.Add(&pTicket->GetAssetMaturity());
+	m_Data.Add(&m_Rev);
 	m_Data.Add(&pTicket->GetOrderID());
 
 	m_AllocAmount.Setup(this, IDC_ENTRY_ALLOC_NOMAMOUNT_EDIT);
@@ -1275,6 +1278,7 @@ void CTicketEntry::OnEntryFindAsset()
 		m_Asset.SetData(pTicket->GetAsset());
 		m_AssetDesc.SetData(pTicket->GetAssetDesc());
 		m_AssetCurrency.SetData(pTicket->GetAssetCurr());
+		m_Rev = Dlg.m_Rev;
 		m_Trader.SetData(Dlg.m_FindData.GetTrader());
 		m_Data.GetCustodian() = Dlg.m_FindData.GetCustodian();
 		if(!Dlg.m_FindData.GetTransType().IsEmpty())
@@ -1412,12 +1416,16 @@ void CTicketEntry::OnEntryFindAsset()
 
 	if(TransType == FOREX && Text == "NEW ASSET")
 	{
-		m_Asset.SetData("");
-		m_AssetDesc.SetData("");
+		m_Asset.SetData(EMPTYSTRING);
+		m_AssetDesc.SetData(EMPTYSTRING);
 		m_AssetCurrency.SetData(NULL);
 	}
 
 	EnableCtrls();
+
+	if(!m_Price.GetData().IsEmpty())
+		OnEnChangeEntryPriceEdit();
+
 	UpdateRatio();
 	m_Note.SetFocus();
 }
@@ -1450,6 +1458,8 @@ void CTicketEntry::OnDblClickTicketList(long Col, long Row)
 		m_dNomAmount = 0;
 		m_sAAMethod.Empty();
 	}
+
+	OnEnChangeEntryPriceEdit();
 }
 
 void CTicketEntry::OnEntryAdd() 
@@ -2220,6 +2230,10 @@ void CTicketEntry::OnEnChangeEntryPriceEdit()
 {
 	if(m_Price.GetModify())
 		ProcessVerifyRisk();
+
+	CQData QData;
+
+	m_IMFxrate.SetData(QData.GetImpliedFxrate(m_Data.GetRawTicket().GetAssetClass(), m_Currency.GetData(), m_Rev, m_Price.GetData()));
 }
 
 void CTicketEntry::OnEnKillfocusEntryPriceEdit()
@@ -2294,7 +2308,6 @@ void CTicketEntry::OnEntryTrenchcopyTicket()
 		OnEntryLoadTrade();
 	}
 }
-
 
 void CTicketEntry::OnUpdateEntryTrenchcopyTicket(CCmdUI *pCmdUI)
 {

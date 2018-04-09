@@ -120,6 +120,7 @@ public:
 	CNumEdit m_Margin;
 	CNumEdit m_MarginAmount;
 	CNumEdit m_DV01;
+	CNumEdit m_IMFxrate;
 
 	CCntlEdit m_InvAsset;
 	CCntlEdit m_InvAssignCT;
@@ -146,6 +147,7 @@ public:
 
 	UINT m_nCurrID;
 	int m_Mode;
+	CString m_Rev;
 	BOOL m_bInCurrMonth;
 	BOOL m_bSameDate;
 	//}}AFX_DATA
@@ -239,6 +241,7 @@ public:
 	afx_msg void OnUpdateConfirmOtherfee(CCmdUI *pCmdUI);
 	afx_msg void OnConfirmOtherfee();
 	afx_msg void OnEnSetfocusConfirmBinaryEdit();
+	afx_msg void OnEnChangeConfirmPriceEdit();
 };
 
 #ifndef _DEBUG  // debug version in ConfirmView.cpp

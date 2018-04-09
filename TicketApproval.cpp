@@ -138,6 +138,8 @@ void CTicketApproval::InitControls()
 	m_Ratio.Setup(this, IDC_APPROVAL_RATIO_EDIT);
 	m_VARStatus.Setup(this, IDC_APPROVAL_VAR_STATUS_EDIT);
 	m_Binary.Setup(this, IDC_APPROVAL_BINARY_EDIT);
+	m_IMFxrate.Setup(this, IDC_APPROVAL_IMFX_EDIT);
+	m_IMFxrate.SetReadOnly();
 
 	m_PrevVAR.Setup(this, IDC_APPROVAL_PREV_VAR_EDIT, NULL, 2);
 	m_CurrVAR.Setup(this, IDC_APPROVAL_CURR_VAR_EDIT, NULL, 2);
@@ -205,7 +207,16 @@ void CTicketApproval::InitControls()
 	m_Data.Add(&m_ETrade, &m_Data.GetTicket().GetETrade());
 	m_Data.Add(&m_Data.GetTicket().GetOrderID());
 	m_Data.Add(&m_Data.GetTicket().GetCPTradeID());
+	m_Data.Add(&m_Data.GetTicket().GetAssetClass());
+	m_Data.Add(&m_Rev);
 	m_Data.Add(&m_Ratio);
+}
+
+void CTicketApproval::ImpliedFxrate()
+{
+	CQData QData;
+
+	m_IMFxrate.SetData(QData.GetImpliedFxrate(m_Data.GetTicket().GetAssetClass(), m_Currency.GetData(), m_Rev, m_Price.GetData()));
 }
 
 void CTicketApproval::LoadSNote()
@@ -357,6 +368,8 @@ void CTicketApproval::OnDblClickApprovalTicketList(long Col, long Row)
 	GetDlgItem(IDC_APPROVAL_SIGN_BUTTON)->EnableWindow(m_SS.GetSheetCurRow() > 0);
 	if(m_SS.GetSheetCurRow() > 0 && !(GetData().GetBlotter() || GetData().GetSign()))
 		LoadSNote();
+
+	ImpliedFxrate();
 }
 
 void CTicketApproval::OnApprovalLoad() 

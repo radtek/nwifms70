@@ -41,7 +41,7 @@ class CAssetDlg : public CDialog
 // Construction
 public:
 	CAssetDlg(CWnd* pParent = NULL);        // standard constructor
-	~CAssetDlg();
+	~CAssetDlg() {}
 
 // Dialog Data
 	//{{AFX_DATA(CAssetDlg)
@@ -67,14 +67,14 @@ public:
 	CNumEdit m_ParEdit;
 	CNumEdit m_StrikeEdit;
 	CMaskIDEdit m_TicketEdit;
-	COptComboBox* m_ClassCombo;
-	COptComboBox* m_CountryCombo;
-	COptComboBox* m_CurrencyCombo;
-	COptComboBox* m_IndustryCombo;
-	COptComboBox* m_BucketCombo;
-	COptComboBox* m_CategoryCombo;
-	COptComboBox* m_TransTypeCombo;
-	COptComboBox* m_DirCombo;
+	COptComboBox m_ClassCombo;
+	COptComboBox m_CountryCombo;
+	COptComboBox m_CurrencyCombo;
+	COptComboBox m_IndustryCombo;
+	COptComboBox m_BucketCombo;
+	COptComboBox m_CategoryCombo;
+	COptComboBox m_TransTypeCombo;
+	COptComboBox m_DirCombo;
 
 	BOOL m_bCash;
 	BOOL m_bTicket;
@@ -82,6 +82,7 @@ public:
 	CString m_Future;
 	CString m_EuropeBond;
 	CString m_OptListed;
+	CString m_Rev;
 	BOOL m_bWithNew;
 		// NOTE: the ClassWizard will add data members here
 	//}}AFX_DATA
@@ -93,7 +94,7 @@ protected:
 	void EnableButtons(BOOL bEnable = TRUE);
 	void EnableCtrls(BOOL bEnable = TRUE);
 	void EnableFind(CEdit& Edit, BOOL bAsset = FALSE);
-	void EnableFind(COptComboBox* Combo);
+	void EnableFind(COptComboBox &Combo);
 	void SetControls(BOOL bEnableDesc);
 	CDocData &GetData() { return *m_pData; }
 

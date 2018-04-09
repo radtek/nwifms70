@@ -3,7 +3,6 @@
 // Used by NWIFMS70.rc
 //
 #define IDC_ASSETDLG_ADDPOS_BUTTON      3
-#define IDCANCEL2                       3
 #define IDD_ABOUTBOX                    100
 #define IDP_OLE_INIT_FAILED             100
 #define IDD_ASSET_FORM                  101
@@ -196,6 +195,8 @@
 #define IDD_FUTURE_FEES_DIALOG          461
 #define IDD_FXCAT_DIALOG                463
 #define IDD_OR_FEE_DIALOG               465
+#define IDD_DIALOG2                     467
+#define IDD_GIVEUPFEE_DIALOG            467
 #define IDC_ACCOUNT_COMBO               701
 #define IDC_ACCOUNT_GROUP_EDIT          702
 #define IDC_ACCOUNT_COLLATERAL_CHECK    703
@@ -540,6 +541,8 @@
 #define IDC_CONFIRM_USDACCOUNT_COMBO    1328
 #define IDC_CONFIRM_USDACCOUNT_STATIC   1329
 #define IDC_CONFIRM_FXFIXDATE_STATIC    1330
+#define IDC_CONFIRM_PRICE_EDIT2         1330
+#define IDC_CONFIRM_IMFX_EDIT           1330
 #define IDC_CONFIRM_FXDATE_EDIT         1331
 #define IDC_CONFIRM_TICKET_LIST         1332
 #define IDC_CONFIRM_TRS_CHECK           1333
@@ -562,6 +565,7 @@
 #define IDC_CONFIRM_DV01_EDIT           1350
 #define IDC_CONFIRM_CSPBSHORT_CHECK     1351
 #define IDC_CONFIRM_BINARY_CHECK        1352
+#define IDC_CONFIRM_PRICE_STATIC2       1352
 #define IDC_CONFIRM_FXDATE_STATIC       1353
 #define IDC_CONFIRM_BINARY_EDIT         1354
 #define IDC_CONFIRM_SOFTDOLLAR_EDIT     1355
@@ -762,6 +766,7 @@
 #define IDC_FXCAT_LIST                  1703
 #define IDC_COUNTRY_NEWCURRENCY_COMBO   1711
 #define IDC_COUNTRY_COUNTRY_EDIT        1712
+#define IDC_ACCOUNT_BIC_EDIT            1712
 #define IDC_COUNTRY_CODE_EDIT           1713
 #define IDC_COUNTRY_CURRENCY_EDIT       1714
 #define IDC_COUNTRY_CONVERSION_EDIT     1715
@@ -771,17 +776,17 @@
 #define IDC_COUNTRY_SOV_CHECK           1719
 #define IDC_COUNTRY_OLDCOUNTRY_COMBO    1720
 #define IDC_COUNTRY_SEC_CHECK           1721
-#define IDC_COUNTRY_LIST                1722
-#define IDC_COUNTRY_FIND_BUTTON         1723
-#define IDC_COUNTRY_CLEAR_BUTTON        1724
-#define IDC_COUNTRY_ADD_BUTTON          1725
-#define IDC_COUNTRY_UPDATE_BUTTON       1726
-#define IDC_COUNTRY_DELETE_BUTTON       1727
-#define IDC_COUNTRY_DM_CHECK            1728
-#define IDC_COUNTRY_PFGEOAREA_COMBO     1729
-#define IDC_COUNTRY_PROFILEGEOAREA_COMBO 1730
-#define IDC_COUNTRY_PRU_COMBO2          1731
-#define IDC_COUNTRY_CODE2_COMBO         1732
+#define IDC_COUNTRY_DM_CHECK            1722
+#define IDC_COUNTRY_PFGEOAREA_COMBO     1723
+#define IDC_COUNTRY_PROFILEGEOAREA_COMBO 1724
+#define IDC_COUNTRY_PRU_COMBO2          1725
+#define IDC_COUNTRY_CODE2_COMBO         1726
+#define IDC_COUNTRY_LIST                1727
+#define IDC_COUNTRY_FIND_BUTTON         1728
+#define IDC_COUNTRY_CLEAR_BUTTON        1729
+#define IDC_COUNTRY_ADD_BUTTON          1730
+#define IDC_COUNTRY_UPDATE_BUTTON       1731
+#define IDC_COUNTRY_DELETE_BUTTON       1732
 #define IDC_COUPON_CURRENCY_EDIT        1751
 #define IDC_COUPON_DATE_EDIT            1752
 #define IDC_COUPON_AMOUNT_EDIT          1753
@@ -843,6 +848,7 @@
 #define IDC_CP_DELETE_CT_BUTTON         1856
 #define IDC_CP_IMGCODE_EDIT             1857
 #define IDC_CP_CTFX_CHECK               1858
+#define IDC_CP_BANKBIC_EDIT             1859
 #define IDC_INPUT                       1871
 #define IDC_PROMPT                      1872
 #define IDC_ERROR_LIST                  1891
@@ -1253,6 +1259,7 @@
 #define IDC_TICKET_NOTE2_EDIT           2730
 #define IDC_TICKET_TRS_CHECK            2731
 #define IDC_TICKET_SOFT_CHECK           2732
+#define IDC_TICKET_IMFX_EDIT            2732
 #define IDC_TICKET_IPO_CHECK            2733
 #define IDC_TICKET_PFU_COMBO            2734
 #define IDC_TICKET_LISTED_CHECK         2735
@@ -1407,6 +1414,7 @@
 #define IDC_APPROVAL_GIVEUPCP_EDIT      2908
 #define IDC_APPROVAL_FUNDED_CHECK       2909
 #define IDC_APPROVAL_BINARY_CHECK       2910
+#define IDC_APPROVAL_IMFX_EDIT          2910
 #define IDC_APPROVAL_BINARY_EDIT        2911
 #define IDC_APPROVAL_AAMETHOD_EDIT      2912
 #define IDC_APPROVAL_AAFREASON_EDIT     2913
@@ -1483,6 +1491,7 @@
 #define IDC_ENTRY_SWMATURITY_EDIT       3008
 #define IDC_ENTRY_FLOAT_RATE_BASIS_COMBO 3009
 #define IDC_ENTRY_OPT_BACK_EDIT         3010
+#define IDC_ENTRY_IMFX_EDIT             3010
 #define IDC_ENTRY_EUROOPT_CHECK         3011
 #define IDC_ENTRY_WI_CHECK              3012
 #define IDC_ENTRY_TRADER_COMBO          3013
@@ -1622,6 +1631,7 @@
 #define IDC_PROCESS_CANCEL_TICKET_EDIT  3166
 #define IDC_PROCESS_CORRECT_TICKET_EDIT 3167
 #define IDC_PROCESS_NETPRICE_EDIT       3168
+#define IDC_PROCESS_IMFX_EDIT           3168
 #define IDC_PROCESS_SECFEE_CHECK        3169
 #define IDC_PROCESS_SETCURRENCY_EDIT    3170
 #define IDC_PROCESS_PRINCIPLE_EDIT      3171
@@ -1776,6 +1786,7 @@
 #define IDC_CURRENCY_ADD_BUTTON         3433
 #define IDC_CURRENCY_UPDATE_BUTTON      3434
 #define IDC_CURRENCY_DELETE_BUTTON      3435
+#define IDC_CURRENCY_CODE2_COMBO        3436
 #define IDC_ASSETID_PORTFOLIO_COMBO     3451
 #define IDC_ASSETID_ASSETCODE_EDIT      3452
 #define IDC_ASSETID_ASSET_EDIT          3453
@@ -2068,6 +2079,18 @@
 #define IDC_FFEE_ADD_BUTTON             4159
 #define IDC_FFEE_UPDATE_BUTTON          4160
 #define IDC_FFEE_DELETE_BUTTON          4161
+#define IDC_GIVEUP_PB_COMBO             4181
+#define IDC_GIVEUP_FROM_EDIT            4182
+#define IDC_GIVEUP_TO_EDIT              4183
+#define IDC_GIVEUP_CP_EDIT              4184
+#define IDC_GIVEUP_COST_EDIT            4185
+#define IDC_GIVEUP_COST2_EDIT           4186
+#define IDC_GIVEUP_LIST                 4187
+#define IDC_GIVEUP_FIND_BUTTON          4188
+#define IDC_GIVEUP_CLEAR_BUTTON         4189
+#define IDC_GIVEUP_ADD_BUTTON           4190
+#define IDC_GIVEUP_UPDATE_BUTTON        4191
+#define IDC_GIVEUP_DELETE_BUTTON        4192
 #define ID_UPDATEINFO                   32771
 #define ID_PASSWORD                     32772
 #define ID_TICKET_BLOTTER               32781
@@ -2334,9 +2357,9 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        467
+#define _APS_NEXT_RESOURCE_VALUE        469
 #define _APS_NEXT_COMMAND_VALUE         33103
-#define _APS_NEXT_CONTROL_VALUE         1704
+#define _APS_NEXT_CONTROL_VALUE         1713
 #define _APS_NEXT_SYMED_VALUE           310
 #endif
 #endif

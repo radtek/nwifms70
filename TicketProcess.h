@@ -107,6 +107,7 @@ public:
 	CNumEdit m_AssignCT;
 	CNumEdit m_Margin;
 	CNumEdit m_MarginAmount;
+	CNumEdit m_IMFxrate;
 
 	CNumEdit m_Cash;
 	CNumEdit m_PrePaid;
@@ -144,6 +145,7 @@ public:
 	CString m_Custodian;
 	CString m_sBooker;
 	CString m_sImgID;
+	CString m_Rev;
 	//}}AFX_DATA
 
 // Attributes

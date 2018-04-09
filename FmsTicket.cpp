@@ -95,6 +95,7 @@ BEGIN_MESSAGE_MAP(CFmsTicket, CFormView)
 	ON_EN_SETFOCUS(IDC_TICKET_BINARY_EDIT, &CFmsTicket::OnEnSetfocusTicketBinaryEdit)
 	ON_COMMAND(ID_TRANS_CC, &CFmsTicket::OnTransCc)
 	ON_UPDATE_COMMAND_UI(ID_TRANS_CC, &CFmsTicket::OnUpdateTransCc)
+	ON_EN_CHANGE(IDC_TICKET_PRICE_EDIT, &CFmsTicket::OnEnChangeTicketPriceEdit)
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -393,6 +394,8 @@ void CFmsTicket::InitControls()
 	m_ValueDate.Setup(this, IDC_TICKET_VALUEDATE_EDIT);
 	m_Amount.Setup(this, IDC_TICKET_NOMINAL_EDIT);
 	m_Fxrate.Setup(this, IDC_TICKET_FXRATE_EDIT);
+	m_IMFxrate.Setup(this, IDC_TICKET_IMFX_EDIT);
+	m_IMFxrate.SetReadOnly();
 	m_BrFee.Setup(this, IDC_TICKET_COMMISSION_EDIT, NULL, 2);
 	m_SoftDollar.Setup(this, IDC_TICKET_SOFTDOLLAR_EDIT, NULL, 2);
 	m_OtherFee.Setup(this, IDC_TICKET_OTHERFEE_EDIT, NULL, 2);
@@ -548,7 +551,8 @@ void CFmsTicket::InitControls()
 	m_Data.Add(&m_Data.GetTicket().GetVersion());
 	m_Data.Add(&m_AssetDesc, &m_Data.GetTicket().GetAssetDesc());
 	m_Data.Add(&m_AssetCurr, &m_Data.GetTicket().GetAssetCurr());
-	m_Data.Add(&m_Data.GetTicket().GetAssetClass()); 
+	m_Data.Add(&m_Data.GetTicket().GetAssetClass());
+	m_Data.Add(&m_Rev);
 
 	m_Data.GetSRowCtrl().Add(&m_InvAsset, &m_Data.GetInv().GetAsset());
 	m_Data.GetSRowCtrl().Add(&m_InvTrDesc, &m_Data.GetInv().GetTrDesc());
@@ -913,6 +917,7 @@ void CFmsTicket::OnDblClickTicketTicketList(long Col, long Row)
 		OnTransRefresh();
 	}
 
+	OnEnChangeTicketPriceEdit();
 	ChangeShortLabel();
 }
 
@@ -1069,6 +1074,8 @@ void CFmsTicket::OnTransFindasset()
 	m_Asset.SetData(Dlg.m_FindData.GetRec().GetAsset());
 	m_AssetDesc.SetData(Dlg.m_FindData.GetRec().GetDesc());
 	m_AssetCurr.SetData(Dlg.m_FindData.GetRec().GetCurrency());
+	m_Rev = Dlg.m_Rev;
+	m_Data.GetTicket().GetAssetClass() = Dlg.m_FindData.GetRec().GetClass();
 	m_Trader.SetData(Dlg.m_FindData.GetTrader());
 	m_Custodian.SetData(Dlg.m_FindData.GetCustodian());
 
@@ -1096,6 +1103,9 @@ void CFmsTicket::OnTransFindasset()
 	m_ValueDate.SetData(GetData().GetOraLoader().GetValueDate(m_TradeDate.GetData(), TransType, m_Asset.GetData(), m_Listed.GetCheck()));	
 
 	EnableCtrls();
+	if(!m_Price.GetData().IsEmpty())
+		OnEnChangeTicketPriceEdit();
+
 	m_TransType.SetFocus();
 }
 
@@ -1505,4 +1515,11 @@ void CFmsTicket::OnTransCc()
 void CFmsTicket::OnUpdateTransCc(CCmdUI *pCmdUI)
 {
 	pCmdUI->Enable(GetData().IsPowerUser());
+}
+
+void CFmsTicket::OnEnChangeTicketPriceEdit()
+{
+	CQData QData;
+
+	m_IMFxrate.SetData(QData.GetImpliedFxrate(m_Data.GetTicket().GetAssetClass(), m_Currency.GetData(), m_Rev, m_Price.GetData()));
 }

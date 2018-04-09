@@ -108,6 +108,8 @@ public:
 	CNumEdit m_PrevVAR;
 	CNumEdit m_CurrVAR;
 	CNumEdit m_VARLimit;
+	CNumEdit m_IMFxrate;
+
     COptComboBox m_TransType;
     COptComboBox m_CP;
     COptComboBox m_Currency;
@@ -138,6 +140,7 @@ public:
 	BOOL m_bWarned;
 	CString m_Future;
 	CString m_sAAMethod;
+	CString m_Rev;
 	CDBRecArray m_AllocArray;
 	//}}AFX_DATA
 
