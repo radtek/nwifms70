@@ -35,6 +35,9 @@
 #include "PrimeCPMargin.h"
 #include "CPFutureCommDlg.h"
 #include "FutureFeesDlg.h"
+#include "GiveupFeeDlg.h"
+#include "TraderDlg.h"
+#include "OPsDlg.h"
 #include "qdata.h"
 
 
@@ -533,7 +536,7 @@ BOOL CMaintenance::IsAssetOK(BOOL bAdd)
 			Text = "Invalid Reference Index";
 	}
 
-	if(m_ImagineCode.GetWindowTextLength() > 0)
+/*	if(m_ImagineCode.GetWindowTextLength() > 0)
 	{
 		Data = m_ImagineCode.GetData();
 		Class = QData.GetQueryText(m_Category.GetData());
@@ -544,7 +547,7 @@ BOOL CMaintenance::IsAssetOK(BOOL bAdd)
 						" AND ASS_INDUSTRY NOT IN ('EM CDS SWAPS', 'G7 CDS SWAPS') ");
 		if(OraLoader.GetCount() > 1)
 			Text = "Invalid Imagine Code";
-	}
+	} */
 
 	if(Text.IsEmpty())
 		return TRUE;
@@ -1046,31 +1049,34 @@ void CMaintenance::OnUpdateMaintFindItem(CCmdUI* pCmdUI)
 
 void CMaintenance::OnMaintOther()
 {
-	COtherMaint Dlg;
+	COtherMaint OtherDlg;
+	CString TableName;
 
-	Dlg.m_OraLoader = GetData().GetOraLoader();
-	if(Dlg.DoModal() != IDOK)
+	OtherDlg.m_OraLoader = GetData().GetOraLoader();
+	if(OtherDlg.DoModal() != IDOK)
 		return;
 
-	switch(atoi(Dlg.m_Fields))
+	TableName = OtherDlg.m_Table;
+
+	switch(atoi(OtherDlg.m_Fields))
 	{
 		case 1:
 			{
 				COneField One;
-				One.m_Data.Setup(GetData().GetOraLoader(), NULL, Dlg.m_TableSpace, Dlg.m_Table, Dlg.m_PreLoad, Dlg.m_Key);
+				One.m_Data.Setup(GetData().GetOraLoader(), NULL, OtherDlg.m_TableSpace, TableName, OtherDlg.m_PreLoad, OtherDlg.m_Key);
 				One.DoModal();
-				if(One.m_bModified && Dlg.m_PreLoad == 'Y')
+				if(One.m_bModified && OtherDlg.m_PreLoad == 'Y')
 				{
-					if(Dlg.m_Table == "NW_TRANS_TYPES")
+					if(TableName == "NW_TRANS_TYPES")
 						GetData().GetTransTypeArr().Modified();
 					else
-						if(Dlg.m_Table == "NW_RATE_BASES")
+						if(TableName == "NW_RATE_BASES")
 							GetData().GetRateBasisArr().Modified();
 						else
-							if(Dlg.m_Table == "NW_PMNT_TYPES")
+							if(TableName == "NW_PMNT_TYPES")
 								GetData().GetCashTypeArr().Modified();
 							else
-								if(Dlg.m_Table == "NW_METHODS")
+								if(TableName == "NW_METHODS")
 									GetData().GetMethodArr().Modified();
 				}
 					
@@ -1078,224 +1084,249 @@ void CMaintenance::OnMaintOther()
 			}
 			break;
 		case 2:
+			if(TableName == "NW_PAY_RESTRICTION")
 			{
-				if(Dlg.m_Table == "NW_PAY_RESTRICTION")
-				{
-					CPaymentRestriction Dlg;
-					Dlg.m_pDocData = &GetData();
-					Dlg.DoModal();
-				}
-				else
-				{
-					CTwoField Two;
+				CPaymentRestriction Dlg;
+				Dlg.m_pDocData = &GetData();
+				Dlg.DoModal();
+			}
+			else
+			{
+				CTwoField Two;
 
-					Two.m_Data.Setup(GetData().GetOraLoader(), NULL, Dlg.m_TableSpace, Dlg.m_Table, Dlg.m_PreLoad, Dlg.m_Key, Dlg.m_Key2);
-					Two.DoModal();
-					if(Two.m_bModified && Dlg.m_PreLoad == 'Y')
-					{
-						if(Dlg.m_Table == "NW_PFU")
-							GetData().GetPFUArr().Modified();
-					}
+				Two.m_Data.Setup(GetData().GetOraLoader(), NULL, OtherDlg.m_TableSpace, TableName, OtherDlg.m_PreLoad, OtherDlg.m_Key, OtherDlg.m_Key2);
+				Two.DoModal();
+				if(Two.m_bModified && OtherDlg.m_PreLoad == 'Y')
+				{
+					if(TableName == "NW_PFU")
+						GetData().GetPFUArr().Modified();
 				}
-				return;
 			}
 			break;
 		case 3:
+			if(TableName == "NW_AGENT")
 			{
-				if(Dlg.m_Table == "NW_AGENT")
+				CAgentDlg Dlg;
+				Dlg.m_OraLoader = GetData().GetOraLoader();
+				Dlg.DoModal();
+			}
+			else
+				if(TableName == "NW_OPT_TICK_MAPS")
 				{
-					CAgentDlg Dlg;
-					Dlg.m_OraLoader = GetData().GetOraLoader();
+					COptMap Dlg;
 					Dlg.DoModal();
 				}
 				else
-					if(Dlg.m_Table == "NW_OPT_TICK_MAPS")
-					{
-						COptMap Dlg;
+				{
+					CThreeField Three;
+					Three.m_Data.Setup(GetData().GetOraLoader(), NULL, OtherDlg.m_TableSpace, TableName, OtherDlg.m_PreLoad, OtherDlg.m_Key, OtherDlg.m_Key2);
+					Three.DoModal();
 
-						Dlg.DoModal();
-					}
-					else
+					if(Three.m_bModified && OtherDlg.m_PreLoad == 'Y')
 					{
-						CThreeField Three;
-						Three.m_Data.Setup(GetData().GetOraLoader(), NULL, Dlg.m_TableSpace, Dlg.m_Table, Dlg.m_PreLoad, Dlg.m_Key, Dlg.m_Key2);
-						Three.DoModal();
-
-						if(Three.m_bModified && Dlg.m_PreLoad == 'Y')
-						{
-							if(Dlg.m_Table == "NW_INDUSTRIES")
-								GetData().GetAssetTypeArr().Modified();
-							else
-								if(Dlg.m_Table == "NW_BUCKETS")
-									GetData().GetBucketArr().Modified();
-						}
+						if(TableName == "NW_INDUSTRIES")
+							GetData().GetAssetTypeArr().Modified();
+						else
+							if(TableName == "NW_BUCKETS")
+								GetData().GetBucketArr().Modified();
 					}
-				return;
-			}
+				}
 			break;
 		case 4:
+			if(TableName == "NW_BANKS")
 			{
-				if(Dlg.m_Table == "NW_BANKS")
+				CBankDlg BankDlg;
+				BankDlg.m_Data.Setup(GetData().GetOraLoader(), NULL, OtherDlg.m_TableSpace, TableName, OtherDlg.m_PreLoad, OtherDlg.m_Key, OtherDlg.m_Key2);
+				BankDlg.DoModal();					
+			}
+			else
+				if(TableName == "NW_CLEARING_FEE")
 				{
-					CBankDlg BankDlg;
-					BankDlg.m_Data.Setup(GetData().GetOraLoader(), NULL, Dlg.m_TableSpace, Dlg.m_Table, Dlg.m_PreLoad, Dlg.m_Key, Dlg.m_Key2);
-					BankDlg.DoModal();					
+					CClearingFeeDlg Dlg;
+					Dlg.m_Data.SetOraLoader(GetData().GetOraLoader());
+					Dlg.DoModal();
 				}
 				else
-					if(Dlg.m_Table == "NW_CLEARING_FEE")
+					if(TableName == "NW_CP_FUND_MARGIN")
 					{
-						CClearingFeeDlg Dlg;
-						Dlg.m_Data.SetOraLoader(GetData().GetOraLoader());
+						CPrimeCPMargin Dlg;
+						Dlg.m_OraLoader = GetData().GetOraLoader();
 						Dlg.DoModal();
 					}
 					else
-						if(Dlg.m_Table == "NW_CP_FUND_MARGIN")
+					{
+						CFourField Four;
+						Four.m_Data.Setup(GetData().GetOraLoader(), NULL, OtherDlg.m_TableSpace, TableName, OtherDlg.m_PreLoad, OtherDlg.m_Key, OtherDlg.m_Key2);
+						Four.DoModal();
+					
+						if(Four.m_bModified && OtherDlg.m_PreLoad == 'Y')
 						{
-							CPrimeCPMargin Dlg;
-							Dlg.m_OraLoader = GetData().GetOraLoader();
-							Dlg.DoModal();
+							if(TableName == "NW_INV_STRATEGIES")
+								GetData().GetCategoryArr().Modified();
 						}
-						else
-						{
-							CFourField Four;
-							Four.m_Data.Setup(GetData().GetOraLoader(), NULL, Dlg.m_TableSpace, Dlg.m_Table, Dlg.m_PreLoad, Dlg.m_Key, Dlg.m_Key2);
-							Four.DoModal();
-						
-							if(Four.m_bModified && Dlg.m_PreLoad == 'Y')
-							{
-								if(Dlg.m_Table == "NW_INV_STRATEGIES")
-									GetData().GetCategoryArr().Modified();
-							}
-						}
-						return;
-			}
+					}
 			break;
 		default:
-			break;
-	}
-
-	if(Dlg.m_Table == "NW_CASH_ACCOUNTS")
-	{
-		CAccountDlg Dlg;
-
-		Dlg.m_pData = &GetData();
-		Dlg.DoModal();
-	}
-	else
-		if(Dlg.m_Table == "NW_COUNTER_PARTY")
-		{
-			CCPDialog Dlg;
-			Dlg.m_pData = &GetData();
-			Dlg.DoModal();
-		}
-		else
-			if(Dlg.m_Table == "NW_INVESTORS")
+			if(TableName == "NW_CASH_ACCOUNTS")
 			{
-				CInvestorDialog Dlg;
+				CAccountDlg Dlg;
+
 				Dlg.m_pData = &GetData();
 				Dlg.DoModal();
 			}
 			else
-				if(Dlg.m_Table == "NW_PORTFOLIOS")
+				if(TableName == "NW_COUNTER_PARTY")
 				{
-					CPortfolio Dlg;
+					CCPDialog Dlg;
+					
 					Dlg.m_pData = &GetData();
 					Dlg.DoModal();
 				}
 				else
-					if(Dlg.m_Table == "NW_PORTFOLIO_INFO")
+					if(TableName == "NW_INVESTORS")
 					{
-						CPortfolioInfo Dlg;
-						Dlg.m_OraLoader.Copy(GetData().GetOraLoader());
+						CInvestorDialog Dlg;
+						
+						Dlg.m_pData = &GetData();
 						Dlg.DoModal();
 					}
 					else
-						if(Dlg.m_Table == "NW_PORTFOLIO_ACCOUNTS")
+						if(TableName == "NW_PORTFOLIOS")
 						{
-							CPortfolioAccount Dlg;
-							Dlg.m_OraLoader.Copy(GetData().GetOraLoader());
+							CPortfolio Dlg;
+							
+							Dlg.m_pData = &GetData();
 							Dlg.DoModal();
 						}
 						else
-							if(Dlg.m_Table == "NW_INDUSTRIES")
+							if(TableName == "NW_PORTFOLIO_INFO")
 							{
-								CAssetClassDlg Dlg;
-								Dlg.m_bPowerUser = GetData().IsPowerUser();
+								CPortfolioInfo Dlg;
+								
 								Dlg.m_OraLoader.Copy(GetData().GetOraLoader());
 								Dlg.DoModal();
 							}
 							else
-								if(Dlg.m_Table == "NW_ASS_SUPPLEMENTS")
+								if(TableName == "NW_PORTFOLIO_ACCOUNTS")
 								{
-									CAssetSupplement Dlg;
-									Dlg.m_Data.GetRec().GetAsset() = m_Asset.GetData();
-									Dlg.m_pData = &GetData();
+									CPortfolioAccount Dlg;
+									
+									Dlg.m_OraLoader.Copy(GetData().GetOraLoader());
 									Dlg.DoModal();
 								}
 								else
-									if(Dlg.m_Table == "NW_ISSUERS")
+									if(TableName == "NW_INDUSTRIES")
 									{
-										CIssuerDlg Dlg;
+										CAssetClassDlg Dlg;
+								
+										Dlg.m_bPowerUser = GetData().IsPowerUser();
+										Dlg.m_OraLoader.Copy(GetData().GetOraLoader());
 										Dlg.DoModal();
 									}
 									else
-										if(Dlg.m_Table == "NW_COUNTRIES")
+										if(TableName == "NW_ASS_SUPPLEMENTS")
 										{
-											CCountry Dlg;
+											CAssetSupplement Dlg;
+											
+											Dlg.m_Data.GetRec().GetAsset() = m_Asset.GetData();
 											Dlg.m_pData = &GetData();
 											Dlg.DoModal();
 										}
 										else
-											if(Dlg.m_Table == "NW_CLAIM_CP")
+											if(TableName == "NW_ISSUERS")
 											{
-												CClaimCP Dlg;
-												Dlg.m_pData = &GetData();
+												CIssuerDlg Dlg;
+												
 												Dlg.DoModal();
 											}
 											else
-												if(Dlg.m_Table == "NW_PAY_TEMPLATE")
+												if(TableName == "NW_COUNTRIES")
 												{
-													CPaymentTemplateDlg Dlg;
+													CCountry Dlg;
+													
 													Dlg.m_pData = &GetData();
 													Dlg.DoModal();
 												}
 												else
-													if(Dlg.m_Table == "NW_AA_ALLOC")
+													if(TableName == "NW_CLAIM_CP")
 													{
-														CAutoAllocationDlg Dlg;
+														CClaimCP Dlg;
+												
 														Dlg.m_pData = &GetData();
 														Dlg.DoModal();
 													}
 													else
-														if(Dlg.m_Table == "NW_CURRENCY")
+														if(TableName == "NW_PAY_TEMPLATE")
 														{
-															CCurrencyDlg Dlg;
+															CPaymentTemplateDlg Dlg;
+															
 															Dlg.m_pData = &GetData();
 															Dlg.DoModal();
 														}
 														else
-															if(Dlg.m_Table == "NW_REF_IDX")
+															if(TableName == "NW_AA_ALLOC")
 															{
-																CRefIndexDlg Dlg;
+																CAutoAllocationDlg Dlg;
 																
+																Dlg.m_pData = &GetData();
 																Dlg.DoModal();
 															}
 															else
-																if(Dlg.m_Table == "NW_FUTURE_COMM_SCHEDULE")
+																if(TableName == "NW_CURRENCY")
 																{
-																	CCPFutureCommDlg Dlg;
-																	
+																	CCurrencyDlg Dlg;
+																
 																	Dlg.m_pData = &GetData();
 																	Dlg.DoModal();
 																}
 																else
-																	if(Dlg.m_Table == "NW_FUTURE_FEES")
+																	if(TableName == "NW_REF_IDX")
 																	{
-																		CFutureFeesDlg Dlg;
-
-																		Dlg.m_pData = &GetData();
+																		CRefIndexDlg Dlg;
+																
 																		Dlg.DoModal();
 																	}
+																	else
+																		if(TableName == "NW_FUTURE_COMM_SCHEDULE")
+																		{
+																			CCPFutureCommDlg Dlg;
+																	
+																			Dlg.m_pData = &GetData();
+																			Dlg.DoModal();
+																		}
+																		else
+																			if(TableName == "NW_FUTURE_FEES")
+																			{
+																				CFutureFeesDlg Dlg;
+
+																				Dlg.m_pData = &GetData();
+																				Dlg.DoModal();
+																			}
+																			else
+																				if(TableName == "NW_GIVEUP_UNIT_COST")
+																				{
+																					CGiveupFeeDlg Dlg;
+
+																					Dlg.m_pData = &GetData();
+																					Dlg.DoModal();
+																				}
+																				else
+																					if(TableName == "NW_TRADERS")
+																					{
+																						CTraderDlg Dlg;
+																				
+																						if(Dlg.DoModal() == IDOK)
+																							GetData().GetTraderArr().Modified();
+																					}
+																					else
+																						if(TableName == "NW_OPERATIONS")
+																						{
+																							COPsDlg Dlg;
+
+																							Dlg.DoModal();
+																						}
+			break;
+	}
 }
 
 void CMaintenance::OnMaintSecFee() 

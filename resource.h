@@ -197,6 +197,8 @@
 #define IDD_OR_FEE_DIALOG               465
 #define IDD_DIALOG2                     467
 #define IDD_GIVEUPFEE_DIALOG            467
+#define IDD_TRADER_DIALOG               468
+#define IDD_OPERATION_DIALOG            469
 #define IDC_ACCOUNT_COMBO               701
 #define IDC_ACCOUNT_GROUP_EDIT          702
 #define IDC_ACCOUNT_COLLATERAL_CHECK    703
@@ -541,7 +543,6 @@
 #define IDC_CONFIRM_USDACCOUNT_COMBO    1328
 #define IDC_CONFIRM_USDACCOUNT_STATIC   1329
 #define IDC_CONFIRM_FXFIXDATE_STATIC    1330
-#define IDC_CONFIRM_PRICE_EDIT2         1330
 #define IDC_CONFIRM_IMFX_EDIT           1330
 #define IDC_CONFIRM_FXDATE_EDIT         1331
 #define IDC_CONFIRM_TICKET_LIST         1332
@@ -768,25 +769,48 @@
 #define IDC_COUNTRY_COUNTRY_EDIT        1712
 #define IDC_ACCOUNT_BIC_EDIT            1712
 #define IDC_COUNTRY_CODE_EDIT           1713
+#define IDC_TRADER_INI_EDIT             1713
 #define IDC_COUNTRY_CURRENCY_EDIT       1714
+#define IDC_TRADER_NAME_EDIT            1714
 #define IDC_COUNTRY_CONVERSION_EDIT     1715
+#define IDC_TRADER_NAME_EDIT2           1715
+#define IDC_TRADER_FMSNAME_EDIT         1715
 #define IDC_COUNTRY_CONVDATE_EDIT       1716
+#define IDC_TRADER_ACTIVE_CHECK         1716
 #define IDC_COUNTRY_GEOAREA_COMBO       1717
+#define IDC_TRADER_POWERUSER_CHECK      1717
 #define IDC_COUNTRY_PRU_COMBO           1718
+#define IDC_TRADER_RISKMAN_CHECK        1718
 #define IDC_COUNTRY_SOV_CHECK           1719
+#define IDC_TRADER_LIST                 1719
 #define IDC_COUNTRY_OLDCOUNTRY_COMBO    1720
+#define IDC_TRADER_POWERUSER_CHECK2     1720
 #define IDC_COUNTRY_SEC_CHECK           1721
+#define IDC_TRADER_LOAD_BUTTON          1721
 #define IDC_COUNTRY_DM_CHECK            1722
+#define IDC_TRADER_ADD_BUTTON           1722
 #define IDC_COUNTRY_PFGEOAREA_COMBO     1723
+#define IDC_TRADER_UPDATE_BUTTON        1723
 #define IDC_COUNTRY_PROFILEGEOAREA_COMBO 1724
+#define IDC_TRADER_DELETE_BUTTON        1724
 #define IDC_COUNTRY_PRU_COMBO2          1725
+#define IDC_OPS_GUEST_CHECK             1725
 #define IDC_COUNTRY_CODE2_COMBO         1726
+#define IDC_OPS_POWERUSER_CHECK         1726
 #define IDC_COUNTRY_LIST                1727
+#define IDC_OPS_ACTIVE_CHECK            1727
 #define IDC_COUNTRY_FIND_BUTTON         1728
+#define IDC_OPS_NAME_EDIT               1728
 #define IDC_COUNTRY_CLEAR_BUTTON        1729
+#define IDC_OPS_USERNAME_EDIT           1729
 #define IDC_COUNTRY_ADD_BUTTON          1730
+#define IDC_OPS_LIST                    1730
 #define IDC_COUNTRY_UPDATE_BUTTON       1731
+#define IDC_OPS_LOAD_BUTTON             1731
 #define IDC_COUNTRY_DELETE_BUTTON       1732
+#define IDC_OPS_ADD_BUTTON              1732
+#define IDC_OPS_UPDATE_BUTTON           1733
+#define IDC_OPS_DELETE_BUTTON           1734
 #define IDC_COUPON_CURRENCY_EDIT        1751
 #define IDC_COUPON_DATE_EDIT            1752
 #define IDC_COUPON_AMOUNT_EDIT          1753
@@ -2359,7 +2383,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        469
 #define _APS_NEXT_COMMAND_VALUE         33103
-#define _APS_NEXT_CONTROL_VALUE         1713
+#define _APS_NEXT_CONTROL_VALUE         1735
 #define _APS_NEXT_SYMED_VALUE           310
 #endif
 #endif
