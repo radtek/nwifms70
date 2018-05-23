@@ -3,7 +3,6 @@
 
 #include "stdafx.h"
 #include "resource.h"
-#include "oraloader.h"
 #include "assetdlg.h"
 #include "sqlstmt.h"
 #include "qdata.h"
@@ -179,8 +178,9 @@ END_EVENTSINK_MAP()
 BOOL CAssetDlg::OnInitDialog()
 {
 	CDialog::OnInitDialog();
-	CQData QData;
 	
+	CQData QData;
+
 	BeginWaitCursor();
 	m_SS.SetVisibleCols(10);
 	m_SS.SetVisibleRows(8);
@@ -262,14 +262,14 @@ BOOL CAssetDlg::OnInitDialog()
 	m_FindData.Add(&m_Rev);
 
 	GetData().LoadAssetData();
-	QData.CopyDBRecArrayToComboBox(GetData().GetTransTypeArr(), m_TransTypeCombo, 0, FALSE);
-	QData.CopyDBRecArrayToComboBox(GetData().GetTransDirArr(), m_DirCombo, 0, FALSE);
-	QData.CopyDBRecArrayToComboBox(GetData().GetAssetTypeArr(), m_ClassCombo, 0, FALSE);
-	QData.CopyDBRecArrayToComboBox(GetData().GetCountryArr(), m_CountryCombo, 0, FALSE);
-	QData.CopyDBRecArrayToComboBox(GetData().GetCurrencyArr(), m_CurrencyCombo, FALSE);
-	QData.CopyDBRecArrayToComboBox(GetData().GetIndustryArr(), m_IndustryCombo, FALSE);
-	QData.CopyDBRecArrayToComboBox(GetData().GetBucketArr(), m_BucketCombo, 1, FALSE);
-	QData.CopyDBRecArrayToComboBox(GetData().GetCategoryArr(), m_CategoryCombo, 0, FALSE);
+	GetData().GetTransTypeArr().CopyToComboBox(m_TransTypeCombo);
+	GetData().GetTransDirArr().CopyToComboBox(m_DirCombo);
+	GetData().GetAssetTypeArr().CopyToComboBox(m_ClassCombo);
+	GetData().GetCountryArr().CopyToComboBox(m_CountryCombo);
+	GetData().GetCurrencyArr().CopyToComboBox(m_CurrencyCombo);
+	GetData().GetIndustryArr().CopyToComboBox(m_IndustryCombo);
+	GetData().GetBucketArr().CopyToComboBox(m_BucketCombo, 1);
+	GetData().GetCategoryArr().CopyToComboBox(m_CategoryCombo);
 
 	if(m_FindData.GetRec().GetAsset().IsEmpty())
 		m_FindData.GetRec().SetAsset(NEWASSET);
@@ -301,13 +301,10 @@ BOOL CAssetDlg::OnInitDialog()
 
 void CAssetDlg::OnFindButton()
 {
-	CString Text;
-
 	BeginWaitCursor();
 	m_FindData.UpdateData();
 	m_FindData.LoadDBData();
-	Text.Format("%d", m_SS.GetSheetRows());
-	m_ItemsEdit.SetData(Text);
+	m_ItemsEdit.SetData(m_SS.GetSheetRows());
 	
 	if(m_SS.GetSheetRows() <= 0)
 	{
@@ -363,12 +360,9 @@ void CAssetDlg::OnDblClickItemList(long Col, long Row)
 {
 	if(Row >= 1 && Row <= m_SS.GetSheetRows())
 	{
-		CString Asset;
-		
 		m_FindData.SetCurrentRow(Row);
 		
-		Asset = m_AssetEdit.GetData();
-		m_FindData.LoadHoldings(Asset, m_HoldingSS);
+		m_FindData.LoadHoldings(m_AssetEdit.GetData(), m_HoldingSS);
 	}
 	else
 		m_FindData.SetCurrentRow(-1);
