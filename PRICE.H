@@ -9,6 +9,25 @@
 #include "oraloader.h"
 #endif
 
+#define INPUT_FXRATE		1
+#define INPUT_PRICE			2
+#define INPUT_COST			3
+#define INPUT_OPTION		4
+#define INPUT_OPTION_DELTA	5
+#define INPUT_OPTIONVALUE	6
+#define INPUT_VAR_FACTOR	7
+#define INPUT_SWAP			8
+#define INPUT_INTRATE		9
+#define INPUT_DAILY_NAV		10
+#define INPUT_DURATION		11
+#define INPUT_RATE			12
+#define INPUT_VOL			13
+#define INPUT_ACCR_FACT		14
+#define INPUT_DV01			15
+#define INPUT_ASSETRATE		16
+#define INPUT_ISSUER_AMOUNT	17
+
+
 /*#ifndef __BLMOBJ_H__
 #include "blmobj.h"
 #endif */
@@ -16,6 +35,7 @@
 typedef struct
 {
 	BOOL m_bLock;
+	BOOL m_bBlank;
 	BOOL m_bOverLimit;
 	int  m_nOverUnderEqual;
 } PriceStatus_t;
@@ -70,6 +90,7 @@ protected:
 	CString m_Date;
 	CString m_QDate;
 	CString m_PrevDate;
+	int m_InputData;
 	int	m_DataRange;
 	BOOL m_bModified;
 	BOOL m_bOptionValue;
@@ -89,25 +110,27 @@ protected:
 
 public:
 	CPriceDataArray() { SetWarnLimit(0); SetModify(FALSE); SetTwo(FALSE); }
-	CPriceDataArray(COraLoader &OraLoader, LPCTSTR Date, double WarnLimit, int DataRange) 
-					{ Setup(OraLoader, Date, WarnLimit, DataRange); }
-	CPriceDataArray(COraLoader &OraLoader, LPCTSTR Date, LPCTSTR FName, int DataRange)
-					{ Setup(OraLoader, Date, FName, DataRange); }
+	CPriceDataArray(COraLoader &OraLoader, int InputData, LPCTSTR Date, double WarnLimit, int DataRange) 
+					{ Setup(OraLoader, InputData, Date, WarnLimit, DataRange); }
+	CPriceDataArray(COraLoader &OraLoader, int InputData, LPCTSTR Date, LPCTSTR FName, int DataRange)
+					{ Setup(OraLoader, InputData, Date, FName, DataRange); }
 	~CPriceDataArray() { RemoveAll(); }
 	
+	void SetInputData(int InputData) { m_InputData = InputData; }
 	void SetWarnLimit(double WarnLimit) { m_WarnLimit = WarnLimit; }
 	void SetModify(BOOL Modified) { m_bModified = Modified; }
 	void SetModify();
+	int GetInputData() { return m_InputData; }
 	double GetWarnLimit() { return m_WarnLimit; }
 	BOOL GetModify() { return m_bModified; }
 	
 	void SetTwo(BOOL bTwo) { m_bTwo = bTwo; }
 	BOOL GetTwo() { return m_bTwo; }
 
-	BOOL Setup(LPCTSTR Date, double m_WarnLimit, int DataRange);
-	BOOL Setup(LPCTSTR Date, LPCTSTR FName, int DataRange);
-	BOOL Setup(COraLoader &OraLoader, LPCTSTR Date, double m_WarnLimit, int DataRange);
-	BOOL Setup(COraLoader &OraLoader, LPCTSTR Date, LPCTSTR FName, int DataRange);
+	BOOL Setup(int InputData, LPCTSTR Date, double m_WarnLimit, int DataRange);
+	BOOL Setup(int InputData, LPCTSTR Date, LPCTSTR FName, int DataRange);
+	BOOL Setup(COraLoader &OraLoader, int InputData, LPCTSTR Date, double m_WarnLimit, int DataRange);
+	BOOL Setup(COraLoader &OraLoader, int InputData, LPCTSTR Date, LPCTSTR FName, int DataRange);
 	BOOL SetupVisual(UINT SSSqlID, CDBSheet &SS);
 	BOOL SetupVisual(CString &Sql, CDBSheet &SS);
 

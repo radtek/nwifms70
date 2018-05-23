@@ -82,8 +82,9 @@ BOOL CPriceData::GetVal(CString &Price, int DataRange, double &Val)
 
 
 IMPLEMENT_DYNAMIC(CPriceDataArray, CDBRecArray)
-BOOL CPriceDataArray::Setup(LPCTSTR Date, double WarnLimit, int DataRange)
+BOOL CPriceDataArray::Setup(int InputData, LPCTSTR Date, double WarnLimit, int DataRange)
 {
+	SetInputData(InputData);
 	SetWarnLimit(WarnLimit);
 	SetDate(Date);
 	SetDataRange(DataRange);
@@ -92,12 +93,12 @@ BOOL CPriceDataArray::Setup(LPCTSTR Date, double WarnLimit, int DataRange)
 	return TRUE;
 }
 
-BOOL CPriceDataArray::Setup(LPCTSTR Date, LPCTSTR FName, int DataRange)
+BOOL CPriceDataArray::Setup(int InputData, LPCTSTR Date, LPCTSTR FName, int DataRange)
 {
 	char Text[1024];
 	CFileException e;
 
-	Setup(Date, 0.0, DataRange);
+	Setup(InputData, Date, 0.0, DataRange);
 	if(!GetInFile().Open(FName, CFile::modeRead, &e))
 	{
 		e.GetErrorMessage(Text, sizeof(Text) - 1);
@@ -108,16 +109,16 @@ BOOL CPriceDataArray::Setup(LPCTSTR Date, LPCTSTR FName, int DataRange)
 	return TRUE;
 }
 
-BOOL CPriceDataArray::Setup(COraLoader &OraLoader, LPCTSTR Date, double WarnLimit, int DataRange)
+BOOL CPriceDataArray::Setup(COraLoader &OraLoader, int InputData, LPCTSTR Date, double WarnLimit, int DataRange)
 {
 	SetOraLoader(OraLoader);
-	return Setup(Date, WarnLimit, DataRange);
+	return Setup(InputData, Date, WarnLimit, DataRange);
 }
 
-BOOL CPriceDataArray::Setup(COraLoader &OraLoader, LPCTSTR Date, LPCTSTR FName, int DataRange)
+BOOL CPriceDataArray::Setup(COraLoader &OraLoader, int InputData, LPCTSTR Date, LPCTSTR FName, int DataRange)
 {
 	SetOraLoader(OraLoader);
-	return Setup(Date, FName, DataRange);	
+	return Setup(InputData, Date, FName, DataRange);	
 }
 
 CPriceData *CPriceDataArray::GetAt(LPCTSTR Asset, BOOL bSwap)
@@ -222,6 +223,7 @@ BOOL CPriceDataArray::ComputePriceChange(CPriceData &PriceData, double &Result, 
 	BOOL Valid = FALSE;
 
 	Status.m_bOverLimit = FALSE;
+	Status.m_bBlank = FALSE;
 	Status.m_bLock = PriceData.GetLock();
 	Status.m_nOverUnderEqual = 0;
 	Result = -1;
@@ -229,13 +231,21 @@ BOOL CPriceDataArray::ComputePriceChange(CPriceData &PriceData, double &Result, 
 	if(PriceData.GetSize() <= 0)
 		return FALSE;
 	
-	if(!PriceData.GetPriceVal(GetDataRange(), Price) ||
-		!PriceData.GetPrevPriceVal(GetDataRange(), PrevPrice))
+	if(!PriceData.GetPriceVal(GetDataRange(), Price))
+	{
+		Status.m_bBlank = TRUE;
+		return FALSE;
+	}
+	
+	if(!PriceData.GetPrevPriceVal(GetDataRange(), PrevPrice))
 		return FALSE;
 
 	if(PrevPrice != 0)
 	{
-		Result = (Price - PrevPrice)/PrevPrice*100;
+		if(GetInputData() == INPUT_OPTION)
+			Result = (Price - PrevPrice);
+		else
+			Result = (Price - PrevPrice)/PrevPrice*100;
 		Valid = TRUE;
 	}
 

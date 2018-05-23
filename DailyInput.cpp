@@ -24,24 +24,6 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-const int INPUT_FXRATE = 1;
-const int INPUT_PRICE = 2;
-const int INPUT_COST = 3;
-const int INPUT_OPTION = 4;
-const int INPUT_OPTION_DELTA = 5;
-const int INPUT_OPTIONVALUE = 6;
-const int INPUT_VAR_FACTOR = 7;
-const int INPUT_SWAP = 8;
-const int INPUT_INTRATE = 9;
-const int INPUT_DAILY_NAV = 10;
-const int INPUT_DURATION = 11;
-const int INPUT_RATE = 12;
-const int INPUT_VOL = 13;
-const int INPUT_ACCR_FACT = 14;
-const int INPUT_DV01 = 15;
-const int INPUT_ASSETRATE = 16;
-const int INPUT_ISSUER_AMOUNT = 17;
-
 /////////////////////////////////////////////////////////////////////////////
 // CDailyInput
 
@@ -159,7 +141,7 @@ CNWIFMS70Doc* CDailyInput::GetDocument() // non-debug version is inline
 }
 #endif //_DEBUG
 
-void CDailyInput::DoInput(BOOL bEnable, double WarnLimit, int MenuID, int DataRange)
+void CDailyInput::DoInput(BOOL bEnable, double WarnLimit, const int MenuID, int DataRange)
 {
 	CString Date, Sql;
 	
@@ -170,7 +152,7 @@ void CDailyInput::DoInput(BOOL bEnable, double WarnLimit, int MenuID, int DataRa
 	
 	m_MenuID = MenuID;
 	m_Date.EnableWindow(bEnable);
-	m_DataArray.Setup(Date, WarnLimit, DataRange);
+	m_DataArray.Setup(MenuID, Date, WarnLimit, DataRange);
 	m_DataArray.SetOptionValue(m_MenuID == INPUT_OPTIONVALUE ? TRUE : FALSE);
 	switch(m_MenuID)
 	{
@@ -293,7 +275,7 @@ void CDailyInput::DoUpdate(LPCTSTR Title, int MenuID, int DataRange)
 	if(GetDocument()->GetData().InputDate(Date) != IDOK)
 		return;
 
-	if(!m_DataArray.Setup(Date, Path, DataRange))
+	if(!m_DataArray.Setup(MenuID, Date, Path, DataRange))
 		return;
 	
 	BeginWaitCursor();
@@ -396,7 +378,7 @@ void CDailyInput::LoadData(BOOL bUpload)
 				"ORDER BY 1, 2, 3, 4 ",	PrevDate, QDate);
 			break;
 		case INPUT_COST:
-			m_DataArray.UpdateAssetPos("DELETE SEMAM.NW_ASSET_POS_2 ", 
+			m_DataArray.UpdateAssetPos("DELETE FROM SEMAM.NW_ASSET_POS_2 ", 
 						"INSERT INTO SEMAM.NW_ASSET_POS_2 (INDATE, PORTFOLIO, ASSET_CODE, "
 						"DEAL_TYPE, NOM_AMOUNT) "
 						"SELECT TO_DATE(%s), A.PORTFOLIO, ASSET_CODE, DEAL_TYPE, "
@@ -945,7 +927,7 @@ void CDailyInput::SaveData()
 										"WHERE CURRENCY = %s AND INDATE = %s ");
 			break;
 		case INPUT_COST:
-			if(m_DataArray.DeletePriceData("DELETE SEMAM.NW_ASSET_COST WHERE ASSET_CODE = %s "))
+			if(m_DataArray.DeletePriceData("DELETE FROM SEMAM.NW_ASSET_COST WHERE ASSET_CODE = %s "))
 				m_bReload = TRUE;
 			if(m_DataArray.OpenInsertSql("SELECT COST, ASSET_CODE FROM SEMAM.NW_ASSET_COST "))
 				m_DataArray.InsertPriceData();
@@ -974,8 +956,7 @@ void CDailyInput::SaveData()
 				m_DataArray.InsertPriceData();
 			m_DataArray.UpdatePriceData("UPDATE SEMAM.NW_OPT_DELTA SET DELTA = %s "
 										"WHERE TRANS_NUM = %s AND INDATE = %s ");
-			m_DataArray.GetOraLoader().ExecuteSql("DELETE SEMAM.NW_OPT_DELTA "
-											"WHERE ABS(DELTA) >= 1 ");
+			m_DataArray.GetOraLoader().ExecuteSql("DELETE FROM SEMAM.NW_OPT_DELTA WHERE ABS(DELTA) >= 1 ");
 			break;
 		case INPUT_OPTIONVALUE:
 			UpdateOptionPosition(m_DataArray.GetQDate());
@@ -1173,7 +1154,7 @@ void CDailyInput::SetSheetCellColor(int Row, PriceStatus_t &Status)
 	m_SS.SetRow2(Row);
 	m_SS.SetBlockMode(TRUE);
 
-	if(Status.m_bOverLimit) // Exceeds Limit
+	if(Status.m_bOverLimit || Status.m_bBlank) // Exceeds Limit or Blank
 		m_SS.SetBackColor(RGB(255, 0, 0));
 	else
 		m_SS.SetBackColor(RGB(255, 255, 255));
@@ -1390,7 +1371,7 @@ void CDailyInput::OnDailyInputFxrate()
 void CDailyInput::OnDailyInputOption() 
 {
 	m_nEditCol = 4;
-	DoInput(TRUE, 5.0, INPUT_OPTION, -1); // Opt Price must be a number, 5% Limit
+	DoInput(TRUE, 1, INPUT_OPTION, -1); // Opt Price must be a number, $1
 }
 
 void CDailyInput::OnDailyInputOptionvalue()
@@ -1926,7 +1907,7 @@ void CDailyInput::OnDailyQuickfxrate()
 	if(Count > 0)
 	{
 		if(MessageBox("Exrates have been loaded. Do you want to over write them ?", "Quick Exrate", MB_YESNO) == IDYES)
-			BlmFxrate.GetOraLoader().ExecuteSql("DELETE SEMAM.NW_EXRATES WHERE INDATE = '" + BlmFxrate.GetDate() + "' ");
+			BlmFxrate.GetOraLoader().ExecuteSql("DELETE FROM SEMAM.NW_EXRATES WHERE INDATE = '" + BlmFxrate.GetDate() + "' ");
 		else
 			return;
 	}
@@ -1962,7 +1943,7 @@ void CDailyInput::OnDailyQuickprice()
 
 	BeginWaitCursor();
 	if(bOverRite)
-		BlmPrice.GetOraLoader().ExecuteSql("DELETE SEMAM.NW_MARKET_PRICES WHERE PR_DATE = '" + BlmPrice.GetDate() + "' ");
+		BlmPrice.GetOraLoader().ExecuteSql("DELETE FROM SEMAM.NW_MARKET_PRICES WHERE PR_DATE = '" + BlmPrice.GetDate() + "' ");
 	BlmPrice.LoadLivePrices(BLM_LOAD_SECURITIES);
 	
 	EndWaitCursor();
@@ -2022,7 +2003,7 @@ void CDailyInput::OnDailyQuickoptprice()
 	BeginWaitCursor();
 
 	if(bOverRite)
-		BlmPrice.GetOraLoader().ExecuteSql("DELETE SEMAM.NW_OPT_PRICES WHERE MM_DATE = '" + BlmPrice.GetDate() + "' ");
+		BlmPrice.GetOraLoader().ExecuteSql("DELETE FROM SEMAM.NW_OPT_PRICES WHERE MM_DATE = '" + BlmPrice.GetDate() + "' ");
 	BlmPrice.LoadLivePrices(BLM_LOAD_OPTION);
 	
 	EndWaitCursor();
@@ -2055,7 +2036,7 @@ void CDailyInput::OnDailyQuickswapprice()
 	BeginWaitCursor();
 
 	if(bOverRite)
-		BlmPrice.GetOraLoader().ExecuteSql("DELETE SEMAM.NW_DEAL_NAV WHERE INDATE = '" + BlmPrice.GetDate() + "' ");
+		BlmPrice.GetOraLoader().ExecuteSql("DELETE FROM SEMAM.NW_DEAL_NAV WHERE INDATE = '" + BlmPrice.GetDate() + "' ");
 	BlmPrice.LoadLivePrices(BLM_LOAD_IRS);
 	
 	EndWaitCursor();
