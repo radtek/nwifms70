@@ -1148,7 +1148,11 @@ void CDailyInput::SetSheetCellColor(int Row, PriceStatus_t &Status)
 			break;
 	} */
 
-	m_SS.SetCol(m_nEditCol + 1);
+	if(Status.m_bBlank)
+		m_SS.SetCol(m_nEditCol);
+	else
+		m_SS.SetCol(m_nEditCol + 1);
+	
 	m_SS.SetCol2(m_nEditCol + 2);
 	m_SS.SetRow(Row);
 	m_SS.SetRow2(Row);
