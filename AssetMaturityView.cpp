@@ -14,25 +14,6 @@ IMPLEMENT_DYNCREATE(CAssetMaturityView, CFormView)
 CAssetMaturityView::CAssetMaturityView()
 	: CFormView(CAssetMaturityView::IDD)
 {
-	m_Select = NULL;
-	m_Portfolio = NULL;
-	m_TransType = NULL;
-	m_CP = NULL;
-	m_OriMaturity = NULL;
-}
-
-CAssetMaturityView::~CAssetMaturityView()
-{
-	if(m_Select)
-		delete m_Select;
-	if(m_Portfolio)
-		delete m_Portfolio;
-	if(m_TransType)
-		delete m_TransType;
-	if(m_CP)
-		delete m_CP;
-	if(m_OriMaturity)
-		delete m_OriMaturity;
 }
 
 void CAssetMaturityView::DoDataExchange(CDataExchange* pDX)
@@ -50,11 +31,11 @@ void CAssetMaturityView::LoadData()
 	BeginWaitCursor();
 
 	OraLoader = GetData().GetOraLoader();
-	m_Portfolio->GetSelString(Fund);
-	m_TransType->GetSelString(TransType);
-	m_Dir.GetSelString(Dir);
-	m_CP->GetSelString(CP);
-	m_OriMaturity->GetSelString(OriMaturity);
+	Fund = m_Portfolio.GetData();
+	TransType = m_TransType.GetData();
+	Dir = m_Dir.GetData();
+	CP = m_CP.GetData();
+	OriMaturity = m_OriMaturity.GetData();
 
 	Sql = "SELECT DECODE(SIGN(NVL(B.INV_NUM, -1)), 1, 'Y', NULL) \"SELECT\", A.PORTFOLIO, A.TRANS_TYPE, "
 			"A.MATURITY_DATE, A.TICKET_NUM, A.ASSET_CODE, C.ASS_DESC, A.COUNTERPARTY, A.DIR, "
@@ -129,13 +110,13 @@ void CAssetMaturityView::Search()
 	CString Ticket, TransNum, Asset, AssetDesc, Portfolio, OriMaturity, Source, Dest;
 	int i, PortfolioCol = 2, TicketCol = 5, AssetCol = 6, AssetDescCol = 7, TransNumCol = 13;
 
-	m_Portfolio->GetSelString(Portfolio);
+	Portfolio = m_Portfolio.GetData();
 	SetSearchString(Source, Portfolio);
 	Ticket = m_Ticket.GetData();
 	SetSearchString(Source, Ticket);
-	m_Asset.GetWindowText(Asset);
+	Asset = m_Asset.GetData();
 	SetSearchString(Source, Asset);
-	m_AssetDesc.GetWindowText(AssetDesc);
+	AssetDesc = m_AssetDesc.GetData();
 	SetSearchString(Source, AssetDesc);
 	TransNum = m_TransNum.GetData();
 	SetSearchString(Source, TransNum);
@@ -170,50 +151,48 @@ BOOL CAssetMaturityView::UpdateData(BOOL bSaveandValid)
 		if(m_InvNum.IsEmpty())
 			return TRUE;
 
-		OraLoader.ExecuteSql("DELETE SEMAM.NW_MATURITY_TRADE WHERE INV_NUM = " + m_InvNum); // Delete
+		OraLoader.ExecuteSql("DELETE FROM SEMAM.NW_MATURITY_TRADE WHERE INV_NUM = " + m_InvNum); // Delete
 
-		if(m_Select->GetCheck()) // Check 
+		if(m_Select.GetCheck()) // Check 
 		{
 			if(m_Maturity.GetData().IsEmpty()||m_TransNum.GetData().IsEmpty())
 				return TRUE;
 
 			CString Rate;
 
-			m_Rate.GetWindowText(Rate);
+			Rate = m_Rate.GetData();
 
 			if(Rate.IsEmpty())
-				OraLoader.GetSql().Format("INSERT INTO SEMAM.NW_MATURITY_TRADE (PORTFOLIO, TRANS_NUM, INV_NUM, "
-								"MATURITY, TICKET_NUM, TRADE_DATE, VALUE_DATE, DIR, TRANS_TYPE, NOM_AMOUNT, "
-								"CURRENCY, FXRATE, COUNTERPARTY, TRADER_INI, ASSET_CODE, DEAL_TYPE, TRANS_BUCKET, "
-								"RATE_BASIS, PRICE, ASSIGN_CP, NOTE, NOTE2) "
-								"SELECT A.PORTFOLIO, A.TRANS_NUM, A.INV_NUM, '%s' \"MATURITY\", A.TICKET_NUM, "
-								"A.TRADE_DATE, A.VALUE_DATE, A.DIR, A.TRANS_TYPE, A.NOM_AMOUNT, A.CURRENCY, "
-								"A.FXRATE, A.COUNTERPARTY, A.TRADER_INI, A.ASSET_CODE, A.DEAL_TYPE, A.TRANS_BUCKET, "
-								"DECODE(A.TRANS_TYPE, 'INT. SWAP', B.ASS_RATE_BASIS, A.RATE_BASIS), A.PRICE, "
-								"A.ASSIGN_CP, A.HAN_DETAIL1, A.HAN_DETAIL2 "
-								"FROM SEMAM.ALL_TICKET_INV_V A, SEMAM.NW_ASSETS B "
-								"WHERE B.ASS_CODE = A.ASSET_CODE "
-								"AND TRANS_NUM = %s AND INV_NUM = %s ",
-								(LPCTSTR) m_Maturity.GetData(), (LPCTSTR) m_TransNum.GetData(),	(LPCTSTR) m_InvNum);
+				OraLoader.GetSql() = "INSERT INTO SEMAM.NW_MATURITY_TRADE (PORTFOLIO, TRANS_NUM, INV_NUM, MATURITY, "
+									"TICKET_NUM, TRADE_DATE, VALUE_DATE, DIR, TRANS_TYPE, NOM_AMOUNT, CURRENCY, "
+									"FXRATE, COUNTERPARTY, TRADER_INI, ASSET_CODE, DEAL_TYPE, TRANS_BUCKET, "
+									"RATE_BASIS, PRICE, ASSIGN_CP, NOTE, NOTE2) "
+									"SELECT A.PORTFOLIO, A.TRANS_NUM, A.INV_NUM, '" + m_Maturity.GetData() + "' \"MATURITY\", "
+									"A.TICKET_NUM, A.TRADE_DATE, A.VALUE_DATE, A.DIR, A.TRANS_TYPE, A.NOM_AMOUNT, A.CURRENCY, "
+									"A.FXRATE, A.COUNTERPARTY, A.TRADER_INI, A.ASSET_CODE, A.DEAL_TYPE, A.TRANS_BUCKET, "
+									"DECODE(A.TRANS_TYPE, 'INT. SWAP', B.ASS_RATE_BASIS, A.RATE_BASIS), A.PRICE, A.ASSIGN_CP, "
+									"A.HAN_DETAIL1, A.HAN_DETAIL2 "
+									"FROM SEMAM.ALL_TICKET_INV_V A, SEMAM.NW_ASSETS B "
+									"WHERE B.ASS_CODE = A.ASSET_CODE "
+									"AND TRANS_NUM = " + m_TransNum.GetData() + " AND INV_NUM = " + m_InvNum;
 			else
-				OraLoader.GetSql().Format("INSERT INTO SEMAM.NW_MATURITY_TRADE (PORTFOLIO, TRANS_NUM, INV_NUM, "
-								"MATURITY, TICKET_NUM, TRADE_DATE, VALUE_DATE, DIR, TRANS_TYPE, NOM_AMOUNT, "
-								"CURRENCY, FXRATE, COUNTERPARTY, ASSET_CODE, DEAL_TYPE, TRANS_BUCKET, RATE, "
-								"RATE_BASIS, PRICE, ASSIGN_CP, NOTE, NOTE2) "
-								"SELECT A.PORTFOLIO, A.TRANS_NUM, A.INV_NUM, '%s' \"MATURITY\", A.TICKET_NUM, "
-								"A.TRADE_DATE, A.VALUE_DATE, A.DIR, A.TRANS_TYPE, A.NOM_AMOUNT, A.CURRENCY, "
-								"A.FXRATE, A.COUNTERPARTY, A.ASSET_CODE, A.DEAL_TYPE, A.TRANS_BUCKET, %s \"RATE\", "
-								"DECODE(A.TRANS_TYPE, 'INT. SWAP', B.ASS_RATE_BASIS, A.RATE_BASIS), A.PRICE, "
-								"A.ASSIGN_CP, A.HAN_DETAIL1, A.HAN_DETAIL2 "
-								"FROM SEMAM.ALL_TICKET_INV_V A, SEMAM.NW_ASSETS B "
-								"WHERE B.ASS_CODE = A.ASSET_CODE  "
-								"AND TRANS_NUM = %s AND INV_NUM = %s ",
-								(LPCTSTR) m_Maturity.GetData(), (LPCTSTR) Rate, 
-								(LPCTSTR) m_TransNum.GetData(),	(LPCTSTR) m_InvNum);
+				OraLoader.GetSql() = "INSERT INTO SEMAM.NW_MATURITY_TRADE (PORTFOLIO, TRANS_NUM, INV_NUM, MATURITY, "
+									"TICKET_NUM, TRADE_DATE, VALUE_DATE, DIR, TRANS_TYPE, NOM_AMOUNT, CURRENCY, "
+									"FXRATE, COUNTERPARTY, ASSET_CODE, DEAL_TYPE, TRANS_BUCKET, RATE, RATE_BASIS, "
+									"PRICE, ASSIGN_CP, NOTE, NOTE2) "
+									"SELECT A.PORTFOLIO, A.TRANS_NUM, A.INV_NUM, '" + m_Maturity.GetData() + "' \"MATURITY\", "
+									"A.TICKET_NUM, A.TRADE_DATE, A.VALUE_DATE, A.DIR, A.TRANS_TYPE, A.NOM_AMOUNT, A.CURRENCY, "
+									"A.FXRATE, A.COUNTERPARTY, A.ASSET_CODE, A.DEAL_TYPE, A.TRANS_BUCKET, " + Rate + " \"RATE\", "
+									"DECODE(A.TRANS_TYPE, 'INT. SWAP', B.ASS_RATE_BASIS, A.RATE_BASIS), A.PRICE, "
+									"A.ASSIGN_CP, A.HAN_DETAIL1, A.HAN_DETAIL2 "
+									"FROM SEMAM.ALL_TICKET_INV_V A, SEMAM.NW_ASSETS B "
+									"WHERE B.ASS_CODE = A.ASSET_CODE  "
+									"AND TRANS_NUM = " + m_TransNum.GetData() + 
+									"AND INV_NUM = " + m_InvNum;
 			OraLoader.ExecuteSql();
 		}
 	
-		m_SS.SetSheetText(1, m_SS.GetSheetCurRow(), m_Select->GetCheckString());
+		m_SS.SetSheetText(1, m_SS.GetSheetCurRow(), m_Select.GetCheckString());
 	}
 	else
 	{
@@ -221,9 +200,9 @@ BOOL CAssetMaturityView::UpdateData(BOOL bSaveandValid)
 
 		GetData().LoadSupportData();
 		GetData().GetTransDirArr().CopyToMCComboBox(m_Dir);	/* TransDir */
-		QData.CopyDBRecArrayToComboBox(GetData().GetTransTypeArr(), *m_TransType);
-		QData.CopyDBRecArrayToComboBox(GetData().GetPortfolioArr(), *m_Portfolio);
-		QData.CopyKeyDBListKeyToComboBox(GetData().GetContactList(), *m_CP, FALSE);
+		GetData().GetTransTypeArr().CopyToComboBox(m_TransType);
+		GetData().GetPortfolioArr().CopyToComboBox(m_Portfolio);
+		GetData().GetContactList().CopyKeyToComboBox(m_CP);
 
 		OraLoader.Open("SELECT DISTINCT A.MATURITY_DATE "
 						"FROM SEMAM.ALL_TICKET_INV_V A, SEMAM.NW_MATURITY_TRADE B "
@@ -233,7 +212,7 @@ BOOL CAssetMaturityView::UpdateData(BOOL bSaveandValid)
 						"AND A.ACTUAL_CLOSING IS NULL "
 						"AND A.TR_DESC = 'MATURITY' "
 						"ORDER BY 1 ");
-		OraLoader.LoadComboBox(*m_OriMaturity);
+		OraLoader.LoadComboBox(m_OriMaturity);
 		LoadData();
 	}
 	EndWaitCursor();
@@ -290,14 +269,14 @@ void CAssetMaturityView::OnInitialUpdate()
 	m_SS.SetVisibleRows(20);
 	m_SS.LockSheet();
 
-	m_Select = (CCheckBox*) new CCheckBox(this, IDC_ASSETMATURITY_SELECT_CHECK, Y);
+	m_Select.Setup(this, IDC_ASSETMATURITY_SELECT_CHECK, Y);
 
 	m_Dir.Setup(this, IDC_ASSETMATURITY_DIR_COMBO);
 
-	m_TransType = (COptComboBox*) new COptComboBox(this, IDC_ASSETMATURITY_TRANSTYPE_COMBO);
-	m_Portfolio = (COptComboBox*) new COptComboBox(this, IDC_ASSETMATURITY_FUND_COMBO);
-	m_CP = (COptComboBox*) new COptComboBox(this, IDC_ASSETMATURITY_CP_COMBO);
-	m_OriMaturity = (COptComboBox*) new COptComboBox(this, IDC_ASSETMATURITY_ORIMATURITY_COMBO);
+	m_TransType.Setup(this, IDC_ASSETMATURITY_TRANSTYPE_COMBO);
+	m_Portfolio.Setup(this, IDC_ASSETMATURITY_FUND_COMBO);
+	m_CP.Setup(this, IDC_ASSETMATURITY_CP_COMBO);
+	m_OriMaturity.Setup(this, IDC_ASSETMATURITY_ORIMATURITY_COMBO);
 
 	m_Amount.Setup(this, IDC_ASSETMATURITY_NOMINAL_EDIT);
 	m_Rate.Setup(this, IDC_ASSETMATURITY_RATE_EDIT);
@@ -310,7 +289,7 @@ void CAssetMaturityView::OnInitialUpdate()
 	m_AssetDesc.Setup(this, IDC_ASSETMATURITY_ASSET_EDIT);
 
 	GetData().GetOraLoader().Today(Date);
-	m_Maturity.SetWindowText(Date);
+	m_Maturity.SetData(Date);
 	UpdateData(FALSE);
 	EndWaitCursor();
 }
@@ -324,35 +303,35 @@ void CAssetMaturityView::OnDblClickAssetmaturityList(long Col, long Row)
 	if(Row >= 1 && Row <= m_SS.GetSheetRows())
 	{
 		m_SS.SetSheetCurRow(Row);
-		m_Select->SetCheck(m_SS.GetSheetText(1, Row));
-		m_Portfolio->SelectString(0, m_SS.GetSheetText(2, Row));
-		m_TransType->SelectString(0, m_SS.GetSheetText(3, Row));
-		m_OriMaturity->SelectString(0, m_SS.GetSheetText(4, Row));
+		m_Select.SetCheck(m_SS.GetSheetText(1, Row));
+		m_Portfolio.SetData(m_SS.GetSheetText(2, Row));
+		m_TransType.SetData(m_SS.GetSheetText(3, Row));
+		m_OriMaturity.SetData(m_SS.GetSheetText(4, Row));
 		m_Ticket.SetData(m_SS.GetSheetText(5, Row));
-		m_Asset.SetWindowText(m_SS.GetSheetText(6, Row));
-		m_AssetDesc.SetWindowText(m_SS.GetSheetText(7, Row));
-		m_CP->SelectString(0, m_SS.GetSheetText(8, Row));
-		m_Dir.SelectString(0, m_SS.GetSheetText(9, Row));
-		m_Rate.SetWindowText(m_SS.GetSheetText(10, Row));
+		m_Asset.SetData(m_SS.GetSheetText(6, Row));
+		m_AssetDesc.SetData(m_SS.GetSheetText(7, Row));
+		m_CP.SetData(m_SS.GetSheetText(8, Row));
+		m_Dir.SetData(m_SS.GetSheetText(9, Row));
+		m_Rate.SetData(m_SS.GetSheetText(10, Row));
 		if(!m_SS.GetSheetText(11, Row).IsEmpty())
 			m_Maturity.SetData(m_SS.GetSheetText(11, Row));
-		m_Amount.SetWindowText(m_SS.GetSheetText(12, Row));
+		m_Amount.SetData(m_SS.GetSheetText(12, Row));
 		m_TransNum.SetData(m_SS.GetSheetText(13, Row));
 		m_InvNum = m_SS.GetSheetText(14, Row);
 	}
 	else
 	{
-		m_Select->SetCheck(0);
-		m_Portfolio->SetCurSel(-1);
-		m_TransType->SetCurSel(-1);
-		m_OriMaturity->SetCurSel(-1);
+		m_Select.SetCheck(0);
+		m_Portfolio.SetCurSel(-1);
+		m_TransType.SetCurSel(-1);
+		m_OriMaturity.SetCurSel(-1);
 		m_Ticket.SetData(EMPTYSTRING);
-		m_Asset.SetWindowText(EMPTYSTRING);
-		m_AssetDesc.SetWindowText(EMPTYSTRING);
-		m_CP->SetCurSel(-1);
+		m_Asset.SetData(EMPTYSTRING);
+		m_AssetDesc.SetData(EMPTYSTRING);
+		m_CP.SetCurSel(-1);
 		m_Dir.SetCurSel(-1);
-		m_Rate.SetWindowText(EMPTYSTRING);
-		m_Amount.SetWindowText(EMPTYSTRING);
+		m_Rate.SetData(EMPTYSTRING);
+		m_Amount.SetData(EMPTYSTRING);
 		m_TransNum.SetData(EMPTYSTRING);
 		m_InvNum.Empty();
 	}

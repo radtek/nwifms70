@@ -587,11 +587,12 @@ CString CPriceDataArray::OptValueToPrice(CString TransNum, CString OptValue)
 		return OptValue;
 
 	OraLoader.GetSql().Format("SELECT %s/NOM_AMOUNT/NVL(AMORT_FACT, 1)*DECODE(ASS_TYPE, 'EQUITY TYPE CAL', 1, 100) "
-								"FROM SEMAM.NW_TEMP_OPTIONS A "
-								"JOIN SEMAM.NW_ASSETS B ON (A.ASSET_CODE = B.ASS_CODE) "
-								"LEFT OUTER JOIN SEMAM.NW_ASS_PERIODS C ON (A.ASSET_CODE = C.ASS_CODE "
-										"AND C.ASS_FROM <= %s AND C.ASS_TO > %s) "
-								"WHERE TRANS_NUM = %s ", (LPCTSTR) OptValue, GetQDate(), GetQDate(), TransNum);
+								"FROM SEMAM.NW_TEMP_OPTIONS A, SEMAM.NW_ASSETS B, SEMAM.NW_ASS_PERIODS C "
+								"WHERE B.ASS_CODE = A.ASSET_CODE "
+								"AND C.ASS_CODE(+) = A.ASSET_CODE "
+								"AND C.ASS_FROM(+) <= %s "
+								"AND C.ASS_TO(+) > %s "
+								"AND TRANS_NUM = %s ", (LPCTSTR) OptValue, GetQDate(), GetQDate(), TransNum);
 
 	OraLoader.Open();
 	OraLoader.LoadTextString(Price);

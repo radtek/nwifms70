@@ -14,6 +14,7 @@ void CAssetIntRec::Copy(CAssetIntRec &AssetIntRec)
 	SetFrom(AssetIntRec.GetFrom());
 	SetTo(AssetIntRec.GetTo());
 	SetSetDate(AssetIntRec.GetSetDate());
+	SetStartDate(AssetIntRec.GetStartDate());
 	SetEndDate(AssetIntRec.GetEndDate());
 	SetRate(AssetIntRec.GetRate());
 	SetAmort(AssetIntRec.GetAmort());
@@ -41,6 +42,7 @@ void CAssetIntRec::ToDBRec(CDBRec &Rec)
 		Rec.Add(GetFrom());
 		Rec.Add(GetTo());
 		Rec.Add(GetSetDate());
+		Rec.Add(GetStartDate());
 		Rec.Add(GetEndDate());
 		Rec.Add(GetRate());
 		Rec.Add(GetAmort());
@@ -65,7 +67,7 @@ BOOL CAssetIntRec::AddRec(COraLoader &OraLoader)
 	if(GetInvType() == "D")
 		OraLoader.GetSql() = "SELECT ASSET_CODE, EXD_DATE, PAY_DATE, CURRENCY, DIVIDEND FROM SEMAM.NW_DIVIDEND_SCHEDULE ";
 	else
-		OraLoader.GetSql() = "SELECT ASS_CODE, ASS_FROM, ASS_TO, INT_SET_DATE, END_DATE, RATE, AMORT_FACT, "
+		OraLoader.GetSql() = "SELECT ASS_CODE, ASS_FROM, ASS_TO, INT_SET_DATE, START_DATE, END_DATE, RATE, AMORT_FACT, "
 								"CAPIT_RATE, PLUS_AMOUNT, ACTION FROM SEMAM.NW_ASS_PERIODS ";
 	if(!OraLoader.Open(OraLoader.GetSql(), ODYNASET_DEFAULT))
 		return FALSE;
@@ -85,8 +87,8 @@ BOOL CAssetIntRec::UpdateRec(COraLoader &OraLoader, BOOL bByID)
 		Sql = "SELECT ASSET_CODE, EXD_DATE, PAY_DATE, CURRENCY, DIVIDEND "
 				"FROM SEMAM.NW_DIVIDEND_SCHEDULE WHERE ROWIDTOCHAR(ROWID) = %s ";
 	else
-		Sql = "SELECT ASS_CODE, ASS_FROM, ASS_TO, INT_SET_DATE, END_DATE, RATE, AMORT_FACT, "
-				"CAPIT_RATE, PLUS_AMOUNT, ACTION FROM SEMAM.NW_ASS_PERIODS "
+		Sql = "SELECT ASS_CODE, ASS_FROM, ASS_TO, INT_SET_DATE, START_DATE, END_DATE, RATE, AMORT_FACT, CAPIT_RATE, PLUS_AMOUNT, ACTION "
+				"FROM SEMAM.NW_ASS_PERIODS "
 				"WHERE ROWIDTOCHAR(ROWID) = %s ";
 
 	OraLoader.GetSql().Format((LPCTSTR) Sql, QData.GetQueryText(GetID()));
@@ -114,17 +116,17 @@ BOOL CAssetIntRec::DeleteRec(COraLoader &OraLoader, BOOL bByID)
 		
 		P = QData.GetQueryText(GetID());
 		if(GetInvType() == "D")
-			OraLoader.GetSql().Format("DELETE SEMAM.NW_DIVIDEND_SCHEDULE WHERE ROWIDTOCHAR(ROWID) = %s", P);
+			OraLoader.GetSql().Format("DELETE FROM SEMAM.NW_DIVIDEND_SCHEDULE WHERE ROWIDTOCHAR(ROWID) = %s", P);
 		else
-			OraLoader.GetSql().Format("DELETE SEMAM.NW_ASS_PERIODS WHERE ROWIDTOCHAR(ROWID) = %s", P);
+			OraLoader.GetSql().Format("DELETE FROM SEMAM.NW_ASS_PERIODS WHERE ROWIDTOCHAR(ROWID) = %s", P);
 	}
 	else
 	{
 		P = QData.GetQueryText(GetAsset());
 		if(GetInvType() == "D")
-			OraLoader.GetSql().Format("DELETE SEMAM.NW_DIVIDEND_SCHEDULE WHERE ASSET_CODE = %s", P);
+			OraLoader.GetSql().Format("DELETE FROM SEMAM.NW_DIVIDEND_SCHEDULE WHERE ASSET_CODE = %s", P);
 		else
-			OraLoader.GetSql().Format("DELETE SEMAM.NW_ASS_PERIODS WHERE ASS_CODE = %s", P);
+			OraLoader.GetSql().Format("DELETE FROM SEMAM.NW_ASS_PERIODS WHERE ASS_CODE = %s", P);
 	}
 	return OraLoader.ExecuteSql();
 }
@@ -139,9 +141,9 @@ BOOL CAssetIntRec::IsIntDateOK(COraLoader &OraLoader)
 
 	DateS = QData.GetQueryDate(GetFrom());
 	OraLoader.GetSql().Format("SELECT COUNT(*) FROM SEMAM.NW_ASS_PERIODS "
-							"WHERE ASS_CODE = %s "
-							"AND ASS_FROM <= %s "
-							"AND ASS_TO > %s ", QData.GetQueryText(GetAsset()), (LPCTSTR) DateS, (LPCTSTR) DateS);
+								"WHERE ASS_CODE = %s "
+								"AND ASS_FROM <= %s "
+								"AND ASS_TO > %s ", QData.GetQueryText(GetAsset()), (LPCTSTR) DateS, (LPCTSTR) DateS);
 	if(OraLoader.GetCount(OraLoader.GetSql()) > 0)
 	{
 		MessageBox(NULL, "Interest From Date is overlapped", NULL, MB_OK);
@@ -150,9 +152,9 @@ BOOL CAssetIntRec::IsIntDateOK(COraLoader &OraLoader)
 	
 	DateS = QData.GetQueryDate(GetTo());
 	OraLoader.GetSql().Format("SELECT COUNT(*) FROM SEMAM.NW_ASS_PERIODS "
-							"WHERE ASS_CODE = %s "
-							"AND ASS_FROM <= %s "
-							"AND ASS_TO > %s ", QData.GetQueryText(GetAsset()), (LPCTSTR) DateS, (LPCTSTR) DateS);
+								"WHERE ASS_CODE = %s "
+								"AND ASS_FROM <= %s "
+								"AND ASS_TO > %s ", QData.GetQueryText(GetAsset()), (LPCTSTR) DateS, (LPCTSTR) DateS);
 	
 	if(OraLoader.GetCount(OraLoader.GetSql()) > 1)
 	{
@@ -383,7 +385,7 @@ BOOL CAssetRec::DeleteRec(COraLoader &OraLoader, BOOL bByID)
 
 	if(!IntRec.DeleteRec(OraLoader))
 		return FALSE;
-	OraLoader.GetSql().Format("DELETE SEMAM.NW_ASSETS WHERE ASS_CODE = %s", 
+	OraLoader.GetSql().Format("DELETE FROM SEMAM.NW_ASSETS WHERE ASS_CODE = %s", 
 								QData.GetQueryText(GetAsset()));
 	return OraLoader.ExecuteSql();
 }

@@ -597,7 +597,7 @@ double CRiskControl::ComputeAmount(double &Amount2, const CString TransType, con
 		sAsset = QData.GetQueryText(m_RiskArray.GetAsset());
 
 		if(GetOraLoader().Open("SELECT ASS_INDUSTRY, ASS_CONV_TYPE, ASS_CURRENCY, ASS_CURRENCY2, ASS_RATE_BASIS, ASSET_FACTOR, "
-								"ASS_PPAID_INT, ASS_FROM, ASS_TO, NVL(RATE, 0), NVL(AMORT_FACT, 1), NVL(CAPIT_RATE, 0), NVL(PLUS_AMOUNT, 0) "
+			"ASS_PPAID_INT, NVL(START_DATE, ASS_FROM), ASS_TO, NVL(RATE, 0), NVL(AMORT_FACT, 1), NVL(CAPIT_RATE, 0), NVL(PLUS_AMOUNT, 0) "
 								"FROM SEMAM.NW_ASSETS_V A, SEMAM.NW_ASS_PERIODS B "
 								"WHERE B.ASS_CODE(+) = A.ASS_CODE "
 								"AND B.ASS_FROM(+) <= " + sValueDate + 

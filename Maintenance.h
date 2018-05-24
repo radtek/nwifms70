@@ -124,6 +124,7 @@ public:
 	CMaskDateEdit m_FromDate;
 	CMaskDateEdit m_ToDate;
 	CMaskDateEdit m_SetDate;
+	CMaskDateEdit m_StartDate;
 	CMaskDateEdit m_EndDate;
 	CNumEdit m_Rate;
 	CNumEdit m_Amort;

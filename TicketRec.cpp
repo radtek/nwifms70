@@ -97,9 +97,9 @@ BOOL CInvRec::DeleteRec(COraLoader &OraLoader, BOOL bByID)
 	CQData QData;
 
 	if(bByID)
-		OraLoader.GetSql().Format("DELETE SEMAM.NW_TR_INV WHERE INV_NUM = %s ", QData.GetQueryNumber(GetID()));
+		OraLoader.GetSql().Format("DELETE FROM SEMAM.NW_TR_INV WHERE INV_NUM = %s ", QData.GetQueryNumber(GetID()));
 	else
-		OraLoader.GetSql().Format("DELETE SEMAM.NW_TR_INV WHERE TRANS_NUM = %s ", QData.GetQueryNumber(GetTransNum()));
+		OraLoader.GetSql().Format("DELETE FROM SEMAM.NW_TR_INV WHERE TRANS_NUM = %s ", QData.GetQueryNumber(GetTransNum()));
 	return OraLoader.ExecuteSql();
 }
 
@@ -442,7 +442,7 @@ BOOL CTicketRec::UpdateFloatRepoRateRec(COraLoader &OraLoader, BOOL bDelete)
 	}
 	else	// if it is not daily repo, remove
 	{
-		OraLoader.GetSql().Format("DELETE SEMAM.NW_REPO_RATES WHERE TRANS_NUM = %s ", GetTransNum());
+		OraLoader.GetSql().Format("DELETE FROM SEMAM.NW_REPO_RATES WHERE TRANS_NUM = %s ", GetTransNum());
 		return OraLoader.ExecuteSql();
 	}
 }
@@ -528,8 +528,7 @@ BOOL CTicketRec::DeleteRec(COraLoader &OraLoader, BOOL bByID)
 	if(!Inv.DeleteRec(OraLoader))
 		return FALSE;
 
-	OraLoader.GetSql().Format("DELETE SEMAM.NW_TR_TICKETS WHERE TRANS_NUM = %s ", 
-								QData.GetQueryNumber(GetTransNum()));
+	OraLoader.GetSql().Format("DELETE FROM SEMAM.NW_TR_TICKETS WHERE TRANS_NUM = %s ", QData.GetQueryNumber(GetTransNum()));
 	if(!OraLoader.ExecuteSql())
 		return FALSE;
 	
@@ -644,8 +643,7 @@ BOOL CTicketRec::UpdateCurrPosRecs(COraLoader &OraLoader, CString &Asset,
 			"SELECT TRUNC(SYSDATE), A.TRANS_TYPE, A.ASSET_CODE, NULL, 3, A.TICKET_NUM, RATE, ASS_INT_TYPE, "
 			"TO_NUMBER(NULL), NVL(A.ACTUAL_VDATE, NVL(A.MATURITY_DATE, ASS_MATURITY_DATE)), A.DIR, "
 			"SUM(A.NOM_AMOUNT), NULL, NULL, TO_DATE(NULL), NULL, NULL, A.ASSIGN_CP " 
-			"FROM SEMAM.ALL_TICKET_INV_V A, SEMAM.NW_ASSETS B, SEMAM.NW_ASS_PERIODS C, "
-			"SEMAM.NW_PORTFOLIOS Z "
+			"FROM SEMAM.ALL_TICKET_INV_V A, SEMAM.NW_ASSETS B, SEMAM.NW_ASS_PERIODS C, SEMAM.NW_PORTFOLIOS Z "
 			"WHERE B.ASS_CODE = A.ASSET_CODE "
 			"AND B.ASS_INT_TYPE = 'FIXED' "
 			"AND C.ASS_CODE(+) = A.ASSET_CODE "

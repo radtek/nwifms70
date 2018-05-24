@@ -17,10 +17,6 @@ CAssetIDView::CAssetIDView()
 	m_Row = 0;
 }
 
-CAssetIDView::~CAssetIDView()
-{
-}
-
 void CAssetIDView::DoDataExchange(CDataExchange* pDX)
 {
 	CFormView::DoDataExchange(pDX);
@@ -40,9 +36,9 @@ BOOL CAssetIDView::UpdateData(BOOL bSaveandValid)
 		CString Fund, AssetCode, pID;
 		CQData QData;
 
-		m_Portfolio->GetSelString(Fund);
-		m_AssetCode.GetWindowText(AssetCode);
-		m_PID.GetWindowText(pID);
+		Fund = m_Portfolio.GetData();
+		AssetCode = m_AssetCode.GetData();
+		pID = m_PID.GetData();
 
 		if(Fund.IsEmpty() || AssetCode.IsEmpty())
 			return TRUE;
@@ -65,21 +61,20 @@ BOOL CAssetIDView::UpdateData(BOOL bSaveandValid)
 									AssetCode + ", " + pID + ")");
 		}
 		else
-			OraLoader.ExecuteSql("DELETE SEMAM.NW_ASSET_ID WHERE PORTFOLIO = " + Fund + 
+			OraLoader.ExecuteSql("DELETE FROM SEMAM.NW_ASSET_ID WHERE PORTFOLIO = " + Fund + 
 									" AND ASSET_CODE = " + AssetCode);
 		UpdateData(FALSE);
 	}
 	else
 	{
 		GetData().LoadSupportData();
-		GetData().GetTransTypeArr().CopyToComboBox(*m_TransType);
-		GetData().GetPortfolioArr().CopyToComboBox(*m_Portfolio);
+		GetData().GetTransTypeArr().CopyToComboBox(m_TransType);
+		GetData().GetPortfolioArr().CopyToComboBox(m_Portfolio);
 
-		OraLoader.Open("SELECT A.PORTFOLIO, TRANS_TYPE, A.ASSET_CODE, ASS_DESC, RATE, "
-						"ASS_MATURITY_DATE, PID, "
+		OraLoader.Open("SELECT A.PORTFOLIO, TRANS_TYPE, A.ASSET_CODE, ASS_DESC, RATE, ASS_MATURITY_DATE, PID, "
 						"SUM(DECODE(DIR, 'P', 1, 'S', -1)*NOM_AMOUNT) \"NOM_AMOUNT\" "
-						"FROM SEMAM.ALL_TICKET_INV_V A, SEMAM.NW_ASSETS B, "
-						"SEMAM.NW_ASS_PERIODS C, SEMAM.NW_ASSET_ID D, SEMAM.NW_PORTFOLIOS Z "
+						"FROM SEMAM.ALL_TICKET_INV_V A, SEMAM.NW_ASSETS B, SEMAM.NW_ASS_PERIODS C, "
+						"SEMAM.NW_ASSET_ID D, SEMAM.NW_PORTFOLIOS Z "
 						"WHERE B.ASS_CODE = A.ASSET_CODE "
 						"AND C.ASS_CODE(+) = A.ASSET_CODE "
 						"AND C.ASS_FROM(+) <= TRUNC(SYSDATE) "
@@ -89,15 +84,14 @@ BOOL CAssetIDView::UpdateData(BOOL bSaveandValid)
 						"AND Z.PORTFOLIO = A.PORTFOLIO "
 						"AND Z.STATUS IS NULL "
 						"AND A.TRANS_TYPE IN ('CDS') "
-						"GROUP BY A.PORTFOLIO, TRANS_TYPE, A.ASSET_CODE, ASS_DESC, RATE, "
-						"ASS_MATURITY_DATE, PID "
+						"GROUP BY A.PORTFOLIO, TRANS_TYPE, A.ASSET_CODE, ASS_DESC, RATE, ASS_MATURITY_DATE, PID "
 						"HAVING ABS(SUM(DECODE(DIR, 'P', 1, 'S', -1)*NOM_AMOUNT)) > 0 "
 						"UNION "
 						"SELECT A.PORTFOLIO, TRANS_TYPE, A.ASSET_CODE, ASS_DESC, RATE, "
 						"NVL(ACTUAL_VDATE, NVL(MATURITY_DATE, ASS_MATURITY_DATE)) \"MATURITY\", "
 						"PID, DECODE(DIR, 'P', 1, 'S', -1)*NOM_AMOUNT \"NOM_AMOUNT\" "
-						"FROM SEMAM.ALL_TICKET_INV_V A, SEMAM.NW_ASSETS B, "
-						"SEMAM.NW_ASS_PERIODS C, SEMAM.NW_ASSET_ID D, SEMAM.NW_PORTFOLIOS Z "
+						"FROM SEMAM.ALL_TICKET_INV_V A, SEMAM.NW_ASSETS B, SEMAM.NW_ASS_PERIODS C, "
+						"SEMAM.NW_ASSET_ID D, SEMAM.NW_PORTFOLIOS Z "
 						"WHERE B.ASS_CODE = A.ASSET_CODE "
 						"AND B.ASS_INT_TYPE = 'FIXED' "
 						"AND C.ASS_CODE(+) = A.ASSET_CODE "
@@ -114,8 +108,8 @@ BOOL CAssetIDView::UpdateData(BOOL bSaveandValid)
 						"DECODE(ASS_INDUSTRY, 'CURRENCY FWDS', "
 						"DECODE(SIGN(INSTR(ASS_DESC, 'FWD')), 1, VALUE_DATE, ASS_MATURITY_DATE)) \"MATURITY\", "
 						"PID, SUM(DECODE(DIR, 'P', 1, 'S', -1)*NOM_AMOUNT) "
-						"FROM SEMAM.ALL_TICKET_INV_V A, SEMAM.NW_ASSETS B, "
-						"SEMAM.NW_ASS_PERIODS C, SEMAM.NW_ASSET_ID D, SEMAM.NW_PORTFOLIOS Z "
+						"FROM SEMAM.ALL_TICKET_INV_V A, SEMAM.NW_ASSETS B, SEMAM.NW_ASS_PERIODS C, "
+						"SEMAM.NW_ASSET_ID D, SEMAM.NW_PORTFOLIOS Z "
 						"WHERE B.ASS_CODE = A.ASSET_CODE "
 						"AND C.ASS_CODE(+) = A.ASSET_CODE "
 						"AND C.ASS_FROM(+) = TRUNC(SYSDATE) "
@@ -179,8 +173,8 @@ void CAssetIDView::OnInitialUpdate()
 	m_SS.SetVisibleRows(20);
 	m_SS.LockSheet();
 
-	m_Portfolio = (COptComboBox*) new COptComboBox(this, IDC_ASSETID_PORTFOLIO_COMBO);
-	m_TransType = (COptComboBox*) new COptComboBox(this, IDC_ASSETID_TRANSTYPE_COMBO);
+	m_Portfolio.Setup(this, IDC_ASSETID_PORTFOLIO_COMBO);
+	m_TransType.Setup(this, IDC_ASSETID_TRANSTYPE_COMBO);
 
 	m_AssetCode.Setup(this, IDC_ASSETID_ASSETCODE_EDIT);
 	m_AssetCode.SetReadOnly(TRUE);
@@ -220,28 +214,28 @@ void CAssetIDView::OnDblClickAssetidList(long Col, long Row)
 			switch(i)
 			{
 				case 1:
-					m_Portfolio->SelectString(0, Text);
+					m_Portfolio.SetData(Text);
 					break;
 				case 2:
-					m_TransType->SelectString(0, Text);
+					m_TransType.SetData(Text);
 					break;
 				case 3:
-					m_AssetCode.SetWindowText(Text);
+					m_AssetCode.SetData(Text);
 					break;
 				case 4:
-					m_Asset.SetWindowText(Text);
+					m_Asset.SetData(Text);
 					break;
 				case 5:
-					m_Rate.SetWindowText(Text);
+					m_Rate.SetData(Text);
 					break;
 				case 6:
 					m_Maturity.SetData(Text);
 					break;
 				case 7:
-					m_PID.SetWindowText(Text);
+					m_PID.SetData(Text);
 					break;
 				case 8:
-					m_Nominal.SetWindowText(Text);
+					m_Nominal.SetData(Text);
 					break;
 				default:
 					break;
@@ -250,14 +244,14 @@ void CAssetIDView::OnDblClickAssetidList(long Col, long Row)
 	}
 	else
 	{
-		m_Portfolio->SetCurSel(-1);
-		m_TransType->SetCurSel(-1);
-		m_AssetCode.SetWindowText(EMPTYSTRING);
-		m_Asset.SetWindowText(EMPTYSTRING);
-		m_Nominal.SetWindowText(EMPTYSTRING);
-		m_Rate.SetWindowText(EMPTYSTRING);
-		m_Maturity.SetWindowText(EMPTYSTRING);
-		m_PID.SetWindowText(EMPTYSTRING);
+		m_Portfolio.SetCurSel(-1);
+		m_TransType.SetCurSel(-1);
+		m_AssetCode.SetData(EMPTYSTRING);
+		m_Asset.SetData(EMPTYSTRING);
+		m_Nominal.SetData(EMPTYSTRING);
+		m_Rate.SetData(EMPTYSTRING);
+		m_Maturity.SetData(EMPTYSTRING);
+		m_PID.SetData(EMPTYSTRING);
 		m_Row = 0;
 	}
 }
@@ -283,7 +277,7 @@ void CAssetIDView::OnBnClickedAssetidDeleteButton()
 {
 	if(MessageBox("Do you want to delete this record?", "Asset ID", MB_YESNO) == IDYES)
 	{
-		m_PID.SetWindowText(EMPTYSTRING);
+		m_PID.SetData(EMPTYSTRING);
 		UpdateData();
 	}
 

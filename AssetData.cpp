@@ -95,7 +95,7 @@ void CAssetData::SetHeaders()
 		GetSS()->SetSheetColHeaders();
 	}
 
-	if(GetOraLoader().Open("SELECT ASS_FROM, ASS_TO, INT_SET_DATE, END_DATE, RATE, AMORT_FACT, CAPIT_RATE, PLUS_AMOUNT, ACTION "
+	if(GetOraLoader().Open("SELECT ASS_FROM, ASS_TO, INT_SET_DATE, START_DATE, END_DATE, RATE, AMORT_FACT, CAPIT_RATE, PLUS_AMOUNT, ACTION "
 							"FROM SEMAM.NW_ASS_PERIODS "))
 	{
 		GetOraLoader().CopyFieldArray(GetSRowCtrl().GetSS()->GetFieldArray());
@@ -399,12 +399,12 @@ void CAssetData::LoadSheet()
 	SetKey();
 	P = QData.GetQueryText(GetKey());
 
-	GetOraLoader().GetSql().Format("SELECT ROWIDTOCHAR(ROWID) \"ID\", ASS_FROM, ASS_TO, INT_SET_DATE, END_DATE, "
+	GetOraLoader().GetSql().Format("SELECT ROWIDTOCHAR(ROWID) \"ID\", ASS_FROM, ASS_TO, INT_SET_DATE, START_DATE, END_DATE, "
 									"RATE, AMORT_FACT, CAPIT_RATE, PLUS_AMOUNT, ACTION "
 									"FROM SEMAM.NW_ASS_PERIODS "
 									"WHERE ASS_CODE = %s "
 									"UNION "
-									"SELECT ROWIDTOCHAR(ROWID) \"ID\", EXD_DATE, TO_DATE(NULL), TO_DATE(NULL), "
+									"SELECT ROWIDTOCHAR(ROWID) \"ID\", EXD_DATE, TO_DATE(NULL), TO_DATE(NULL), TO_DATE(NULL), "
 									"PAY_DATE, DIVIDEND, TO_NUMBER(NULL), TO_NUMBER(NULL), TO_NUMBER(NULL), CURRENCY "
 									"FROM SEMAM.NW_DIVIDEND_SCHEDULE "
 									"WHERE ASSET_CODE = %s "

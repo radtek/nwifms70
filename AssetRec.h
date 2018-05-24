@@ -17,6 +17,7 @@ protected:
 	CString m_From;
 	CString m_To;
 	CString m_SetDate;
+	CString m_StartDate;
 	CString m_EndDate;
 	CString m_Rate;
 	CString m_Amort;
@@ -33,6 +34,7 @@ public:
 	CString &GetFrom() { return m_From; }
 	CString &GetTo() { return m_To; }
 	CString &GetSetDate() { return m_SetDate; }
+	CString &GetStartDate() { return m_StartDate; }
 	CString &GetEndDate() { return m_EndDate; }
 	CString &GetRate() { return m_Rate; }
 	CString &GetAmort() { return m_Amort; }
@@ -45,6 +47,7 @@ public:
 	void SetFrom(LPCTSTR From) { m_From = From; }
 	void SetTo(LPCTSTR To) { m_To = To; }
 	void SetSetDate(LPCTSTR SetDate) { m_SetDate = SetDate; }
+	void SetStartDate(LPCTSTR StartDate) { m_StartDate = StartDate; }
 	void SetEndDate(LPCTSTR EndDate) { m_EndDate = EndDate; }
 	void SetRate(LPCTSTR Rate) { m_Rate = Rate; }
 	void SetAmort(LPCTSTR Amort) { m_Amort = Amort; }

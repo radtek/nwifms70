@@ -378,6 +378,7 @@ void CMaintenance::InitControls()
 	m_FromDate.Setup(this, IDC_MAINT_FROM_EDIT);
 	m_ToDate.Setup(this, IDC_MAINT_TO_EDIT, TRUE, "To date must be greater or equal to from date.", &m_FromDate);
 	m_SetDate.Setup(this, IDC_MAINT_SET_DATE_EDIT, TRUE, "Set date must be greater or equal to from date.", &m_FromDate);
+	m_StartDate.Setup(this, IDC_MAINT_STARTDATE_EDIT);
 	m_EndDate.Setup(this, IDC_MAINT_ENDDATE_EDIT, TRUE, "End date must be greater or equal to from date.", &m_FromDate);
 	m_Rate.Setup(this, IDC_MAINT_RATE_EDIT);
 	m_Amort.Setup(this, IDC_MAINT_AMORT_EDIT);
@@ -387,6 +388,7 @@ void CMaintenance::InitControls()
 	m_Data.GetSRowCtrl().Add(&m_FromDate, &m_Data.GetIntRec().GetFrom());
 	m_Data.GetSRowCtrl().Add(&m_ToDate, &m_Data.GetIntRec().GetTo());
 	m_Data.GetSRowCtrl().Add(&m_SetDate, &m_Data.GetIntRec().GetSetDate());
+	m_Data.GetSRowCtrl().Add(&m_StartDate, &m_Data.GetIntRec().GetStartDate());
 	m_Data.GetSRowCtrl().Add(&m_EndDate, &m_Data.GetIntRec().GetEndDate());
 	m_Data.GetSRowCtrl().Add(&m_Rate, &m_Data.GetIntRec().GetRate());
 	m_Data.GetSRowCtrl().Add(&m_Amort, &m_Data.GetIntRec().GetAmort());
