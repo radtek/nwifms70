@@ -34,6 +34,7 @@
 #include "refIndexdlg.h"
 #include "PrimeCPMargin.h"
 #include "CPFutureCommDlg.h"
+#include "CPOTCFeeDlg.h"
 #include "FutureFeesDlg.h"
 #include "GiveupFeeDlg.h"
 #include "TraderDlg.h"
@@ -1305,28 +1306,35 @@ void CMaintenance::OnMaintOther()
 																				Dlg.DoModal();
 																			}
 																			else
-																				if(TableName == "NW_GIVEUP_UNIT_COST")
+																				if(TableName == "NW_OTC_FEE_SCHEDULE")
 																				{
-																					CGiveupFeeDlg Dlg;
-
+																					CCPOTCFeeDlg Dlg;
 																					Dlg.m_pData = &GetData();
 																					Dlg.DoModal();
 																				}
 																				else
-																					if(TableName == "NW_TRADERS")
+																					if(TableName == "NW_GIVEUP_UNIT_COST")
 																					{
-																						CTraderDlg Dlg;
-																				
-																						if(Dlg.DoModal() == IDOK)
-																							GetData().GetTraderArr().Modified();
+																						CGiveupFeeDlg Dlg;
+	
+																						Dlg.m_pData = &GetData();
+																						Dlg.DoModal();
 																					}
 																					else
-																						if(TableName == "NW_OPERATIONS")
+																						if(TableName == "NW_TRADERS")
 																						{
-																							COPsDlg Dlg;
-
-																							Dlg.DoModal();
+																							CTraderDlg Dlg;
+																				
+																							if(Dlg.DoModal() == IDOK)
+																								GetData().GetTraderArr().Modified();
 																						}
+																						else
+																							if(TableName == "NW_OPERATIONS")
+																							{
+																								COPsDlg Dlg;
+																								
+																								Dlg.DoModal();
+																							}
 			break;
 	}
 }

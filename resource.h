@@ -199,6 +199,8 @@
 #define IDD_GIVEUPFEE_DIALOG            467
 #define IDD_TRADER_DIALOG               468
 #define IDD_OPERATION_DIALOG            469
+#define IDD_OTC_COMM_SCHEDULE_DIALOG    470
+#define IDD_OTC_FEE_SCHEDULE_DIALOG     470
 #define IDC_ACCOUNT_COMBO               701
 #define IDC_ACCOUNT_GROUP_EDIT          702
 #define IDC_ACCOUNT_COLLATERAL_CHECK    703
@@ -810,6 +812,18 @@
 #define IDC_OPS_ADD_BUTTON              1732
 #define IDC_OPS_UPDATE_BUTTON           1733
 #define IDC_OPS_DELETE_BUTTON           1734
+#define IDC_OTC_CP_COMBO                1735
+#define IDC_OTC_TRANSTYPE_COMBO         1736
+#define IDC_OTC_CURRENCY_COMBO          1737
+#define IDC_OTC_FEETYPE_COMBO           1738
+#define IDC_OTC_FROMDATE_EDIT           1739
+#define IDC_OTC_TODATE_EDIT             1740
+#define IDC_OTC_FEE_EDIT                1741
+#define IDC_OTC_LIST                    1742
+#define IDC_OTC_LOAD_BUTTON             1743
+#define IDC_OTC_ADD_BUTTON              1744
+#define IDC_OTC_UPDATE_BUTTON           1745
+#define IDC_OTC_DELETE_BUTTON           1746
 #define IDC_COUPON_CURRENCY_EDIT        1751
 #define IDC_COUPON_DATE_EDIT            1752
 #define IDC_COUPON_AMOUNT_EDIT          1753
@@ -1026,7 +1040,6 @@
 #define IDC_MAINT_LIQUIDITY_COMBO       2165
 #define IDC_MAINT_SWAPFACTOR_EDIT       2166
 #define IDC_MAINT_CALENDAR_EDIT         2167
-#define IDC_MAINT_ENDDATE_EDIT2         2167
 #define IDC_MAINT_STARTDATE_EDIT        2167
 #define IDC_MAINT_EXCHANGE_COMBO        2168
 #define IDC_MAINT_IMGCODE_EDIT          2169
@@ -2086,7 +2099,9 @@
 #define IDC_FFEE_ACCOUNT_COMBO          4125
 #define IDC_FC_TODATE_EDIT              4126
 #define IDC_FFEE_FROMDATE_EDIT          4127
+#define IDC_OTC_LOW_EDIT                4127
 #define IDC_FC_ETRADE_COMBO             4128
+#define IDC_OTC_HIGH_EDIT               4128
 #define IDC_FC_COMMISSION_EDIT          4129
 #define IDC_FC_LIST                     4130
 #define IDC_FC_LOAD_BUTTON              4131
@@ -2384,7 +2399,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        469
 #define _APS_NEXT_COMMAND_VALUE         33103
-#define _APS_NEXT_CONTROL_VALUE         1735
+#define _APS_NEXT_CONTROL_VALUE         1747
 #define _APS_NEXT_SYMED_VALUE           310
 #endif
 #endif
