@@ -14,25 +14,6 @@ IMPLEMENT_DYNAMIC(CFutureFeesDlg, CDialog)
 CFutureFeesDlg::CFutureFeesDlg(CWnd* pParent /*=NULL*/)
 	: CDialog(CFutureFeesDlg::IDD, pParent)
 {
-	m_Custodian = NULL;
-	m_Account = NULL;
-	m_TransType = NULL;
-	m_FutureType = NULL;
-	m_Currency = NULL;
-}
-
-CFutureFeesDlg::~CFutureFeesDlg()
-{
-	if(m_Custodian)
-		delete m_Custodian;
-	if(m_Account)
-		delete m_Account;
-	if(m_TransType)
-		delete m_TransType;
-	if(m_FutureType)
-		delete m_FutureType;
-	if(m_Currency)
-		delete m_Currency;
 }
 
 void CFutureFeesDlg::DoDataExchange(CDataExchange* pDX)
@@ -57,18 +38,18 @@ BOOL CFutureFeesDlg::IsOK(int nAction)
 			Text = "No Record selected";
 	}
 
-	if(m_Custodian->GetCurSel() < 0)
+	if(m_Custodian.GetCurSel() < 0)
 		Text = "No counterparty selected";
-	if(m_Account->GetCurSel() < 0)
+	if(m_Account.GetCurSel() < 0)
 		Text = "No account selected";
 	
-	if(m_TransType->GetCurSel() < 0)
+	if(m_TransType.GetCurSel() < 0)
 		Text = "No trans_type selected";
 	
-	if(m_Currency->GetCurSel() < 0)
+	if(m_Currency.GetCurSel() < 0)
 		Text = "No currency selected";
 
-	if(m_FutureType->GetCurSel() < 0)
+	if(m_FutureType.GetCurSel() < 0)
 		Text = "No Future Type selected";
 
 	if(m_FromDate.GetData().IsEmpty())
@@ -96,14 +77,14 @@ void CFutureFeesDlg::RowToControls()
 		int Row;
 
 		Row = m_SS.GetSheetCurRow();
-		m_Custodian->SelectString(0, m_SS.GetSheetText(1, Row));
-		m_Account->SelectString(0, m_SS.GetSheetText(2, Row));
-		m_TransType->SelectString(0, m_SS.GetSheetText(3, Row));
-		m_FutureType->SelectString(0, m_SS.GetSheetText(4, Row));
-		m_Currency->SelectString(0, m_SS.GetSheetText(5, Row));
+		m_Custodian.SetData(m_SS.GetSheetText(1, Row));
+		m_Account.SetData(m_SS.GetSheetText(2, Row));
+		m_TransType.SetData(m_SS.GetSheetText(3, Row));
+		m_FutureType.SetData(m_SS.GetSheetText(4, Row));
+		m_Currency.SetData(m_SS.GetSheetText(5, Row));
 		m_FromDate.SetData(m_SS.GetSheetText(6, Row));
 		m_ToDate.SetData(m_SS.GetSheetText(7, Row));
-		m_Fees.SetWindowText(m_SS.GetSheetText(8, Row));
+		m_Fees.SetData(m_SS.GetSheetText(8, Row));
 		m_RowID = m_SS.GetSheetText(9, Row);
 	}
 }
@@ -124,11 +105,11 @@ BOOL CFutureFeesDlg::OnInitDialog()
 	m_SS.SetVisibleRows(14);
 	m_SS.SetVisibleCols(5);
 
-	m_Custodian = (COptComboBox*) new COptComboBox(this, IDC_FFEE_CUSTODIAN_COMBO);
-	m_Account = (COptComboBox*) new COptComboBox(this, IDC_FFEE_ACCOUNT_COMBO);
-	m_TransType = (COptComboBox*) new COptComboBox(this, IDC_FFEE_TRANSTYPE_COMBO);
-	m_FutureType = (COptComboBox*) new COptComboBox(this, IDC_FFEE_FUTURETYPE_COMBO);
-	m_Currency = (COptComboBox*) new COptComboBox(this, IDC_FFEE_CURRENCY_COMBO);
+	m_Custodian.Setup(this, IDC_FFEE_CUSTODIAN_COMBO);
+	m_Account.Setup(this, IDC_FFEE_ACCOUNT_COMBO);
+	m_TransType.Setup(this, IDC_FFEE_TRANSTYPE_COMBO);
+	m_FutureType.Setup(this, IDC_FFEE_FUTURETYPE_COMBO);
+	m_Currency.Setup(this, IDC_FFEE_CURRENCY_COMBO);
 	m_FromDate.Setup(this, IDC_FFEE_FROMDATE_EDIT);
 	m_ToDate.Setup(this, IDC_FFEE_TODATE_EDIT);
 	m_Fees.Setup(this, IDC_FFEE_FEE_EDIT);
@@ -136,12 +117,15 @@ BOOL CFutureFeesDlg::OnInitDialog()
 	BeginWaitCursor();
 
 	m_OraLoader = m_pData->GetOraLoader();
-	m_pData->GetContactList().CopyKeyToComboBox(*m_Custodian);
-	m_pData->GetAccountArr().CopyToComboBox(*m_Account);
-	m_pData->GetFutureTypeArr().CopyToComboBox(*m_FutureType);
-	m_pData->GetCurrencyArr().CopyToComboBox(*m_Currency);
-	m_TransType->AddString("OPTION");
-	m_TransType->AddString(SECURITIES);
+	m_pData->GetContactList().CopyKeyToComboBox(m_Custodian);
+	m_pData->GetAccountArr().CopyToComboBox(m_Account);
+	m_pData->GetFutureTypeArr().CopyToComboBox(m_FutureType);
+	m_pData->GetCurrencyArr().CopyToComboBox(m_Currency);
+	m_TransType.AddString("OPTION");
+	m_TransType.AddString("CDS");
+	m_TransType.AddString("CDX");
+	m_TransType.AddString("INT. SWAP");
+	m_TransType.AddString(SECURITIES);
 
 	this->SetWindowText("Future Fees");
 	OnBnClickedFfeeLoadButton();
@@ -192,20 +176,18 @@ void CFutureFeesDlg::OnBnClickedFfeeAddButton()
 		return;
 
 	CDBRec Rec;
-	CString Text;
 
 	m_OraLoader.Open("SELECT CUSTODIAN, ACC_CODE, TRANS_TYPE, FUTURE_TYPE, CURRENCY, FROM_DATE, "
 					"TO_DATE, FEES FROM SEMAM.NW_FUTURE_FEES ", ODYNASET_DEFAULT);
 	
-	Rec.Add(m_Custodian->GetSelString(Text));
-	Rec.Add(m_Account->GetSelString(Text));
-	Rec.Add(m_TransType->GetSelString(Text));
-	Rec.Add(m_FutureType->GetSelString(Text));
-	Rec.Add(m_Currency->GetSelString(Text));
+	Rec.Add(m_Custodian.GetData());
+	Rec.Add(m_Account.GetData());
+	Rec.Add(m_TransType.GetData());
+	Rec.Add(m_FutureType.GetData());
+	Rec.Add(m_Currency.GetData());
 	Rec.Add(m_FromDate.GetData());
 	Rec.Add(m_ToDate.GetData());
-	m_Fees.GetWindowText(Text);
-	Rec.Add(Text);
+	Rec.Add(m_Fees.GetData());
 
 	m_OraLoader.UpdateRecord(Rec, TRUE);
 	m_SS.AddSheetRow(Rec);
@@ -220,19 +202,17 @@ void CFutureFeesDlg::OnBnClickedFfeeUpdateButton()
 		return;
 
 	CDBRec Rec;
-	CString Text;
 
 	m_OraLoader.Open("SELECT CUSTODIAN, ACC_CODE, TRANS_TYPE, FUTURE_TYPE, CURRENCY, FROM_DATE, "
 					"TO_DATE, FEES FROM SEMAM.NW_FUTURE_FEES WHERE ROWIDTOCHAR(ROWID) = '" + m_RowID + "' ", ODYNASET_DEFAULT);
-	Rec.Add(m_Custodian->GetSelString(Text));
-	Rec.Add(m_Account->GetSelString(Text));
-	Rec.Add(m_TransType->GetSelString(Text));
-	Rec.Add(m_FutureType->GetSelString(Text));
-	Rec.Add(m_Currency->GetSelString(Text));
+	Rec.Add(m_Custodian.GetData());
+	Rec.Add(m_Account.GetData());
+	Rec.Add(m_TransType.GetData());
+	Rec.Add(m_FutureType.GetData());
+	Rec.Add(m_Currency.GetData());
 	Rec.Add(m_FromDate.GetData());
 	Rec.Add(m_ToDate.GetData());
-	m_Fees.GetWindowText(Text);
-	Rec.Add(Text);
+	Rec.Add(m_Fees.GetData());
 
 	m_OraLoader.UpdateRecord(Rec);
 	m_SS.UpdateSheetRow(m_SS.GetSheetCurRow(), Rec);
