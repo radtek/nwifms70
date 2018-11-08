@@ -31,6 +31,8 @@ public:
 	CCntlEdit m_OptSetEdit;
 	CCntlEdit m_ZoneEdit;
 	CCntlEdit m_TimeEdit;
+	CCntlEdit m_Time24Edit;
+	CCntlEdit m_Country;
 	CString m_SetCode;
 	CString m_Title;
 	//}}AFX_DATA
@@ -41,6 +43,7 @@ public:
 	//{{AFX_VIRTUAL(COptSettlementDlg)
 	protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+	void LoadData();
 	//}}AFX_VIRTUAL
 
 // Implementation
@@ -54,6 +57,9 @@ protected:
 	DECLARE_EVENTSINK_MAP()
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
+public:
+	afx_msg void OnBnClickedOptsetClearButton();
+	afx_msg void OnBnClickedOptsetSaveButton();
 };
 
 //{{AFX_INSERT_LOCATION}}

@@ -108,10 +108,10 @@ protected:
 	CString m_RateType;
 	CString m_PmntFreq;
 	CString m_CmpdFreq;
+	CString m_FixedRate;
 	CString m_Issuer;
 	CString m_Method;
 	CString m_SwapFactor;
-	CString m_AdjF;
 	CString m_Status;
 	CString m_Bond;
 	CString m_Accrue;
@@ -189,10 +189,10 @@ public:
 	CString &GetRateType() { return m_RateType; }
 	CString &GetPmntFreq() { return m_PmntFreq; }
 	CString &GetCmpdFreq() { return m_CmpdFreq; }
+	CString &GetFixedRate() { return m_FixedRate; }
 	CString &GetIssuer() { return m_Issuer; }
 	CString &GetMethod() { return m_Method; }
 	CString &GetSwapFactor() { return m_SwapFactor; }
-	CString &GetAdjF() { return m_AdjF; }
 	CString &GetStatus() { return m_Status; }
 	CString &GetBond() { return m_Bond; }
 	CString &GetAccrue() { return m_Accrue; }
@@ -261,10 +261,10 @@ public:
 	void SetRateType(LPCTSTR RateType) { m_RateType = RateType; }
 	void SetPmntFreq(LPCTSTR PmntFreq) { m_PmntFreq = PmntFreq; }
 	void SetCmpdFreq(LPCTSTR CmpdFreq) { m_CmpdFreq = CmpdFreq; }
+	void SetFixedRate(LPCTSTR FixedRate) { m_FixedRate = FixedRate; }
 	void SetIssuer(LPCTSTR Issuer) { m_Issuer = Issuer; }
 	void SetMethod(LPCTSTR Method) { m_Method = Method; }
 	void SetSwapFactor(LPCTSTR SwapFactor) { m_SwapFactor = SwapFactor; }
-	void SetAdjF(LPCTSTR AdjF) { m_AdjF = AdjF; }
 	void SetStatus(LPCTSTR Status) { m_Status = Status; }
 	void SetBond(LPCTSTR Bond) { m_Bond = Bond; }
 	void SetAccrue(LPCTSTR Accrue) { m_Accrue = Accrue; }

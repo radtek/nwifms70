@@ -199,8 +199,9 @@
 #define IDD_GIVEUPFEE_DIALOG            467
 #define IDD_TRADER_DIALOG               468
 #define IDD_OPERATION_DIALOG            469
-#define IDD_OTC_COMM_SCHEDULE_DIALOG    470
 #define IDD_OTC_FEE_SCHEDULE_DIALOG     470
+#define IDD_DIALOG3                     471
+#define IDD_YIELDCURVE_DIALOG           471
 #define IDC_ACCOUNT_COMBO               701
 #define IDC_ACCOUNT_GROUP_EDIT          702
 #define IDC_ACCOUNT_COLLATERAL_CHECK    703
@@ -824,6 +825,7 @@
 #define IDC_OTC_ADD_BUTTON              1744
 #define IDC_OTC_UPDATE_BUTTON           1745
 #define IDC_OTC_DELETE_BUTTON           1746
+#define IDC_MAINT_FIXEDRATE_STATIC      1747
 #define IDC_COUPON_CURRENCY_EDIT        1751
 #define IDC_COUPON_DATE_EDIT            1752
 #define IDC_COUPON_AMOUNT_EDIT          1753
@@ -1049,6 +1051,7 @@
 #define IDC_MAINT_FRA_CHECK             2173
 #define IDC_MAINT_CITICLASS_COMBO       2174
 #define IDC_MAINT_BDC_EDIT              2175
+#define IDC_MAINT_FIXEDRATE_EDIT        2175
 #define IDC_MAINT_FLOAT_INDEX_COMBO     2176
 #define IDC_MAINT_BUCKET_COMBO          2177
 #define IDC_MAINT_CMPD_FRQ_COMBO        2178
@@ -1095,7 +1098,11 @@
 #define IDC_OPTSET_SET_EDIT             2291
 #define IDC_OPTSET_ZONE_EDIT            2292
 #define IDC_OPTSET_TIME_EDIT            2293
-#define IDC_OPTSET_LIST                 2294
+#define IDC_OPTSET_TIME24_EDIT          2294
+#define IDC_OPTSET_COUNTRY_EDIT         2295
+#define IDC_OPTSET_LIST                 2296
+#define IDC_OPTSET_SAVE_BUTTON          2297
+#define IDC_OPTSET_CLEAR_BUTTON         2298
 #define IDC_PASSWORD_EDIT               2301
 #define IDC_NEW_PASSWORD_EDIT           2302
 #define IDC_NEW_PASSWORD_2_EDIT         2303
@@ -2131,6 +2138,17 @@
 #define IDC_GIVEUP_ADD_BUTTON           4190
 #define IDC_GIVEUP_UPDATE_BUTTON        4191
 #define IDC_GIVEUP_DELETE_BUTTON        4192
+#define IDC_YC_NAME_EDIT                4211
+#define IDC_YC_SYMBOL_EDIT              4212
+#define IDC_YC_INDEX_COMBO              4213
+#define IDC_YC_TERM_COMBO               4214
+#define IDC_YC_SOURCE_COMBO             4215
+#define IDC_YC_DEFAULT_COMBO            4216
+#define IDC_YC_TICK_COMBO               4217
+#define IDC_YC_LIST                     4218
+#define IDC_YC_ADD_BUTTON               4219
+#define IDC_YC_UPDATE_BUTTON            4220
+#define IDC_YC_DELETE_BUTTON            4221
 #define ID_UPDATEINFO                   32771
 #define ID_PASSWORD                     32772
 #define ID_TICKET_BLOTTER               32781
@@ -2397,9 +2415,9 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        469
+#define _APS_NEXT_RESOURCE_VALUE        473
 #define _APS_NEXT_COMMAND_VALUE         33103
-#define _APS_NEXT_CONTROL_VALUE         1747
+#define _APS_NEXT_CONTROL_VALUE         1757
 #define _APS_NEXT_SYMED_VALUE           310
 #endif
 #endif

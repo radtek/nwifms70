@@ -35,10 +35,12 @@
 #include "PrimeCPMargin.h"
 #include "CPFutureCommDlg.h"
 #include "CPOTCFeeDlg.h"
+#include "OptSettlementDlg.h"
 #include "FutureFeesDlg.h"
 #include "GiveupFeeDlg.h"
 #include "TraderDlg.h"
 #include "OPsDlg.h"
+#include "YieldCurveDlg.h"
 #include "qdata.h"
 
 
@@ -293,8 +295,8 @@ void CMaintenance::InitControls()
 	m_Formula.LimitText(20);
 	m_Source.Setup(this, IDC_MAINT_SOURCE_EDIT);
 	m_Source.LimitText(20);
+	m_FixedRate.Setup(this, IDC_MAINT_FIXEDRATE_EDIT);
 	m_Par.Setup(this, IDC_MAINT_PARVAL_EDIT);
-	m_AdjF.Setup(this, IDC_MAINT_ADJFACTOR_EDIT);
 	m_SwapFactor.Setup(this, IDC_MAINT_SWAPFACTOR_EDIT);
 	m_Amount.Setup(this, IDC_MAINT_AMOUNT_EDIT);
 	m_Underline.Setup(this, IDC_MAINT_UNDERLINE_EDIT);
@@ -334,6 +336,7 @@ void CMaintenance::InitControls()
 	m_Data.Add(&m_RateType, &m_Data.GetAssetRec().GetRateType());
 	m_Data.Add(&m_PmntFreq, &m_Data.GetAssetRec().GetPmntFreq());
 	m_Data.Add(&m_CmpdFreq, &m_Data.GetAssetRec().GetCmpdFreq());
+	m_Data.Add(&m_FixedRate, &m_Data.GetAssetRec().GetFixedRate());
 	m_Data.Add(&m_Category, &m_Data.GetAssetRec().GetCategory());
 	m_Data.Add(&m_Active, &m_Data.GetAssetRec().GetStatus());
 	m_Data.Add(&m_Bucket, &m_Data.GetAssetRec().GetBucket());
@@ -342,7 +345,6 @@ void CMaintenance::InitControls()
 	m_Data.Add(&m_Issuer, &m_Data.GetAssetRec().GetIssuer());
 	m_Data.Add(&m_Method, &m_Data.GetAssetRec().GetMethod());
 	m_Data.Add(&m_SwapFactor, &m_Data.GetAssetRec().GetSwapFactor());
-	m_Data.Add(&m_AdjF, &m_Data.GetAssetRec().GetAdjF());
 	m_Data.Add(&m_Bond, &m_Data.GetAssetRec().GetBond());
 	m_Data.Add(&m_Accrue, &m_Data.GetAssetRec().GetAccrue());
 	m_Data.Add(&m_PrePaid, &m_Data.GetAssetRec().GetPrePaid());
@@ -435,14 +437,15 @@ BOOL CMaintenance::IsAssetOK(BOOL bAdd)
 
 	OraLoader = GetData().GetOraLoader();
 	Data = m_RateType.GetData();
-	if(Class.Find("CDS") >= 0 || ((Class.Find("EM SWAPS") >= 0 || Class.Find("DM SWAPS") >= 0 || Class.Find("G7 VAR SWAPS") >= 0) && Data == "FIXED"))
+	if(Class.Find("CDS") >= 0 || Class.Find("EM SWAPS") >= 0 || Class.Find("DM SWAPS") >= 0 || Class.Find("SWAPS") >= 0 || Class.Find("G7 VAR SWAPS") >= 0)
 	{
-		if(Class.Find("CDS") >= 0 && m_RedCode.GetWindowTextLength() > 0)
+		if(Data == "FIXED" && m_FixedRate.GetWindowTextLength() <= 0)
+			Text = "No Rate entered";
+
+		if(Class.Find("CDS") >= 0 || Class.Find("EM SWAPS") >= 0 || Class.Find("DM SWAPS") >= 0 || Class.Find("SWAPS") >= 0)
 		{
-		}
-		else
 			if(m_Underline.GetWindowTextLength() <= 0)
-				Text = "Red Code and Underline Asset must be entered for CDS or IRS";
+				Text = "Underline Asset must be entered for CDS or IRS";
 			else
 			{
 				OraLoader.GetSql().Format("SELECT COUNT(*) FROM SEMAM.NW_ASSETS "
@@ -451,6 +454,7 @@ BOOL CMaintenance::IsAssetOK(BOOL bAdd)
 				if(OraLoader.GetCount() <= 0)
 					Text = "Invalid Underline Asset";
 			}
+		}
 	}
 
 	if(Class.Find("EM SWAPS") >= 0 || Class.Find("DM SWAPS") >= 0)
@@ -1335,6 +1339,22 @@ void CMaintenance::OnMaintOther()
 																								
 																								Dlg.DoModal();
 																							}
+																							else
+																								if(TableName == "NW_OPT_SETTLEMENT")
+																								{
+																									COptSettlementDlg Dlg;
+
+																									Dlg.m_OraLoader = GetData().GetOraLoader();
+																									Dlg.DoModal();
+																								}
+																								else
+																									if(TableName == "NW_YIELD_CURVE")
+																									{
+																										CYieldCurveDlg Dlg;
+
+																										Dlg.m_OraLoader = GetData().GetOraLoader();
+																										Dlg.DoModal();
+																									}
 			break;
 	}
 }

@@ -78,8 +78,8 @@ public:
 	CMaskDateEdit m_FxDate;
 	CCntlEdit m_Formula;
 	CCntlEdit m_Source;
+	CNumEdit m_FixedRate;
 	CNumEdit m_Par;
-	CNumEdit m_AdjF;
 	CNumEdit m_SwapFactor;
 	CNumEdit m_Amount;
 	CCntlEdit m_Underline;

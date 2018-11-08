@@ -49,7 +49,7 @@ public:
 	COptComboBox m_Portfolio;
 	COptComboBox m_Custodian;
 	COptComboBox m_Account;
-	CString m_TransNum;
+	CString m_TicketNum;
 
 	CNumEdit m_Amount;
 	CNumEdit m_Price;

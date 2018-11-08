@@ -363,10 +363,14 @@ void CAllocData::LoadAlloc(CRowCtrl &m_Data, const CString DownPayment)
 	{
 		GetOraLoader().GetSql() = "SELECT A.TICKET_NUM, A.PORTFOLIO, A.NOM_AMOUNT, A.CUSTODIAN, A.ACCOUNT, " 
 									+ Price + " \"PRICE\", B.TRANS_NUM \"OPT_BACK\", "	+ DownPayment + 
-									"\"DOWN_PYMNT\", OTHER_FEES "
-									"FROM " + Table + ", SEMAM.NW_TR_TICKETS B "
+									"\"DOWN_PYMNT\", DECODE(SIGN(OTHER_FEES), 1, OTHER_FEES, OTHER_FEE*NVL(ALLOC, 100)/100) \"OTHER_FEES\" "
+									"FROM " + Table + ", SEMAM.NW_TR_TICKETS B, SEMAM.NW_AA_ALLOC C "
 									"WHERE B.PORTFOLIO(+) = A.PORTFOLIO "
 									"AND B.TICKET_NUM(+) = '" + GetTicket().GetUnWindTicket() + "' "
+									"AND C.AA_METHOD(+) = A.AA_METHOD "
+									"AND C.PORTFOLIO(+) = A.PORTFOLIO "
+									"AND C.FROM_DATE(+) <= A.TRADE_DATE "
+									"AND NVL(C.TO_DATE(+), SYSDATE + 100) > A.TRADE_DATE "
 									"AND A.PROCESSED IS NULL "
 									"AND A.TICKET_NUM = '" + GetTicket().GetTicket() + "' ";
 	}
@@ -376,15 +380,27 @@ void CAllocData::LoadAlloc(CRowCtrl &m_Data, const CString DownPayment)
 		{
 			GetOraLoader().GetSql() = "SELECT A.TICKET_NUM, A.PORTFOLIO, A.NOM_AMOUNT, A.CUSTODIAN, "
 										"A.ACCOUNT, " + Price + " \"PRICE\", TO_NUMBER(NULL) \"OPT_BACK\", " 
-										+ DownPayment + "\"DOWN_PYMNT\", OTHER_FEES FROM " + Table + 
-										"WHERE A.TICKET_NUM = '" + GetTicket().GetTicket() + "' ";
+										+ DownPayment + "\"DOWN_PYMNT\", "
+										"DECODE(SIGN(OTHER_FEES), 1, OTHER_FEES, OTHER_FEE*NVL(ALLOC, 100)/100) \"OTHER_FEES\" "
+										"FROM " + Table + ", SEMAM.NW_AA_ALLOC B "
+										"WHERE B.AA_METHOD(+) = A.AA_METHOD "
+										"AND B.PORTFOLIO(+) = A.PORTFOLIO "
+										"AND B.FROM_DATE(+) <= A.TRADE_DATE "
+										"AND NVL(B.TO_DATE(+), SYSDATE + 100) > A.TRADE_DATE "
+										"AND A.TICKET_NUM = '" + GetTicket().GetTicket() + "' ";
 		}
 		else
 		{
 			GetOraLoader().GetSql() = "SELECT A.TICKET_NUM, A.PORTFOLIO, A.NOM_AMOUNT, A.CUSTODIAN, "
 										"A.ACCOUNT, " + Price + " \"PRICE\", TO_NUMBER(NULL) \"OPT_BACK\", " 
-										+ DownPayment + "\"DOWN_PYMNT\", OTHER_FEES FROM " + Table + 
-										"WHERE A.PROCESSED IS NULL "
+										+ DownPayment + "\"DOWN_PYMNT\", "
+										"DECODE(SIGN(OTHER_FEES), 1, OTHER_FEES, OTHER_FEE*NVL(ALLOC, 100)/100) \"OTHER_FEES\" "
+										"FROM " + Table + ", SEMAM.NW_AA_ALLOC B "
+										"WHERE B.AA_METHOD(+) = A.AA_METHOD "
+										"AND B.PORTFOLIO(+) = A.PORTFOLIO "
+										"AND B.FROM_DATE(+) <= A.TRADE_DATE "
+										"AND NVL(B.TO_DATE(+), SYSDATE + 100) > A.TRADE_DATE "
+										"AND A.PROCESSED IS NULL "
 										"AND A.TICKET_NUM = '" + GetTicket().GetTicket() + "' ";
 		}
 	}

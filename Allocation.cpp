@@ -319,7 +319,7 @@ BOOL CAllocation::OnInitDialog()
 	m_RepoInfoSS.SetVisibleCols(6);
 	m_RepoInfoSS.SetVisibleRows(5);
 
-	m_Data.Add(&m_TransNum);
+	m_Data.Add(&m_TicketNum);
 	m_Data.Add(&m_Portfolio, &m_Data.GetInv().GetPortfolio());
 	m_Data.Add(&m_Amount, &m_Data.GetInv().GetNomAmount());
 	m_Data.Add(&m_Custodian, &m_Data.GetInv().GetCustodian());
@@ -328,6 +328,7 @@ BOOL CAllocation::OnInitDialog()
 	m_Data.Add(&m_Data.GetInv().GetLink());
 	m_Data.Add(&m_Data.GetInv().GetDownPymnt());
 	m_Data.Add(&m_OtherFee, &m_Data.GetInv().GetOtherFee());
+
 	m_Data.SetSS(&m_SS);
 	m_Data.SetupAssetInfo();
 
@@ -608,7 +609,8 @@ void CAllocation::Value()
 	m_Data.ComputeValue();
 	
 	m_Price.SetData(m_Data.GetNetPrice());
-	m_OtherFee.SetData(m_Data.GetOtherFee());
+	if(m_Data.GetOtherFee() > 0)
+		m_OtherFee.SetData(m_Data.GetOtherFee());
 	GetDlgItem(IDC_ALLOC_PRINCIPLE_EDIT)->SetWindowText(QData.WriteNumber(m_Data.GetCash(), TRUE, 2));
 	GetDlgItem(IDC_ALLOC_ACCRETION_EDIT)->SetWindowText(QData.WriteNumber(m_Data.GetAccretion(), TRUE, 2));
 	GetDlgItem(IDC_ALLOC_INTEREST_EDIT)->SetWindowText(QData.WriteNumber(m_Data.GetPrePaid(), TRUE, 2));
