@@ -442,7 +442,7 @@ BOOL CMaintenance::IsAssetOK(BOOL bAdd)
 		if(Data == "FIXED" && m_FixedRate.GetWindowTextLength() <= 0)
 			Text = "No Rate entered";
 
-		if(Class.Find("CDS") >= 0 || Class.Find("EM SWAPS") >= 0 || Class.Find("DM SWAPS") >= 0 || Class.Find("SWAPS") >= 0)
+		if(Class.Find("CDS") >= 0 || ((Class.Find("EM SWAPS") >= 0 || Class.Find("DM SWAPS") >= 0 || Class.Find("SWAPS") >= 0) && Data == "FIXED"))
 		{
 			if(m_Underline.GetWindowTextLength() <= 0)
 				Text = "Underline Asset must be entered for CDS or IRS";
