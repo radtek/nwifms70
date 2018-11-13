@@ -85,7 +85,7 @@ public:
 	void SetupAssetInfo();
 	double RepoPrice(double DownPay, double Price);
 	void GenerateRepo();
-	void ComputeValue();
+	void ComputeValue(double OtherFee);
 	int AllocCheckSum(LPCTSTR Portfolio = NULL, double CurrentAmount = 0);
 	double ComputeAllocAmount(LPCTSTR Portfolio = NULL, double CurrentAmount = 0);
 

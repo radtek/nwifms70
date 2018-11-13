@@ -169,9 +169,9 @@ double CAllocData::RepoPrice(double DownPay, double Price)
 	return Price;
 }
 
-void CAllocData::ComputeValue()
+void CAllocData::ComputeValue(double OtherFee)
 {
-	double Fxrate, DownPay, Contracts, OtherFee, Amount;
+	double Fxrate, DownPay, Contracts, Amount;
 	CString Buf, PB;
 	CQData QData;
 
@@ -184,7 +184,7 @@ void CAllocData::ComputeValue()
 	m_Val.SetPrice(GetPrice());
 	Amount = m_Val.ComputeLevAmount(TRUE);
 
-	OtherFee = m_Val.GetSecFees(GetPrice(), GetTicket().GetSecFee() == Y);
+	OtherFee += m_Val.GetSecFees(GetPrice(), GetTicket().GetSecFee() == Y);
 	if(GetTicket().GetOrFee() == Y)
 	{
 		if(m_Par > 0)

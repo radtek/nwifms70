@@ -604,9 +604,15 @@ void CAllocation::OnOK()
 void CAllocation::Value()
 {
 	CQData QData;
+	double OtherFee;
+
+	if(m_OtherFee.GetData().IsEmpty())
+		OtherFee = 0;
+	else
+		OtherFee = atof(QData.RemoveComma(m_OtherFee.GetData()));
 
 	m_Data.UpdateData();
-	m_Data.ComputeValue();
+	m_Data.ComputeValue(OtherFee);
 	
 	m_Price.SetData(m_Data.GetNetPrice());
 	if(m_Data.GetOtherFee() > 0)
