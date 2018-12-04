@@ -494,7 +494,7 @@ void CConfirmView::InitControls()
 	m_Data.Add(&m_RateBasis, &m_Data.GetTicket().GetRateBasis());
 	m_Data.Add(&m_Maturity, &m_Data.GetTicket().GetMaturity());
 	m_Data.Add(&m_Index, &m_Data.GetTicket().GetIndex());
-	m_Data.Add(&m_Formula, &m_Data.GetTicket().GetFormula());
+	m_Data.Add(&m_Formula, &m_Data.GetTicket().GetRepoFormula());
 	m_Data.Add(&m_OriBooking, &m_Data.GetTicket().GetSWBooking());
 	m_Data.Add(&m_OriMaturity, &m_Data.GetTicket().GetSWMaturity());
 	m_Data.Add(&m_FxAcct, &m_Data.GetTicket().GetFxAcc());
@@ -534,6 +534,7 @@ void CConfirmView::InitControls()
 	m_Data.Add(&m_AssetDesc, &m_Data.GetTicket().GetAssetDesc());
 	m_Data.Add(&m_AssetCurr, &m_Data.GetTicket().GetAssetCurr());
 	m_Data.Add(&m_Data.GetTicket().GetAssetClass());
+	m_Data.Add(&m_Data.GetFormula());
 	m_Data.Add(&m_Rev);
 
 	m_Data.GetSRowCtrl().Add(&m_InvAsset, &m_Data.GetInv().GetAsset());

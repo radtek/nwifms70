@@ -128,7 +128,7 @@ protected:
 	CString	m_RateBasis;
 	CString	m_Maturity;
 	CString	m_Index;
-	CString m_Formula;
+	CString m_RepoFormula;
 	CString m_SWBooking;
 	CString m_SWMaturity;
     CString	m_FxAcc;
@@ -216,7 +216,7 @@ public:
 	CString &GetRateBasis() { return m_RateBasis; }
 	CString &GetMaturity() { return m_Maturity; }
 	CString &GetIndex() { return m_Index; }
-	CString &GetFormula() { return m_Formula; }
+	CString &GetRepoFormula() { return m_RepoFormula; }
 	CString &GetSWBooking() { return m_SWBooking; }
 	CString &GetSWMaturity() { return m_SWMaturity; }
     CString &GetFxAcc() { return m_FxAcc; }
@@ -298,7 +298,7 @@ public:
 	void SetRateBasis(LPCTSTR RateBasis) { m_RateBasis = RateBasis; }
 	void SetMaturity(LPCTSTR Maturity) { m_Maturity = Maturity; }
 	void SetIndex(LPCTSTR Index) { m_Index = Index; }
-	void SetFormula(LPCTSTR Formula) { m_Formula = Formula; }
+	void SetRepoFormula(LPCTSTR RepoFormula) { m_RepoFormula = RepoFormula; }
 	void SetSWBooking(LPCTSTR SWBooking) { m_SWBooking = SWBooking; }
 	void SetSWMaturity(LPCTSTR SWMaturity) { m_SWMaturity = SWMaturity; }
 	void SetFxAcc(LPCTSTR FxAcc ) { m_FxAcc = FxAcc; }

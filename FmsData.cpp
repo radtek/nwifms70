@@ -100,17 +100,16 @@ int CFmsTicketData::LoadTickets()
 	if(Rec.GetSize() <= 0)
 		return -1;
 
-	Sql = "SELECT TRANS_NUM, PORTFOLIO, TICKET_NUM, COUNTERPARTY, ASSET_CODE, TRADER_INI, TRADE_DATE, "
-			"VALUE_DATE, TRANS_TYPE, TRANS_DIRECTION, NOM_AMOUNT, PRICE, CURRENCY, FXRATE, CON_CODE, "
-			"DEAL_TYPE, EXERCISE_PRICE, EXERCISE_DATE, OPT_EXPIRATION, FX_DATE, OPT_TICK, OPT_SET_CODE, "
-			"OPT_SET_CODE2, SET_CONVENTION, OPT_ID, EURO_OPT, OPT_AUTO, BR_FEES, A.SOFTDOLLAR, LEV_RATE, "
-			"VAR, TR_RATE, RATE_BASIS, MATURITY_DATE, FLOAT_RATE_INDEX, FLOAT_RATE_FORMULA, "
-			"ORIG_SW_BOOKING, ORIG_SW_MATURITY, FX_ACCNUM, USD_ACCNUM, PFU, NEW_ISSUE, CUSTODIAN, "
-			"OPTION_BACKING, TRANS_SEQ, HAN_DETAIL1, HAN_DETAIL2, CP_TRADE_ID, DOC_REQ, DOC_RECVD, WI, "
-			"CONFIRM, SWAP_TICKET, DELIVERY_DATE, MARGIN, MARGIN_CURRENCY, MARGIN_AMOUNT, LISTED, FUNDED_SWAP, "
-			"BINARY, DV01, BEST_EXECUTION, SHORT_SALE, A.CSPB_SHORT, CANCEL_TICKET, CORRECT_TICKET, "
-			"SEC_FEE, OR_FEE, ETRADE, BOOKER, TO_CHAR(BOOK_DATE, 'MM/DD/YYYY HH24:MI:SS'), "
-			"TR_VERSION, ASS_DESC, ASS_CURRENCY, ASS_INDUSTRY "
+	Sql = "SELECT TRANS_NUM, PORTFOLIO, TICKET_NUM, COUNTERPARTY, ASSET_CODE, TRADER_INI, TRADE_DATE, VALUE_DATE, "
+			"TRANS_TYPE, TRANS_DIRECTION, NOM_AMOUNT, PRICE, CURRENCY, FXRATE, CON_CODE, DEAL_TYPE, EXERCISE_PRICE, "
+			"EXERCISE_DATE, OPT_EXPIRATION, FX_DATE, OPT_TICK, OPT_SET_CODE, OPT_SET_CODE2, SET_CONVENTION, OPT_ID, "
+			"EURO_OPT, OPT_AUTO, BR_FEES, A.SOFTDOLLAR, LEV_RATE, VAR, TR_RATE, RATE_BASIS, MATURITY_DATE, "
+			"FLOAT_RATE_INDEX, FLOAT_RATE_FORMULA, ORIG_SW_BOOKING, ORIG_SW_MATURITY, FX_ACCNUM, USD_ACCNUM, PFU, "
+			"NEW_ISSUE, CUSTODIAN, OPTION_BACKING, TRANS_SEQ, HAN_DETAIL1, HAN_DETAIL2, CP_TRADE_ID, DOC_REQ, "
+			"DOC_RECVD, WI, CONFIRM, SWAP_TICKET, DELIVERY_DATE, MARGIN, MARGIN_CURRENCY, MARGIN_AMOUNT, LISTED, "
+			"FUNDED_SWAP, BINARY, DV01, BEST_EXECUTION, SHORT_SALE, A.CSPB_SHORT, CANCEL_TICKET, CORRECT_TICKET, "
+			"SEC_FEE, OR_FEE, ETRADE, BOOKER, TO_CHAR(BOOK_DATE, 'MM/DD/YYYY HH24:MI:SS'), TR_VERSION, ASS_DESC, "
+			"ASS_CURRENCY, ASS_INDUSTRY, ASS_FLOAT_FORMULA "
 			"FROM SEMAM.NW_TR_TICKETS A, SEMAM.NW_ASSETS B "
 			"WHERE B.ASS_CODE(+) = A.ASSET_CODE ";
 	
@@ -144,31 +143,29 @@ void CFmsTicketData::LoadSheet()
 	if(!IsReady())
 		return;
 
-	GetOraLoader().GetSql().Format("SELECT INV_NUM, ASSET_CODE, TR_DESC, NOM_AMOUNT, "
-					"ACTUAL_VDATE, ACTUAL_CLOSING, POST_DATE, CURRENCY, FOREX_REF_NUM, "
-					"CROSS_RATE, CASH_AMOUNT, INT_AMOUNT, ACC_CODE, ASSIGN_CP, ASSIGN_CT "
-					"FROM SEMAM.NW_TR_INV WHERE TRANS_NUM = %s ", (LPCTSTR) GetKey());
+	GetOraLoader().GetSql().Format("SELECT INV_NUM, ASSET_CODE, TR_DESC, NOM_AMOUNT, ACTUAL_VDATE, "
+								"ACTUAL_CLOSING, POST_DATE, CURRENCY, FOREX_REF_NUM, CROSS_RATE, "
+								"CASH_AMOUNT, INT_AMOUNT, ACC_CODE, ASSIGN_CP, ASSIGN_CT "
+								"FROM SEMAM.NW_TR_INV WHERE TRANS_NUM = %s ", (LPCTSTR) GetKey());
 	if(GetOraLoader().Open())
 		GetOraLoader().LoadRowCtrl(GetSRowCtrl(), TRUE);
 }
 
 void CFmsTicketData::SetHeaders()
 {
-	GetOraLoader().GetSql() = "SELECT TRANS_NUM, PORTFOLIO, TICKET_NUM, COUNTERPARTY, ASSET_CODE, "
-								"TRADER_INI, TRADE_DATE, VALUE_DATE, TRANS_TYPE, TRANS_DIRECTION, "
-								"NOM_AMOUNT, PRICE, CURRENCY, FXRATE, CON_CODE, DEAL_TYPE, "
-								"EXERCISE_PRICE, EXERCISE_DATE, OPT_EXPIRATION, FX_DATE, OPT_TICK, "
-								"OPT_SET_CODE, OPT_SET_CODE2, SET_CONVENTION, OPT_ID, EURO_OPT, "
-								"OPT_AUTO, BR_FEES, A.SOFTDOLLAR, LEV_RATE, VAR, TR_RATE, "
-								"RATE_BASIS, MATURITY_DATE, FLOAT_RATE_INDEX, FLOAT_RATE_FORMULA, "
-								"ORIG_SW_BOOKING, ORIG_SW_MATURITY, FX_ACCNUM, USD_ACCNUM, PFU, "
-								"NEW_ISSUE, CUSTODIAN, OPTION_BACKING, TRANS_SEQ, HAN_DETAIL1, "
-								"HAN_DETAIL2, CP_TRADE_ID, DOC_REQ, DOC_RECVD, WI, CONFIRM, "
-								"SWAP_TICKET, DELIVERY_DATE, MARGIN, MARGIN_CURRENCY, MARGIN_AMOUNT, "
-								"LISTED, FUNDED_SWAP, BINARY, DV01, BEST_EXECUTION, SHORT_SALE, "
-								"A.CSPB_SHORT, CANCEL_TICKET, CORRECT_TICKET, SEC_FEE, OR_FEE, "
-								"ETRADE, BOOKER, BOOK_DATE, TR_VERSION, ASS_DESC, ASS_CURRENCY, "
-								"ASS_INDUSTRY "
+	GetOraLoader().GetSql() = "SELECT TRANS_NUM, PORTFOLIO, TICKET_NUM, COUNTERPARTY, ASSET_CODE, TRADER_INI, "
+								"TRADE_DATE, VALUE_DATE, TRANS_TYPE, TRANS_DIRECTION, NOM_AMOUNT, PRICE, "
+								"CURRENCY, FXRATE, CON_CODE, DEAL_TYPE, EXERCISE_PRICE, EXERCISE_DATE, "
+								"OPT_EXPIRATION, FX_DATE, OPT_TICK, OPT_SET_CODE, OPT_SET_CODE2, "
+								"SET_CONVENTION, OPT_ID, EURO_OPT, OPT_AUTO, BR_FEES, A.SOFTDOLLAR, LEV_RATE, "
+								"VAR, TR_RATE, RATE_BASIS, MATURITY_DATE, FLOAT_RATE_INDEX, FLOAT_RATE_FORMULA, "
+								"ORIG_SW_BOOKING, ORIG_SW_MATURITY, FX_ACCNUM, USD_ACCNUM, PFU, NEW_ISSUE, "
+								"CUSTODIAN, OPTION_BACKING, TRANS_SEQ, HAN_DETAIL1, HAN_DETAIL2, CP_TRADE_ID, "
+								"DOC_REQ, DOC_RECVD, WI, CONFIRM, SWAP_TICKET, DELIVERY_DATE, MARGIN, "
+								"MARGIN_CURRENCY, MARGIN_AMOUNT, LISTED, FUNDED_SWAP, BINARY, DV01, BEST_EXECUTION, "
+								"SHORT_SALE, A.CSPB_SHORT, CANCEL_TICKET, CORRECT_TICKET, SEC_FEE, OR_FEE, "
+								"ETRADE, BOOKER, BOOK_DATE, TR_VERSION, ASS_DESC, ASS_CURRENCY, ASS_INDUSTRY, "
+								"ASS_FLOAT_FORMULA "
 								"FROM SEMAM.NW_TR_TICKETS A, SEMAM.NW_ASSETS B "
 								"WHERE B.ASS_CODE(+) = A.ASSET_CODE ";
 
@@ -392,10 +389,9 @@ void CFmsTicketData::SetupAssetInfo(CAssetVal &Val)
 	else
 		Fx = GetTicket().GetFxRate();
 
-	Val.Setup(GetOraLoader(), GetTicket().GetTransType(), GetTicket().GetDir(), 
-			GetInv().GetAsset(), GetTicket().GetValueDate(), Date, GetInv().GetNomAmount(), 
-			GetTicket().GetPrice(), Fx, GetTicket().GetRateBasis(), GetTicket().GetRate(), 
-			GetTicket().GetFormula());
+	Val.Setup(GetOraLoader(), GetTicket().GetTransType(), GetTicket().GetDir(), GetInv().GetAsset(), 
+				GetTicket().GetValueDate(), Date, GetInv().GetNomAmount(), GetTicket().GetPrice(), 
+				Fx, GetFormula(), GetTicket().GetRateBasis(), GetTicket().GetRate(), GetTicket().GetRepoFormula());
 }
 
 void CFmsTicketData::Compute()
@@ -409,31 +405,27 @@ void CFmsTicketData::Compute()
 	else
 		m_RecCurrency = GetTicket().GetCurrency();
 
-	if(strcmp(Val.GetType(), REPO) == 0 || strcmp(Val.GetType(), LEVERAGE) == 0 ||
-		strcmp(Val.GetType(), BORROW) == 0 || strcmp(Val.GetType(), LEND) == 0 || 
-		strcmp(Val.GetType(), INTSWAP) == 0)
+	if(Val.GetType() == REPO || Val.GetType() == LEVERAGE || Val.GetType() == BORROW || 
+		Val.GetType() == LEND || Val.GetType() == INTSWAP)
 	{
-		if(strcmp(Val.GetType(), LEVERAGE) == 0)
+		if(Val.GetType() == LEVERAGE)
 			SetCash(Val.GetNomAmount()/Val.GetFxRate());
 		else 
-			if(strcmp(Val.GetType(), INTSWAP) == 0)
+			if(Val.GetType() == INTSWAP)
 				SetCash(0);
 			else
 				SetCash(Val.GetLevAmount()/Val.GetFxRate());
 
 		SetAccretion(0);
 		SetPrePaid(0);
-		if(strcmp(GetInv().GetTrDesc(), BOOKING) == 0 || 
-			(strcmp(GetInv().GetTrDesc(), MATURITY) == 0 && 
-			 GetInv().GetValueDate().IsEmpty() && GetTicket().GetMaturity().IsEmpty()))
+		if(GetInv().GetTrDesc() == BOOKING || (GetInv().GetTrDesc() == MATURITY && GetInv().GetValueDate().IsEmpty() && GetTicket().GetMaturity().IsEmpty()))
 			SetPrePaid(0);
 		else
 		{
-			if(strcmp(Val.GetType(), INTSWAP)) // if other than interest rate swap
+			if(Val.GetType() != INTSWAP) // if other than interest rate swap
 			{
-				if(strlen(Val.GetFormula()) > 0)
-					SetPrePaid(Val.GetDailyLevInterest(GetOraLoader(), GetTicket().GetPortfolio(), 
-								GetTicket().GetTransNum(), GetInvNum())/Val.GetFxRate());
+				if(strlen(Val.GetRepoFormula()) > 0)
+					SetPrePaid(Val.GetDailyLevInterest(GetOraLoader(), GetTicket().GetPortfolio(), GetTicket().GetTransNum(), GetInvNum())/Val.GetFxRate());
 				else
 					SetPrePaid(Val.GetLevInterest()/Val.GetFxRate());
 			}
@@ -441,7 +433,7 @@ void CFmsTicketData::Compute()
 	}
 	else
 	{
-		if(strcmp(Val.GetType(), FOREX) == 0 && strcmp(GetInv().GetTrDesc(), FXBKNG) == 0)
+		if(Val.GetType() == FOREX && GetInv().GetTrDesc() == FXBKNG)
 			SetCash(Val.GetNomAmount());
 		else
 			SetCash(Val.GetValue()/Val.GetFxRate());

@@ -506,7 +506,7 @@ void CTicketProcess::InitControls()
 	m_Data.Add(&m_RepoCT, &pTicket->GetRepoCT());
 	m_Data.Add(&m_RepoType, &pTicket->GetRepoType());
 	m_Data.Add(&m_Index, &m_Data.GetTicket().GetIndex());
-	m_Data.Add(&m_Formula, &m_Data.GetTicket().GetFormula());
+	m_Data.Add(&m_Formula, &m_Data.GetTicket().GetRepoFormula());
 	m_Data.Add(&m_USDAcc, &m_Data.GetTicket().GetUSDAcc());
 	m_Data.Add(&m_FxAcc, &m_Data.GetTicket().GetFxAcc());
 	m_Data.Add(&m_PFU, &m_Data.GetTicket().GetPFU());
@@ -561,6 +561,7 @@ void CTicketProcess::InitControls()
 	m_Data.Add(&pTicket->GetCPTradeID());
 	m_Data.Add(&m_sImgID);
 	m_Data.Add(&m_Rev);
+	m_Data.Add(&m_Data.GetFormula());
 
 	CRawInvRec *pInv;
 	pInv = &m_Data.GetRawInv();
@@ -1019,7 +1020,7 @@ void CTicketProcess::OnProcessAllocation()
 
 	m_Data.UpdateData();
 	m_Data.SetKey();
-	Dlg.m_Data.Setup(GetData().GetOraLoader(), m_Data.GetRawTicket(), m_Data.GetTicket().GetFormula());
+	Dlg.m_Data.Setup(GetData().GetOraLoader(), m_Data.GetRawTicket(), m_Data.GetTicket().GetRepoFormula());
 //	m_Data.GetRawTicket().GetNetPrice() = m_NetPrice.GetData();
 	Dlg.m_Data.GetTicket() = m_Data.GetRawTicket();
 	Dlg.m_DownPay = m_DownPymnt.GetData();

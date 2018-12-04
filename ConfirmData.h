@@ -21,6 +21,7 @@ protected:
 	CInvRec m_Inv;
 	CString m_RecCurrency;
 	CString m_InvNum;
+	CString m_Formula;
 	BOOL m_bFindExact;
 	double m_Accretion;
 	double m_Cash;
@@ -53,6 +54,7 @@ public:
 	double GetPrePaid() { return m_PrePaid; }
 	LPCTSTR GetInvNum() { return (LPCTSTR ) m_InvNum; }
 	void SetInvNum(LPCTSTR InvNum) { m_InvNum = InvNum; }
+	CString &GetFormula() { return m_Formula; }
 	LPCTSTR GetRecCurrency() { return (LPCTSTR ) m_RecCurrency; }
 
 	BOOL IsReady();

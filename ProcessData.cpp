@@ -253,7 +253,7 @@ BOOL CProcessData::GenerateTicketRec(CRawInvRec &RawInvRec)
 		GetTicket().SetRateBasis(EMPTYSTRING);
 		GetTicket().SetMaturity(EMPTYSTRING);
 		GetTicket().SetIndex(EMPTYSTRING);
-		GetTicket().SetFormula(EMPTYSTRING);
+		GetTicket().SetRepoFormula(EMPTYSTRING);
 	}
 
 	GetTicket().SetSWBooking(GetRawTicket().GetSWBooking());
@@ -338,7 +338,7 @@ int CProcessData::LoadTickets()
 			"A.ETRADE, A.BOOKER, TO_CHAR(A.BOOK_DATE, 'MM/DD/YYYY HH24:MI:SS'), A.ASSET_COUNTRY, A.ASSET_COMMON_CODE, "
 			"A.ASSET_MSTC_CODE, A.ASSET_ISIN_CODE, A.ASSET_SEDOL_NUM, A.ASSET_CLASS, A.ASSET_IND_AREA, A.ASSET_CATEGORY, "
 			"A.ASSET_BUCKET, A.SOURCE, A.ASSET_COUPON, A.ASSET_MATURITY, B.ASS_PAR_VALUE, A.IMG_NOMINAL, A.CP_TRADE_ID, "
-			"A.IMAGINE_ORDER_ID, REV "
+			"A.IMAGINE_ORDER_ID, REV, ASS_FLOAT_FORMULA "
 			"FROM SEMAM.NW_RAW_TICKETS A, SEMAM.NW_ASSETS B, SEMAM.NW_CURRENCY C "
 			"WHERE B.ASS_CODE(+) = A.ASSET_CODE "
 			"AND C.CURRENCY(+) = B.ASS_CURRENCY2 "
@@ -359,7 +359,7 @@ int CProcessData::LoadTickets()
 			"A.OR_FEE, A.ETRADE, A.BOOKER, TO_CHAR(A.BOOK_DATE, 'MM/DD/YYYY HH24:MI:SS'), A.ASSET_COUNTRY, A.ASSET_COMMON_CODE, "
 			"A.ASSET_MSTC_CODE, A.ASSET_ISIN_CODE, A.ASSET_SEDOL_NUM, A.ASSET_CLASS, A.ASSET_IND_AREA, A.ASSET_CATEGORY, "
 			"A.ASSET_BUCKET, A.SOURCE, A.ASSET_COUPON, A.ASSET_MATURITY, B.ASS_PAR_VALUE, A.IMG_NOMINAL, A.CP_TRADE_ID, "
-			"A.IMAGINE_ORDER_ID, REV "
+			"A.IMAGINE_ORDER_ID, REV, ASS_FLOAT_FORMULA "
 			"FROM SEMAM.NW_RAW_TICKETS A, SEMAM.NW_ASSETS B, SEMAM.NW_CURRENCY C "
 			"WHERE B.ASS_CODE(+) = A.ASSET_CODE "
 			"AND C.CURRENCY(+) = B.ASS_CURRENCY2 "
@@ -628,9 +628,9 @@ void CProcessData::SetupAssetInfo()
 	Date = GetRawTicket().GetMaturity().IsEmpty() ? GetRawTicket().GetValueDate() : GetRawTicket().GetMaturity();
 	if(!Date.IsEmpty())
 		m_Val.Setup(GetOraLoader(), GetRawTicket().GetTransType(), GetRawTicket().GetDir(), 
-					GetRawTicket().GetAsset(), GetRawTicket().GetValueDate(), Date, 
-					Amount, Price, Fxrate, GetRawTicket().GetRateBasis(), LevRate, 
-					GetTicket().GetFormula());
+					GetRawTicket().GetAsset(), GetRawTicket().GetValueDate(), Date, Amount, 
+					Price, Fxrate, GetFormula(), GetRawTicket().GetRateBasis(), LevRate, 
+					GetTicket().GetRepoFormula());
 }
 
 double CProcessData::GetParValue()

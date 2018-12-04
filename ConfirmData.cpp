@@ -140,7 +140,7 @@ int CConfirmData::LoadTickets()
 								"MARGIN_AMOUNT, LISTED, FUNDED_SWAP, BINARY, DV01, BEST_EXECUTION, SHORT_SALE, A.CSPB_SHORT, "
 								"CANCEL_TICKET, CORRECT_TICKET, SEC_FEE, OR_FEE, ETRADE, BOOKER, "
 								"TO_CHAR(BOOK_DATE, 'MM/DD/YYYY HH24:MI:SS'), TR_VERSION, ASS_DESC, ASS_CURRENCY, "
-								"ASS_INDUSTRY, REV "
+								"ASS_INDUSTRY, ASS_FLOAT_FORMULA, REV "
 								"FROM SEMAM.NW_TR_TICKETS A, SEMAM.NW_ASSETS B, SEMAM.NW_CURRENCY C "
 								"WHERE B.ASS_CODE(+) = A.ASSET_CODE "
 								"AND C.CURRENCY(+) = B.ASS_CURRENCY2 ";
@@ -180,7 +180,7 @@ void CConfirmData::SetHeaders()
 								"CONFIRM, SWAP_TICKET, DELIVERY_DATE, MARGIN, MARGIN_CURRENCY, MARGIN_AMOUNT, LISTED, "
 								"FUNDED_SWAP, BINARY, DV01, BEST_EXECUTION, SHORT_SALE, A.CSPB_SHORT, CANCEL_TICKET, "
 								"CORRECT_TICKET, SEC_FEE, OR_FEE, ETRADE, BOOKER, BOOK_DATE, TR_VERSION, ASS_DESC, "
-								"ASS_CURRENCY, ASS_INDUSTRY, REV "
+								"ASS_CURRENCY, ASS_INDUSTRY, ASS_FLOAT_FORMULA, REV "
 								"FROM SEMAM.NW_TR_TICKETS A, SEMAM.NW_ASSETS B, SEMAM.NW_CURRENCY C "
 								"WHERE B.ASS_CODE(+) = A.ASSET_CODE "
 								"AND 1 = 2 ";
@@ -379,8 +379,7 @@ void CConfirmData::SetupAssetInfo(CAssetVal &Val)
 	CQData QData;
 	CString Date, Fx;
 
-	if(GetTicket().GetTransType() == REPO || GetTicket().GetTransType() == LEVERAGE || 
-		GetTicket().GetTransType() == INTSWAP)
+	if(GetTicket().GetTransType() == REPO || GetTicket().GetTransType() == LEVERAGE || GetTicket().GetTransType() == INTSWAP)
 	{
 		if(GetInv().GetTrDesc() == BOOKING)
 			Date = GetTicket().GetMaturity();
@@ -403,10 +402,9 @@ void CConfirmData::SetupAssetInfo(CAssetVal &Val)
 	else
 		Fx = GetTicket().GetFxRate();
 
-	Val.Setup(GetOraLoader(), GetTicket().GetTransType(), GetTicket().GetDir(), 
-			GetInv().GetAsset(), GetTicket().GetValueDate(), Date, GetInv().GetNomAmount(), 
-			GetTicket().GetPrice(), Fx, GetTicket().GetRateBasis(), GetTicket().GetRate(), 
-			GetTicket().GetFormula());
+	Val.Setup(GetOraLoader(), GetTicket().GetTransType(), GetTicket().GetDir(), GetInv().GetAsset(), 
+				GetTicket().GetValueDate(), Date, GetInv().GetNomAmount(), GetTicket().GetPrice(), 
+				Fx, GetFormula(), GetTicket().GetRateBasis(), GetTicket().GetRate(), GetTicket().GetRepoFormula());
 }
 
 void CConfirmData::Compute()
@@ -440,7 +438,7 @@ void CConfirmData::Compute()
 		{
 			if(strcmp(Val.GetType(), INTSWAP)) // if other than interest rate swap
 			{
-				if(strlen(Val.GetFormula()) > 0)
+				if(strlen(Val.GetRepoFormula()) > 0)
 					SetPrePaid(Val.GetDailyLevInterest(GetOraLoader(), GetTicket().GetPortfolio(), 
 								GetTicket().GetTransNum(), GetInvNum())/Val.GetFxRate());
 				else

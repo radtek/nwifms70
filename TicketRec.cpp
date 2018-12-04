@@ -193,7 +193,7 @@ void CTicketRec::Copy(CTicketRec &TicketRec)
 	SetRateBasis(TicketRec.GetRateBasis());
 	SetMaturity(TicketRec.GetMaturity());
 	SetIndex(TicketRec.GetIndex());
-	SetFormula(TicketRec.GetFormula());
+	SetRepoFormula(TicketRec.GetRepoFormula());
 	SetSWBooking(TicketRec.GetSWBooking());
 	SetSWMaturity(TicketRec.GetSWMaturity());
     SetFxAcc(TicketRec.GetFxAcc());
@@ -306,7 +306,7 @@ void CTicketRec::ToDBRec(CDBRec &Rec)
 	Rec.Add(GetRateBasis());
 	Rec.Add(GetMaturity());
 	Rec.Add(GetIndex());
-	Rec.Add(GetFormula());
+	Rec.Add(GetRepoFormula());
 	Rec.Add(GetSWBooking());
 	Rec.Add(GetSWMaturity());
     Rec.Add(GetFxAcc());
@@ -412,7 +412,7 @@ BOOL CTicketRec::UpdateFloatRepoRateRec(COraLoader &OraLoader, BOOL bDelete)
 	Count = OraLoader.GetCount();
 
 	if(!bDelete && (GetTransType() == REPO || GetTransType() == LEVERAGE) &&
-		(GetFormula() == "DAILY FLOAT" || GetFormula() == "DAILY FLOAT A")) // If daily repo, then add or modify
+		(GetRepoFormula() == "DAILY FLOAT" || GetRepoFormula() == "DAILY FLOAT A")) // If daily repo, then add or modify
 	{
 		OraLoader.GetSql().Format("SELECT COUNT(*) FROM SEMAM.NW_REPO_RATES "
 							 "WHERE TRANS_NUM = %s ", GetTransNum());
