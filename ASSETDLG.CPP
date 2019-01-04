@@ -162,7 +162,7 @@ void CAssetDlg::SetControls(BOOL bAsset)
 	else
 	{
 		m_AssetEdit.SetData(p);
-		m_AssetDescEdit.SetData(p);		
+		m_AssetDescEdit.SetData(p);
 	}
 }
 
@@ -373,7 +373,11 @@ void CAssetDlg::OnDblClickItemList(long Col, long Row)
 void CAssetDlg::OnDblClickAssetdlgHoldingList(long Col, long Row)
 {
 	if(Row > 0 && Row <= m_HoldingSS.GetSheetRows())
+	{
 		m_TicketEdit.SetData(m_HoldingSS.GetSheetText(4, Row));
+		m_TransTypeCombo.SetData(m_HoldingSS.GetSheetText(3, Row));
+		EnableButtons(m_SS.GetSheetCurRow() > 0);
+	}
 	else
 		m_TicketEdit.SetData(EMPTYSTRING);
 }
