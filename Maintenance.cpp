@@ -41,6 +41,7 @@
 #include "TraderDlg.h"
 #include "OPsDlg.h"
 #include "YieldCurveDlg.h"
+#include "categorydlg.h"
 #include "qdata.h"
 
 
@@ -1160,18 +1161,6 @@ void CMaintenance::OnMaintOther()
 						Dlg.m_OraLoader = GetData().GetOraLoader();
 						Dlg.DoModal();
 					}
-					else
-					{
-						CFourField Four;
-						Four.m_Data.Setup(GetData().GetOraLoader(), NULL, OtherDlg.m_TableSpace, TableName, OtherDlg.m_PreLoad, OtherDlg.m_Key, OtherDlg.m_Key2);
-						Four.DoModal();
-					
-						if(Four.m_bModified && OtherDlg.m_PreLoad == 'Y')
-						{
-							if(TableName == "NW_INV_STRATEGIES")
-								GetData().GetCategoryArr().Modified();
-						}
-					}
 			break;
 		default:
 			if(TableName == "NW_CASH_ACCOUNTS")
@@ -1287,74 +1276,84 @@ void CMaintenance::OnMaintOther()
 																	Dlg.DoModal();
 																}
 																else
-																	if(TableName == "NW_REF_IDX")
+																	if(TableName == "NW_INV_STRATEGIES")
 																	{
-																		CRefIndexDlg Dlg;
-																
-																		Dlg.DoModal();
+																		CCategoryDlg Dlg;
+
+																		Dlg.m_pData = &GetData();
+																		if(Dlg.DoModal() == IDOK && Dlg.m_bModified)
+																			GetData().GetCategoryArr().Modified();
 																	}
 																	else
-																		if(TableName == "NW_FUTURE_COMM_SCHEDULE")
+																		if(TableName == "NW_REF_IDX")
 																		{
-																			CCPFutureCommDlg Dlg;
+																			CRefIndexDlg Dlg;
 																	
-																			Dlg.m_pData = &GetData();
 																			Dlg.DoModal();
 																		}
 																		else
-																			if(TableName == "NW_FUTURE_FEES")
+																			if(TableName == "NW_FUTURE_COMM_SCHEDULE")
 																			{
-																				CFutureFeesDlg Dlg;
-
+																				CCPFutureCommDlg Dlg;
+																	
 																				Dlg.m_pData = &GetData();
 																				Dlg.DoModal();
 																			}
 																			else
-																				if(TableName == "NW_OTC_FEE_SCHEDULE")
+																				if(TableName == "NW_FUTURE_FEES")
 																				{
-																					CCPOTCFeeDlg Dlg;
+																					CFutureFeesDlg Dlg;
+
 																					Dlg.m_pData = &GetData();
 																					Dlg.DoModal();
 																				}
 																				else
-																					if(TableName == "NW_GIVEUP_UNIT_COST")
+																					if(TableName == "NW_OTC_FEE_SCHEDULE")
 																					{
-																						CGiveupFeeDlg Dlg;
-	
+																						CCPOTCFeeDlg Dlg;
+										
 																						Dlg.m_pData = &GetData();
 																						Dlg.DoModal();
 																					}
 																					else
-																						if(TableName == "NW_TRADERS")
+																						if(TableName == "NW_GIVEUP_UNIT_COST")
 																						{
-																							CTraderDlg Dlg;
-																				
-																							if(Dlg.DoModal() == IDOK)
-																								GetData().GetTraderArr().Modified();
+																							CGiveupFeeDlg Dlg;
+
+																							Dlg.m_pData = &GetData();
+																							Dlg.DoModal();
 																						}
 																						else
-																							if(TableName == "NW_OPERATIONS")
+																							if(TableName == "NW_TRADERS")
 																							{
-																								COPsDlg Dlg;
-																								
-																								Dlg.DoModal();
+																								CTraderDlg Dlg;
+															
+																								if(Dlg.DoModal() == IDOK)
+																									GetData().GetTraderArr().Modified();
 																							}
 																							else
-																								if(TableName == "NW_OPT_SETTLEMENT")
+																								if(TableName == "NW_OPERATIONS")
 																								{
-																									COptSettlementDlg Dlg;
-
-																									Dlg.m_OraLoader = GetData().GetOraLoader();
+																									COPsDlg Dlg;
+																								
 																									Dlg.DoModal();
 																								}
 																								else
-																									if(TableName == "NW_YIELD_CURVE")
+																									if(TableName == "NW_OPT_SETTLEMENT")
 																									{
-																										CYieldCurveDlg Dlg;
+																										COptSettlementDlg Dlg;
 
 																										Dlg.m_OraLoader = GetData().GetOraLoader();
 																										Dlg.DoModal();
 																									}
+																									else
+																										if(TableName == "NW_YIELD_CURVE")
+																										{
+																											CYieldCurveDlg Dlg;
+
+																											Dlg.m_OraLoader = GetData().GetOraLoader();
+																											Dlg.DoModal();
+																										}
 			break;
 	}
 }

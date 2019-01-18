@@ -52,7 +52,6 @@
 #define IDI_OUTPUT_WND                  165
 #define IDI_OUTPUT_WND_HC               166
 #define IDI_PROPERTIES_WND              167
-#define IDC_PROCESS_SWAP_UNWINDTICKET_STATIC 167
 #define IDI_PROPERTIES_WND_HC           168
 #define IDR_EXPLORER                    169
 #define IDB_EXPLORER_24                 170
@@ -190,18 +189,17 @@
 #define IDD_TRADEORDER_FORM             455
 #define IDD_TRENCHCOPY_DIALOG           456
 #define IDR_MENU1                       458
-#define IDD_DIALOG1                     459
 #define IDD_FUTURE_COMM_SCHEDULE_DIALOG 459
 #define IDD_FUTURE_FEES_DIALOG          461
 #define IDD_FXCAT_DIALOG                463
 #define IDD_OR_FEE_DIALOG               465
-#define IDD_DIALOG2                     467
 #define IDD_GIVEUPFEE_DIALOG            467
 #define IDD_TRADER_DIALOG               468
 #define IDD_OPERATION_DIALOG            469
 #define IDD_OTC_FEE_SCHEDULE_DIALOG     470
-#define IDD_DIALOG3                     471
 #define IDD_YIELDCURVE_DIALOG           471
+#define IDD_DIALOG3                     473
+#define IDD_CATEGORY_DIALOG             473
 #define IDC_ACCOUNT_COMBO               701
 #define IDC_ACCOUNT_GROUP_EDIT          702
 #define IDC_ACCOUNT_COLLATERAL_CHECK    703
@@ -631,6 +629,8 @@
 #define IDC_REFIDX_IMAGINE_COMBO        1455
 #define IDC_REFIDX_LIST                 1456
 #define IDC_REFIDX_UPDATE_BUTTON        1457
+#define IDC_YC_TERM_COMBO               1458
+#define IDC_YC_SOURCE_COMBO             1459
 #define IDC_PORTFOLIOACCT_PORTFOLIO_COMBO 1481
 #define IDC_PORTFOLIOACCT_CUSTODIAN_EDIT 1482
 #define IDC_PORTFOLIOACCT_CUSTODIANACCOUNT_EDIT 1483
@@ -745,7 +745,6 @@
 #define IDC_IRS_ADD_BUTTON              1652
 #define IDC_ISSUER_COUNTRY_COMBO        1655
 #define IDC_ISSUER_CURRENCY_COMBO       1656
-#define IDC_PROCESS_AA_COMBO            1656
 #define IDC_ISSUER_ASSETCLASS_COMBO     1657
 #define IDC_ORDER_BESTEXECUTION_COMBO   1657
 #define IDC_ISSUER_FWDCURRENCY_COMBO    1658
@@ -826,12 +825,21 @@
 #define IDC_OTC_UPDATE_BUTTON           1745
 #define IDC_OTC_DELETE_BUTTON           1746
 #define IDC_MAINT_FIXEDRATE_STATIC      1747
+#define IDC_YC_NAME_EDIT                1748
+#define IDC_YC_SYMBOL_EDIT              1749
+#define IDC_YC_INDEX_COMBO              1750
 #define IDC_COUPON_CURRENCY_EDIT        1751
+#define IDC_YC_DEFAULT_COMBO            1751
 #define IDC_COUPON_DATE_EDIT            1752
+#define IDC_YC_LIST                     1752
 #define IDC_COUPON_AMOUNT_EDIT          1753
+#define IDC_YC_TICK_COMBO               1753
 #define IDC_COUPON_FXRATE_EDIT          1754
+#define IDC_YC_ADD_BUTTON               1754
 #define IDC_COUPON_REMAINING_EDIT       1755
+#define IDC_YC_UPDATE_BUTTON            1755
 #define IDC_COUPON_ASSET_EDIT           1756
+#define IDC_YC_DELETE_BUTTON            1756
 #define IDC_COUPON_LIST                 1757
 #define IDC_COUPON_INFO_LIST            1758
 #define IDC_COUPONLIST_CURRENCY_EDIT    1781
@@ -1690,6 +1698,8 @@
 #define IDC_PROCESS_FXDATE_EDIT         3179
 #define IDC_PROCESS_FXDATE_STATIC       3180
 #define IDC_PROCESS_CSPBSHORT_CHECK     3181
+#define IDC_PROCESS_AA_COMBO            3182
+#define IDC_PROCESS_SWAP_UNWINDTICKET_STATIC 3183
 #define IDC_TWO_KEY_STATIC              3201
 #define IDC_TWO_KEY_EDIT                3202
 #define IDC_TWO_DATA_STATIC             3203
@@ -2138,17 +2148,16 @@
 #define IDC_GIVEUP_ADD_BUTTON           4190
 #define IDC_GIVEUP_UPDATE_BUTTON        4191
 #define IDC_GIVEUP_DELETE_BUTTON        4192
-#define IDC_YC_NAME_EDIT                4211
-#define IDC_YC_SYMBOL_EDIT              4212
-#define IDC_YC_INDEX_COMBO              4213
-#define IDC_YC_TERM_COMBO               4214
-#define IDC_YC_SOURCE_COMBO             4215
-#define IDC_YC_DEFAULT_COMBO            4216
-#define IDC_YC_TICK_COMBO               4217
-#define IDC_YC_LIST                     4218
-#define IDC_YC_ADD_BUTTON               4219
-#define IDC_YC_UPDATE_BUTTON            4220
-#define IDC_YC_DELETE_BUTTON            4221
+#define IDC_CAT_STRATEGY_EDIT           4211
+#define IDC_CAT_INDEX_EDIT              4212
+#define IDC_CAT_TRADER_COMBO            4213
+#define IDC_CAT_CODE_EDIT               4214
+#define IDC_CAT_LIST                    4215
+#define IDC_CAT_ADD_BUTTON              4216
+#define IDC_CAT_UPDATE_BUTTON           4217
+#define IDC_CAT_DELETE_BUTTON           4218
+#define IDC_CAT_ADD_BUTTON2             4219
+#define IDC_CAT_CLEAR_BUTTON            4219
 #define ID_UPDATEINFO                   32771
 #define ID_PASSWORD                     32772
 #define ID_TICKET_BLOTTER               32781
@@ -2415,9 +2424,9 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        473
+#define _APS_NEXT_RESOURCE_VALUE        475
 #define _APS_NEXT_COMMAND_VALUE         33103
-#define _APS_NEXT_CONTROL_VALUE         1757
+#define _APS_NEXT_CONTROL_VALUE         1765
 #define _APS_NEXT_SYMED_VALUE           310
 #endif
 #endif
