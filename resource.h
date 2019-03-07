@@ -842,6 +842,8 @@
 #define IDC_YC_DELETE_BUTTON            1756
 #define IDC_COUPON_LIST                 1757
 #define IDC_COUPON_INFO_LIST            1758
+#define IDC_COMBO1                      1765
+#define IDC_GIVEUP_EXOTIC_COMBO         1765
 #define IDC_COUPONLIST_CURRENCY_EDIT    1781
 #define IDC_COUPONLIST_TOTALAMOUNT_EDIT 1782
 #define IDC_COUPONLIST_SEL_LIST         1783
@@ -2156,7 +2158,6 @@
 #define IDC_CAT_ADD_BUTTON              4216
 #define IDC_CAT_UPDATE_BUTTON           4217
 #define IDC_CAT_DELETE_BUTTON           4218
-#define IDC_CAT_ADD_BUTTON2             4219
 #define IDC_CAT_CLEAR_BUTTON            4219
 #define ID_UPDATEINFO                   32771
 #define ID_PASSWORD                     32772
@@ -2426,7 +2427,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        475
 #define _APS_NEXT_COMMAND_VALUE         33103
-#define _APS_NEXT_CONTROL_VALUE         1765
+#define _APS_NEXT_CONTROL_VALUE         1766
 #define _APS_NEXT_SYMED_VALUE           310
 #endif
 #endif
