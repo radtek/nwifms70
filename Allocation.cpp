@@ -93,12 +93,6 @@ BOOL CAllocation::IsOK()
 			Text = "Price must be entered";
 	}
 
-	if(!(TransType == INTSWAP || TransType == CASH || TransType == INTSWAP || TransType == FOREX))
-	{
-		if(m_Custodian.GetCurSel() < 0)
-			Text = "Must Select a Custodian";
-	}
-
 	if(m_Account.GetCurSel() < 0)
 		Text = "Must select an account";
 
@@ -195,45 +189,16 @@ void CAllocation::Refresh()
 
 void CAllocation::SetDefInfo(LPCTSTR Portfolio)
 {
-	BOOL bCP = TRUE;
 	CString AssignCP;
-
-	if(m_PFU == "P")
-		bCP = FALSE;
-	else
-		if(m_TransType == SECURITIES)
-		{
-			if(m_AssetClass == "EURO BONDS" || m_AssetClass == "BRADY BONDS" || 
-				m_AssetClass == "DOM EQUITIES" || m_AssetClass == "ADR EQUITIES" ||
-				m_AssetClass == "DOM EQTY-NEW" || m_AssetClass == "WARRENTS" ||
-				m_AssetClass == "CONVERTIBLE" || m_AssetClass == "FIXED INCOME" ||
-				m_AssetClass == "US FIXED INCOME" || m_AssetClass == "SOVEREIGN" ||
-				m_AssetClass == "CORPORATE" || m_AssetClass == "EM BONDS" ||
-				m_AssetClass == "G7 BONDS" || m_AssetClass == "EXCH TRADE FUND")
-				bCP = FALSE;
-		}
-		else
-			if(m_TransType == CALL || m_TransType == PUT)
-			{
-				if(m_Data.GetTicket().GetListed() == "Y" || !m_Data.GetTicket().GetOptTicker().IsEmpty())
-					bCP = FALSE;
-			}
 
 	if(!m_Data.GetTicket().GetAssignCP().IsEmpty())
 	{
-		m_Custodian.SetData(m_Data.GetTicket().GetAssignCP());
 		m_Account.SetData(m_Data.GetTicket().GetAssignCP());
 	}
 	else
 	{
-		if(bCP)
-			m_Custodian.SetData(m_Data.GetTicket().GetCP());
-		else
-		{	
-			GetData().GetPortfolioArr().SetPortfolio(Portfolio);
-			m_Custodian.SetData(GetData().GetPortfolioArr().GetCustodian());		
-			m_Account.SetData(GetData().GetPortfolioArr().GetAccount());
-		}
+		GetData().GetPortfolioArr().SetPortfolio(Portfolio);
+		m_Account.SetData(GetData().GetPortfolioArr().GetAccount());
 	}
 
 	OnSelchangeAccountCombo();
@@ -305,7 +270,6 @@ BOOL CAllocation::OnInitDialog()
 	m_CSPBShort.Setup(this, IDC_ALLOC_CSPBSHORT_CHECK, Y);
 
 	m_Portfolio.Setup(this, IDC_ALLOC_PORTFOLIO_COMBO);
-	m_Custodian.Setup(this, IDC_ALLOC_CUSTODIAN_COMBO, TRUE);
 	m_Account.Setup(this, IDC_ALLOC_ACCOUNT_COMBO, TRUE);
 
 	m_Amount.Setup(this, IDC_ALLOC_NOMAMOUNT_EDIT);
@@ -322,7 +286,6 @@ BOOL CAllocation::OnInitDialog()
 	m_Data.Add(&m_TicketNum);
 	m_Data.Add(&m_Portfolio, &m_Data.GetInv().GetPortfolio());
 	m_Data.Add(&m_Amount, &m_Data.GetInv().GetNomAmount());
-	m_Data.Add(&m_Custodian, &m_Data.GetInv().GetCustodian());
 	m_Data.Add(&m_Account, &m_Data.GetInv().GetAccount());
 	m_Data.Add(&m_Price, &m_Data.GetInv().GetPrice());
 	m_Data.Add(&m_Data.GetInv().GetLink());
@@ -333,7 +296,6 @@ BOOL CAllocation::OnInitDialog()
 	m_Data.SetupAssetInfo();
 
 	QData.CopyDBRecArrayToComboBox(GetData().GetPortfolioArr(), m_Portfolio, 0, FALSE);
-	QData.CopyKeyDBListKeyToComboBox(GetData().GetContactList(), m_Custodian, FALSE);
 	QData.CopyDBRecArrayToComboBox(GetData().GetAccountArr(), m_Account, 0, FALSE);
 
 	GetDlgItem(IDC_ALLOC_REPO_BUTTON)->EnableWindow(m_Data.GetAutoRepo());
@@ -357,10 +319,6 @@ BOOL CAllocation::OnInitDialog()
 		SetDlgItemText(IDC_ALLOC_SEDOL_EDIT, Sedol);
 		SetDlgItemText(IDC_ALLOC_ISIN_EDIT, Isin);
 	}
-
-	m_Data.GetPB() = m_Data.GetTicket().GetAssignCP();
-	if(m_Data.GetPB().IsEmpty())
-		m_Data.GetPB() = m_sCustodian;
 
 	m_Data.LoadAlloc(m_Data, m_DownPay);
 	
@@ -389,21 +347,8 @@ void CAllocation::OnDblClickAllocationList(long Col, long Row)
 		OnUpdateButton();
 
 		m_Data.SetCurrentRow(Row);
-		if(m_Data.GetAutoRepo())
-		{
-			CString CP;
-			
-			CP = m_Custodian.GetData();
-			if(CP.IsEmpty())
-			{
-				if(!m_sCustodian.IsEmpty())
-					m_Custodian.SetData(m_sCustodian);
-				else
-					m_Custodian.SetData(m_Data.GetTicket().GetCP());
-			}
-		}
 
-		if(m_Custodian.GetCurSel() < 0 && m_Account.GetCurSel() < 0)
+		if(m_Account.GetCurSel() < 0)
 		{
 			CString Portfolio;
 
@@ -597,7 +542,6 @@ void CAllocation::OnOK()
 		m_RecArray.Add(Rec);
 	}
 
-	m_sCustodian = m_Custodian.GetData();
 	CDialog::OnOK();
 }
 
@@ -605,6 +549,7 @@ void CAllocation::Value()
 {
 	CQData QData;
 	double OtherFee;
+	CString PB;
 
 	if(m_OtherFee.GetData().IsEmpty())
 		OtherFee = 0;
@@ -612,7 +557,8 @@ void CAllocation::Value()
 		OtherFee = atof(QData.RemoveComma(m_OtherFee.GetData()));
 
 	m_Data.UpdateData();
-	m_Data.ComputeValue(OtherFee);
+
+	m_Data.ComputeValue(m_Portfolio.GetData());
 	
 	m_Price.SetData(m_Data.GetNetPrice());
 	if(m_Data.GetOtherFee() > 0)
@@ -785,3 +731,4 @@ void CAllocation::OnCbnKillfocusAllocPortfolioCombo()
 	if(m_nRiskLevel == 3) // Exceeds Limit
 		m_Portfolio.SetFocus();
 }
+

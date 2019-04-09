@@ -20,7 +20,7 @@ protected:
 	CString m_DownPymnt;
 	CString m_Link;
 
-	CString m_Custodian;
+//	CString m_Custodian;
 	CString m_Account;
 	CString m_OtherFee;
 
@@ -39,7 +39,7 @@ public:
 	CString &GetDownPymnt() { return m_DownPymnt; }
 	CString &GetLink() { return m_Link; }
 
-	CString &GetCustodian() { return m_Custodian; }
+//	CString &GetCustodian() { return m_Custodian; }
 	CString &GetAccount() { return m_Account; }
 	CString &GetOtherFee() { return m_OtherFee; }
 
@@ -49,7 +49,7 @@ public:
 	void SetDownPymnt(LPCTSTR DownPymnt) { m_DownPymnt = DownPymnt; } 
 	void SetLink(LPCTSTR Link) { m_Link = Link; }
 
-	void SetCustodian(LPCTSTR Custodian) { m_Custodian = Custodian; }
+//	void SetCustodian(LPCTSTR Custodian) { m_Custodian = Custodian; }
 	void SetAccount(LPCTSTR Account) { m_Account = Account; }
 	void SetOtherFee(LPCTSTR OtherFee) { m_OtherFee; }
 
@@ -144,6 +144,7 @@ protected:
 	CString m_BrokerFee;
 	CString m_OtherFee;
 	CString m_SoftDollar;
+	CString m_Custodian;
 	CString m_AssignCP;
 	CString m_AssignCT;
 	CString m_DV01;
@@ -214,6 +215,7 @@ public:
 	CString &GetAssetMaturity() { return m_AssetMaturity; }
 	CString &GetAssetSource() { return m_AssetSource; }
 	CString &GetAssetImagineCode() { return m_AssetImagineCode; }
+	CString &GetCustodian() { return m_Custodian;  }
 	CString &GetIPO() { return m_IPO; }
 	CString &GetTRS() { return m_TRS; }
 	CString &GetRepoCP() { return m_RepoCP; }
@@ -308,6 +310,7 @@ public:
 	void SetAssetMaturity(LPCTSTR AssetMaturity) { m_AssetMaturity = AssetMaturity; }
 	void SetAssetSource(LPCTSTR AssetSource) { m_AssetSource = AssetSource; }
 	void SetAssetImagineCode(LPCTSTR AssetImagineCode) { m_AssetImagineCode = AssetImagineCode; }
+	void SetCustodian(LPCTSTR Custodian) { m_Custodian = Custodian; }
 	void SetIPO(LPCTSTR IPO) { m_IPO = IPO; }
 	void SetTRS(LPCTSTR TRS) { m_TRS = TRS; }
 	void SetRepoCP(LPCTSTR RepoCP) { m_RepoCP = RepoCP; }

@@ -26,8 +26,8 @@ protected:
 	CAssetVal m_Val;
 	BOOL m_bAutoRepo;
 	BOOL m_bLocal;
-	CString m_PB;
 	CString m_Formula;
+	CString m_RepoFormula;
 	double m_Price;
 	double m_BrFee;
 	double m_SoftDollar;
@@ -40,6 +40,7 @@ protected:
 	double m_Cash;
 	CRawTicketRec m_Ticket;
 	CRawInvRec m_Inv;
+	CStringArray m_InvArr;
 
 public:
 	CAllocData() { m_bAutoRepo = FALSE; }
@@ -76,8 +77,8 @@ public:
 	void SetPrice(double Price) { m_Price = Price; }
 	void SetCash(double Cash) { m_Cash = Cash; }
 
-	CString &GetPB() { return m_PB; }
 	LPCTSTR GetFormula() { return (LPCTSTR) m_Formula; }
+	LPCTSTR GetRepoFormula() { return (LPCTSTR) m_RepoFormula; }
 
 	CRawTicketRec &GetTicket() { return m_Ticket; }
 	CRawInvRec &GetInv() { return m_Inv; }
@@ -85,12 +86,14 @@ public:
 	void SetupAssetInfo();
 	double RepoPrice(double DownPay, double Price);
 	void GenerateRepo();
-	void ComputeValue(double OtherFee);
+	void ComputeValue(const CString Fund);
 	int AllocCheckSum(LPCTSTR Portfolio = NULL, double CurrentAmount = 0);
 	double ComputeAllocAmount(LPCTSTR Portfolio = NULL, double CurrentAmount = 0);
 
 	BOOL GetSelRawInv(int Index, CRawInvRec &RecInvRec);
 	BOOL LoadIDs(CString &Common, CString &Cusip, CString &Sedol, CString &Isin);
 	void LoadAlloc(CRowCtrl &m_Data, const CString DownPayment);
+
+	CStringArray &GetInvArr() { return m_InvArr; }
 };
 #endif 

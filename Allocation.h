@@ -47,7 +47,6 @@ public:
 	CCheckBox m_CSPBShort;
 
 	COptComboBox m_Portfolio;
-	COptComboBox m_Custodian;
 	COptComboBox m_Account;
 	CString m_TicketNum;
 
@@ -62,7 +61,6 @@ public:
 	CString m_Margin;
 	CString m_PFU;
 	CString m_DownPay;
-	CString m_sCustodian;
 	int m_nRiskLevel;
 	BOOL m_bWarned;
 	CKeyDBRecArray m_RecArray;

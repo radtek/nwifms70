@@ -518,7 +518,7 @@ void CDailyInput::LoadData(BOOL bUpload)
 						"AND D.ASS_CODE = A.ASSET_CODE "
 						"AND E.ASS_CODE(+) = A.ASSET_CODE "
 						"AND E.ASS_FROM(+) <= %s "
-						"AND E.ASS_TO(+) > %s "
+						"AND E.ASS_TO(+) + DECODE(NVL(E.ACTION(+), 'A'), 'INCLUSIVE', 1, 0) > %s "
 						"AND Z.PORTFOLIO = A.PORTFOLIO "
 						"AND Z.STATUS IS NULL "
 						"AND A.NOM_AMOUNT > 0 ORDER BY A.PORTFOLIO, A.TRANS_NUM ", 
@@ -810,7 +810,7 @@ void CDailyInput::LoadData(BOOL bUpload)
 				"AND A.TRANS_TYPE IN ('CDS', 'SECURITIES') "
 				"AND 0 = (SELECT COUNT(*) FROM SEMAM.NW_ASS_PERIODS E "
 							"WHERE E.ASS_CODE = A.ASSET_CODE "
-							"AND E.ASS_FROM <= %s AND E.ASS_TO > %s) "
+							"AND E.ASS_FROM <= %s AND E.ASS_TO + DECODE(NVL(E.ACTION(+), 'A'), 'INCLUSIVE', 1, 0) > %s) "
 				"GROUP BY A.ASSET_CODE, A.PORTFOLIO, NVL(A.DEAL_TYPE, '9'), C.ACCR_FACTOR, D.ACCR_FACTOR "
 				"HAVING TRUNC(SUM(DECODE(DIR, 'P', 1, 'S', -1)*A.NOM_AMOUNT), 0) != 0 "
 				"UNION "
@@ -833,7 +833,7 @@ void CDailyInput::LoadData(BOOL bUpload)
 				"AND A.TRANS_TYPE IN ('INT. SWAP') "
 				"AND NVL(ACTUAL_VDATE, NVL(MATURITY_DATE, TO_DATE(%s) + 1)) > %s "
 				"AND 0 = (SELECT COUNT(*) FROM SEMAM.NW_ASS_PERIODS E WHERE E.ASS_CODE = A.ASSET_CODE "
-							"AND E.ASS_FROM <= %s AND E.ASS_TO > %s) "
+							"AND E.ASS_FROM <= %s AND E.ASS_TO + DECODE(NVL(E.ACTION(+), 'A'), 'INCLUSIVE', 1, 0) > %s) "
 				"ORDER BY 1 ", PrevDate, QDate, QDate, QDate, QDate, 
 				PrevDate, QDate, QDate, QDate, QDate, QDate, QDate);
 			break;

@@ -117,6 +117,7 @@ public:
 	COptComboBox m_TransType;
 	COptComboBox m_CP;
 	COptComboBox m_RepoCP;
+	COptComboBox m_Custodian;
 	COptComboBox m_AssignCP;
     COptComboBox m_Currency;
 	COptComboBox m_RepoType;
@@ -142,7 +143,6 @@ public:
 	unsigned m_nCurrID;
 	CString m_Future;
 	CString m_Par;
-	CString m_Custodian;
 	CString m_sBooker;
 	CString m_sImgID;
 	CString m_Rev;
@@ -243,7 +243,8 @@ protected:
 	afx_msg void OnEnKillfocusProcessAssetEdit();
 	afx_msg void OnCbnKillfocusProcessAaCombo();
 	afx_msg void OnProcessFxcategory();
-//	afx_msg void OnCbnSelchangeProcessAssigncpCombo();
+	afx_msg void OnCbnSelchangeProcessAssigncpCombo();
+	afx_msg void OnCbnSelchangeProcessCustodianCombo();
 	DECLARE_EVENTSINK_MAP()
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()

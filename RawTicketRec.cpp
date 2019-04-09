@@ -14,7 +14,7 @@ void CRawInvRec::Copy(CRawInvRec &RawInvRec)
 	SetTicket(RawInvRec.GetTicket());
 	SetPortfolio(RawInvRec.GetPortfolio());
 	SetNomAmount(RawInvRec.GetNomAmount());
-	SetCustodian(RawInvRec.GetCustodian());
+//	SetCustodian(RawInvRec.GetCustodian());
 	SetAccount(RawInvRec.GetAccount());
 	SetPrice(RawInvRec.GetPrice());
 	SetLink(RawInvRec.GetLink());
@@ -35,7 +35,7 @@ void CRawInvRec::ToDBRec(CDBRec &Rec)
 	Rec.Add(buf);
 	Rec.Add(GetPortfolio());
 	Rec.Add(GetNomAmount());
-	Rec.Add(GetCustodian());
+//	Rec.Add(GetCustodian());
 	Rec.Add(GetAccount());
 	Rec.Add(GetPrice());
 	Rec.Add(GetLink());
@@ -52,8 +52,8 @@ BOOL CRawInvRec::AddRec(COraLoader &OraLoader)
 						"SOFTDOLLAR, OTHER_FEE, VAR, DV01, OPT_BACK, ASSIGN_CP, CUSTODIAN, ACCOUNT "
 						"FROM SEMAM.NW_RAW_TICKET_DETAIL ", ODYNASET_DEFAULT))
 		return FALSE; */
-	if(!OraLoader.Open("SELECT TICKET_NUM, PORTFOLIO, NOM_AMOUNT, CUSTODIAN, ACCOUNT, PRICE, "
-						"OPT_BACK, DOWN_PYMNT, OTHER_FEES FROM SEMAM.NW_RAW_TICKET_DETAIL ", ODYNASET_DEFAULT))
+	if(!OraLoader.Open("SELECT TICKET_NUM, PORTFOLIO, NOM_AMOUNT, ACCOUNT, PRICE, OPT_BACK, "
+						"DOWN_PYMNT, OTHER_FEES FROM SEMAM.NW_RAW_TICKET_DETAIL ", ODYNASET_DEFAULT))
 		return FALSE;
 
 	CDBRec Rec;
@@ -71,8 +71,8 @@ BOOL CRawInvRec::UpdateRec(COraLoader &OraLoader, BOOL bByID)
 //								"SOFTDOLLAR, OTHER_FEE, VAR, DV01, OPT_BACK, ASSIGN_CP, CUSTODIAN, ACCOUNT "
 //								"FROM SEMAM.NW_RAW_TICKET_DETAIL WHERE ROWIDTOCHAR(ROWID) = %s ", 
 //								QData.GetQueryText(GetID())); // Rowid 
-	OraLoader.GetSql().Format("SELECT TICKET_NUM, PORTFOLIO, NOM_AMOUNT, CUSTODIAN, ACCOUNT, "
-								"PRICE, OPT_BACK, DOWN_PYMNT, OTHER_FEES FROM SEMAM.NW_RAW_TICKET_DETAIL "
+	OraLoader.GetSql().Format("SELECT TICKET_NUM, PORTFOLIO, NOM_AMOUNT, ACCOUNT, PRICE, OPT_BACK, "
+								"DOWN_PYMNT, OTHER_FEES FROM SEMAM.NW_RAW_TICKET_DETAIL "
 								"WHERE ROWIDTOCHAR(ROWID) = %s ", QData.GetQueryText(GetID())); // Rowid 
 	if(!OraLoader.Open(OraLoader.GetSql(), ODYNASET_DEFAULT))
 		return FALSE;
@@ -100,7 +100,7 @@ BOOL CRawInvRec::DeleteRec(COraLoader &OraLoader, BOOL bByID)
 
 BOOL CRawInvRec::UpdateCustodian(COraLoader &OraLoader)
 {
-	if(GetTicket().IsEmpty())
+/*	if(GetTicket().IsEmpty())
 		return FALSE;
 
 	CQData QData;
@@ -111,7 +111,8 @@ BOOL CRawInvRec::UpdateCustodian(COraLoader &OraLoader)
 	OraLoader.GetSql().Format("UPDATE SEMAM.NW_RAW_TICKET_DETAIL SET CUSTODIAN = %s, "
 								"ACCOUNT = %s WHERE TICKET_NUM = %s ", (LPCTSTR) Custodian, 
 								(LPCTSTR) Account, QData.GetQueryNumber(GetTicket()));
-	return OraLoader.ExecuteSql();
+	return OraLoader.ExecuteSql(); */
+	return TRUE;
 }
 
 
@@ -200,6 +201,7 @@ void CRawTicketRec::Copy(CRawTicketRec &RawTicketRec)
 	SetBrokerFee(RawTicketRec.GetBrokerFee());
 	SetOtherFee(RawTicketRec.GetOtherFee());
 	SetSoftDollar(RawTicketRec.GetSoftDollar());
+	SetCustodian(RawTicketRec.GetCustodian());
 	SetAssignCP(RawTicketRec.GetAssignCP());
 	SetDV01(RawTicketRec.GetDV01());
 	SetVAR(RawTicketRec.GetVAR());
@@ -374,6 +376,7 @@ void CRawTicketRec::ToDBRec(CDBRec &Rec)
 	Rec.Add(GetBrokerFee());
 	Rec.Add(GetOtherFee());
 	Rec.Add(GetSoftDollar());
+	Rec.Add(GetCustodian());
 	Rec.Add(GetAssignCP());
 	Rec.Add(GetDV01());
 	Rec.Add(GetVAR());
@@ -487,6 +490,7 @@ void CRawTicketRec::ToShortDBRec(CDBRec &Rec, BOOL bFloat)
 	Rec.Add(GetBrokerFee());
 	Rec.Add(GetOtherFee());
 	Rec.Add(GetSoftDollar());
+	Rec.Add(GetCustodian());
 	Rec.Add(GetAssignCP());
 	Rec.Add(GetDV01());
 	Rec.Add(GetVAR());
@@ -513,10 +517,10 @@ BOOL CRawTicketRec::AddRec(COraLoader &OraLoader)
 						"ASSET_CATEGORY, ASSET_BUCKET, SOURCE, ASSET_COUPON, ASSET_MATURITY, IPO, TRS, "
 						"REPO_CP, TR_RATE, RATE_BASIS, MATURITY, NOTE, NOTE2, SW_BOOKING, SW_MATURITY, "
 						"FLOAT_RATE, FLOAT_RATE_BASIS, FLOAT_MATURITY, WI, SWAP_TICKET, DELIVERY_DATE, "
-						"MARGIN, MARGIN_CURRENCY, MARGIN_AMOUNT, FUNDED_SWAP, BINARY, AA_METHOD, AA_FREASON, "
-						"BEST_EXECUTION, SHORT_SALE, CSPB_SHORT, PRICE, DOWN_PYMNT, BROKER_FEE, OTHER_FEE, "
-						"SOFTDOLLAR, ASSIGN_CP, DV01, VAR, UNWIND_TICKET, CANCEL_TICKET, CORRECT_TICKET, "
-						"SEC_FEE, OR_FEE, ETRADE, ORDER_ID, PROCESSED "
+						"MARGIN, MARGIN_CURRENCY, MARGIN_AMOUNT, FUNDED_SWAP, BINARY, AA_METHOD, "
+						"AA_FREASON, BEST_EXECUTION, SHORT_SALE, CSPB_SHORT, PRICE, DOWN_PYMNT, BROKER_FEE, "
+						"OTHER_FEE, SOFTDOLLAR, CUSTODIAN_R, ASSIGN_CP, DV01, VAR, UNWIND_TICKET, CANCEL_TICKET, "
+						"CORRECT_TICKET, SEC_FEE, OR_FEE, ETRADE, ORDER_ID, PROCESSED "
 						"FROM SEMAM.NW_RAW_TICKETS ", ODYNASET_DEFAULT))
 		return FALSE;
 
@@ -544,7 +548,7 @@ BOOL CRawTicketRec::UpdateShortRec(COraLoader &OraLoader, BOOL bFloat)
 									"MATURITY, NOTE, NOTE2, SW_BOOKING, SW_MATURITY, WI, SWAP_TICKET, DELIVERY_DATE, "
 									"MARGIN, MARGIN_CURRENCY, MARGIN_AMOUNT, FUNDED_SWAP, BINARY, AA_METHOD, "
 									"AA_FREASON, BEST_EXECUTION, SHORT_SALE, CSPB_SHORT, PRICE, DOWN_PYMNT, "
-									"BROKER_FEE, OTHER_FEE, SOFTDOLLAR, ASSIGN_CP, DV01, VAR, UNWIND_TICKET, "
+									"BROKER_FEE, OTHER_FEE, SOFTDOLLAR, CUSTODIAN_R, ASSIGN_CP, DV01, VAR, UNWIND_TICKET, "
 									"CANCEL_TICKET, CORRECT_TICKET, SEC_FEE, OR_FEE, ETRADE, ORDER_ID, PROCESSED "
 									"FROM SEMAM.NW_RAW_TICKETS "
 									"WHERE TICKET_NUM = %s", QData.GetQueryNumber(GetTicket()));
@@ -559,8 +563,9 @@ BOOL CRawTicketRec::UpdateShortRec(COraLoader &OraLoader, BOOL bFloat)
 									"FLOAT_RATE_BASIS, FLOAT_MATURITY, NOTE, NOTE2, SW_BOOKING, SW_MATURITY, WI, "
 									"SWAP_TICKET, DELIVERY_DATE, MARGIN, MARGIN_CURRENCY, MARGIN_AMOUNT, FUNDED_SWAP, "
 									"BINARY, AA_METHOD, AA_FREASON, BEST_EXECUTION, SHORT_SALE, CSPB_SHORT, PRICE, "
-									"DOWN_PYMNT, BROKER_FEE, OTHER_FEE, SOFTDOLLAR, ASSIGN_CP, DV01, VAR, UNWIND_TICKET, "
-									"CANCEL_TICKET, CORRECT_TICKET, SEC_FEE, OR_FEE, ETRADE, ORDER_ID, PROCESSED "
+									"DOWN_PYMNT, BROKER_FEE, OTHER_FEE, SOFTDOLLAR, CUSTODIAN_R, ASSIGN_CP, DV01, VAR, "
+									"UNWIND_TICKET, CANCEL_TICKET, CORRECT_TICKET, SEC_FEE, OR_FEE, ETRADE, ORDER_ID, "
+									"PROCESSED "
 									"FROM SEMAM.NW_RAW_TICKETS WHERE TICKET_NUM = %s ", 
 									QData.GetQueryNumber(GetTicket()));
 	if(!OraLoader.Open(OraLoader.GetSql(), ODYNASET_DEFAULT))
@@ -588,8 +593,8 @@ BOOL CRawTicketRec::UpdateRec(COraLoader &OraLoader, BOOL bByID)
 								"FLOAT_MATURITY, WI, SWAP_TICKET, DELIVERY_DATE, MARGIN, MARGIN_CURRENCY, "
 								"MARGIN_AMOUNT, FUNDED_SWAP, BINARY, AA_METHOD, AA_FREASON, BEST_EXECUTION, "
 								"SHORT_SALE, CSPB_SHORT, PRICE, DOWN_PYMNT, BROKER_FEE, OTHER_FEE, SOFTDOLLAR, "
-								"ASSIGN_CP, DV01, VAR, UNWIND_TICKET, CANCEL_TICKET, CORRECT_TICKET, SEC_FEE, "
-								"OR_FEE, ETRADE, ORDER_ID, PROCESSED "
+								"CUSTODIAN_R, ASSIGN_CP, DV01, VAR, UNWIND_TICKET, CANCEL_TICKET, CORRECT_TICKET, "
+								"SEC_FEE, OR_FEE, ETRADE, ORDER_ID, PROCESSED "
 								"FROM SEMAM.NW_RAW_TICKETS WHERE TICKET_NUM = %s", 
 								QData.GetQueryNumber(GetTicket()));
 
@@ -616,9 +621,9 @@ BOOL CRawTicketRec::DeleteRec(COraLoader &OraLoader, BOOL bByID)
 
 	CQData QData;
 	pTicket = QData.GetQueryNumber(GetTicket());
-	OraLoader.GetSql().Format("DELETE SEMAM.NW_RAW_COMMISSION WHERE TICKET_NUM = %s ", pTicket);
+	OraLoader.GetSql().Format("DELETE FROM SEMAM.NW_RAW_COMMISSION WHERE TICKET_NUM = %s ", pTicket);
 	OraLoader.ExecuteSql();
-	OraLoader.GetSql().Format("DELETE SEMAM.NW_RAW_TICKETS WHERE TICKET_NUM = %s ", pTicket);
+	OraLoader.GetSql().Format("DELETE FROM SEMAM.NW_RAW_TICKETS WHERE TICKET_NUM = %s ", pTicket);
 
 	return OraLoader.ExecuteSql();
 }
@@ -629,8 +634,7 @@ BOOL CRawTicketRec::DeleteRawRecOnly(COraLoader &OraLoader, BOOL bByID)
 		return FALSE;
 	
 	CQData QData;
-	OraLoader.GetSql().Format("DELETE SEMAM.NW_RAW_TICKETS WHERE TICKET_NUM = %s ", 
-								QData.GetQueryNumber(GetTicket()));
+	OraLoader.GetSql().Format("DELETE FROM SEMAM.NW_RAW_TICKETS WHERE TICKET_NUM = %s ", QData.GetQueryNumber(GetTicket()));
 	return OraLoader.ExecuteSql();
 }
 
@@ -642,16 +646,12 @@ BOOL CRawTicketRec::SignTicket(COraLoader &OraLoader, BOOL bSign)
 	CQData QData;
 	CString Signiture, TicketNum;
 
+	TicketNum = QData.GetQueryNumber(GetTicket());
 	if(bSign)
-		OraLoader.GetSql().Format("UPDATE SEMAM.NW_RAW_TICKETS SET TRADER_SIGN = '%s', "
-								"TRADER_SIGN_DATE = SYSDATE WHERE TICKET_NUM = %s ", 
-								(LPCTSTR) GetSign(), QData.GetQueryNumber(GetTicket()));	
+		OraLoader.GetSql() = "UPDATE SEMAM.NW_RAW_TICKETS SET TRADER_SIGN = '" + GetSign() + "', TRADER_SIGN_DATE = SYSDATE WHERE TICKET_NUM = " + TicketNum;
 	else
 	{
-		TicketNum = QData.GetQueryNumber(GetTicket());
-		OraLoader.GetSql().Format("SELECT SIGN FROM SEMAM.NW_RAW_TICKETS "
-									"WHERE TICKET_NUM = %s ", (LPCTSTR) TicketNum);
-		OraLoader.Open();
+		OraLoader.Open("SELECT SIGN FROM SEMAM.NW_RAW_TICKETS WHERE TICKET_NUM = " + TicketNum);
 		OraLoader.LoadTextString(Signiture);
 		if(!Signiture.IsEmpty() && Signiture != GetSign())
 		{
@@ -659,9 +659,7 @@ BOOL CRawTicketRec::SignTicket(COraLoader &OraLoader, BOOL bSign)
 			return FALSE;
 		}
 
-		OraLoader.GetSql().Format("UPDATE SEMAM.NW_RAW_TICKETS SET SIGN = '%s', "
-								"SIGN_DATE = SYSDATE WHERE TICKET_NUM = %s ", 
-								(LPCTSTR) GetSign(), TicketNum);
+		OraLoader.GetSql() = "UPDATE SEMAM.NW_RAW_TICKETS SET SIGN = '" + GetSign() + "', SIGN_DATE = SYSDATE WHERE TICKET_NUM = " + TicketNum;
 	}
 	return OraLoader.ExecuteSql();
 }

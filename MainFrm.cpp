@@ -13,7 +13,7 @@
 #include "pastduetrades.h"
 #include "ticketentry.h"
 #include "ticketfxentry.h"
-#include "ticketblock.h"
+// #include "ticketblock.h"
 #include "ticketprocess.h"
 #include "fmsticket.h"
 #include "assetmaturityview.h"
@@ -580,18 +580,18 @@ void CMainFrame::OnNWIFMSApplication(UINT nCmdID)
 				LoadAppMenu(IDR_ENTRY, "&Entry");
 			}
 			break;
-		case ID_TICKET_BLOCK:
+/*		case ID_TICKET_BLOCK:
 			pDocData->SetBlotter(FALSE);
 			pDocData->SetSign(FALSE);
 			pNewViewClass = RUNTIME_CLASS(CTicketBlock);
 			LoadAppMenu(IDR_BLOCK, "&Block Trade");
-			break;
-		case ID_TICKET_BLOCKALLOC:
+			break; */
+/*		case ID_TICKET_BLOCKALLOC:
 			pDocData->SetBlotter(FALSE);
 			pDocData->SetBlock(TRUE);
 			pNewViewClass = RUNTIME_CLASS(CTicketEntry);
 			LoadAppMenu(IDR_ENTRY, "&Block Trade Alloc");
-			break;
+			break; */
 		case ID_TICKET_PROCESS:
 			pNewViewClass = RUNTIME_CLASS(CTicketProcess);
 			LoadAppMenu(IDR_PROCESS, "&Process");
@@ -828,3 +828,6 @@ void CMainFrame::OnUpdateTradeOrder(CCmdUI *pCmdUI)
 {
 	pCmdUI->Enable(TRUE);
 }
+
+
+

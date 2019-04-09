@@ -25,7 +25,6 @@ protected:
 	double m_SoftDollar;
 	double m_OtherFee;
 	double m_VAR;
-	CString m_Custodian;
 	CRawTicketRec m_RawTicket;
 	CRawInvRec m_RawInv;
 	CKeyDBList m_AllocList;
@@ -83,7 +82,5 @@ public:
 
 	virtual BOOL DeleteRow();
 	virtual BOOL UpdateRow();
-
-	CString &GetCustodian() { return m_Custodian; }
 };
 #endif

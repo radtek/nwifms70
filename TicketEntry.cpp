@@ -15,6 +15,8 @@
 #include "ProhibitList.h"
 #include "DATEDLG.H"
 #include "TrenchCopyDlg.h"
+#include "pastduetrades.h"
+
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -31,7 +33,6 @@ CTicketEntry::CTicketEntry()
 {
 	//{{AFX_DATA_INIT(CTicketEntry)
 	m_bAllocValid = TRUE;
-	m_bLoaded = FALSE;
 	//}}AFX_DATA_INIT
 }
 
@@ -519,6 +520,7 @@ void CTicketEntry::InitControls()
 	m_Price.Setup(this, IDC_ENTRY_PRICE_EDIT);
 	m_DownPymnt.Setup(this, IDC_ENTRY_DOWNPYMNT_EDIT);
 	m_DV01.Setup(this, IDC_ENTRY_DV01_EDIT);
+	m_Custodian.Setup(this, IDC_ENTRY_CUSTODIAN_COMBO, TRUE);
 	m_AssignCP.Setup(this, IDC_ENTRY_ASSIGNCP_COMBO, TRUE);
 
 	CRawTicketRec *pTicket;
@@ -578,6 +580,7 @@ void CTicketEntry::InitControls()
 	m_Data.Add(&m_BrokerFee, &pTicket->GetBrokerFee());
 	m_Data.Add(&m_OtherFee, &pTicket->GetOtherFee());
 	m_Data.Add(&m_SoftDollar, &pTicket->GetSoftDollar());
+	m_Data.Add(&m_Custodian, &pTicket->GetCustodian());
 	m_Data.Add(&m_AssignCP, &pTicket->GetAssignCP());
 	m_Data.Add(&m_DV01, &pTicket->GetDV01());
 	m_Data.Add(&m_VAR, &pTicket->GetVAR());
@@ -606,7 +609,7 @@ void CTicketEntry::InitControls()
 	pInv = &m_Data.GetRawInv();
 	m_Data.GetSRowCtrl().Add(&m_Portfolio, &pInv->GetPortfolio());
 	m_Data.GetSRowCtrl().Add(&m_AllocAmount, &pInv->GetNomAmount());
-	m_Data.GetSRowCtrl().Add(&m_Data.GetCustodian());
+//	m_Data.GetSRowCtrl().Add(&m_Data.GetCustodian());
 }
 
 BOOL CTicketEntry::LoadExistingTickets(CString TransType)
@@ -995,7 +998,7 @@ BOOL CTicketEntry::UpdateData(BOOL bSaveandValid)
 		m_Data.LoadTickets();
 		m_Data.LoadAllocList();
 
-		if(!m_bLoaded)
+		if(m_Portfolio.GetCount() <= 0)
 		{
 			GetData().LoadSupportData();
 			GetData().GetPortfolioArr().CopyToComboBox(m_Portfolio); /* Portfolio */
@@ -1005,6 +1008,7 @@ BOOL CTicketEntry::UpdateData(BOOL bSaveandValid)
 			GetData().GetRateBasisArr().CopyToComboBox(m_FloatRateBasis); /* FloatRateBasis */
 			GetData().GetContactList().CopyKeyToComboBox(m_CP); /* Counterparty */
 			GetData().GetContactList().CopyKeyToComboBox(m_RepoCP); /* Repo Counterparty */
+			GetData().GetContactList().CopyKeyToComboBox(m_Custodian);
 			GetData().GetContactList().CopyKeyToComboBox(m_AssignCP); /* Giveup Counterparty */
 			GetData().GetTransTypeArr().CopyToComboBox(m_TransType); /* Trans Type */
 			GetData().GetBestExecutionArr().CopyToComboBox(m_BestExecution);
@@ -1021,7 +1025,6 @@ BOOL CTicketEntry::UpdateData(BOOL bSaveandValid)
 			OraLoader.Open("SELECT AA_REASON FROM SEMAM.NW_AA_REASON ORDER BY 1");
 			m_AAFReason.ResetContent();
 			OraLoader.LoadComboBox(m_AAFReason);
-			m_bLoaded = TRUE;
 		}
 		EndWaitCursor();
 	}
@@ -1280,7 +1283,7 @@ void CTicketEntry::OnEntryFindAsset()
 		m_AssetCurrency.SetData(pTicket->GetAssetCurr());
 		m_Rev = Dlg.m_Rev;
 		m_Trader.SetData(Dlg.m_FindData.GetTrader());
-		m_Data.GetCustodian() = Dlg.m_FindData.GetCustodian();
+		m_Custodian.SetData(Dlg.m_FindData.GetCustodian());
 		if(!Dlg.m_FindData.GetTransType().IsEmpty())
 			TransType = Dlg.m_FindData.GetTransType();
 

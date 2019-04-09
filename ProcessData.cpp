@@ -273,7 +273,7 @@ BOOL CProcessData::GenerateTicketRec(CRawInvRec &RawInvRec)
 	else
 		GetTicket().SetIPO(EMPTYSTRING);
 
-	GetTicket().SetCustodian(RawInvRec.GetCustodian());
+	GetTicket().SetCustodian(GetRawTicket().GetCustodian()); 
 	if(TransType == SECURITIES || TransType == CALL || TransType == PUT)
 		GetTicket().SetLink(RawInvRec.GetLink());
 	else
@@ -334,11 +334,11 @@ int CProcessData::LoadTickets()
 			"NULL \"D_RECVD\", WI, NULL \"CONFIRM\", A.SWAP_TICKET, A.DELIVERY_DATE, A.MARGIN, A.MARGIN_CURRENCY, "
 			"A.MARGIN_AMOUNT, A.FUNDED_SWAP, A.BINARY, AA_METHOD, A.AA_FREASON, A.BEST_EXECUTION, A.SHORT_SALE, "
 			"A.CSPB_SHORT, A.PRICE, NVL(A.DOWN_PYMNT, 100) \"DOWN_PYMNT\", A.BROKER_FEE, A.SOFTDOLLAR, A.VAR, A.DV01, "
-			"A.ASSIGN_CP, NULL \"ASSIGN_CT\", A.UNWIND_TICKET, A.CANCEL_TICKET, A.CORRECT_TICKET, A.SEC_FEE, A.OR_FEE, "
-			"A.ETRADE, A.BOOKER, TO_CHAR(A.BOOK_DATE, 'MM/DD/YYYY HH24:MI:SS'), A.ASSET_COUNTRY, A.ASSET_COMMON_CODE, "
-			"A.ASSET_MSTC_CODE, A.ASSET_ISIN_CODE, A.ASSET_SEDOL_NUM, A.ASSET_CLASS, A.ASSET_IND_AREA, A.ASSET_CATEGORY, "
-			"A.ASSET_BUCKET, A.SOURCE, A.ASSET_COUPON, A.ASSET_MATURITY, B.ASS_PAR_VALUE, A.IMG_NOMINAL, A.CP_TRADE_ID, "
-			"A.IMAGINE_ORDER_ID, REV, ASS_FLOAT_FORMULA "
+			"A.CUSTODIAN_R, A.ASSIGN_CP, NULL \"ASSIGN_CT\", A.UNWIND_TICKET, A.CANCEL_TICKET, A.CORRECT_TICKET, "
+			"A.SEC_FEE, A.OR_FEE, A.ETRADE, A.BOOKER, TO_CHAR(A.BOOK_DATE, 'MM/DD/YYYY HH24:MI:SS'), A.ASSET_COUNTRY, "
+			"A.ASSET_COMMON_CODE, A.ASSET_MSTC_CODE, A.ASSET_ISIN_CODE, A.ASSET_SEDOL_NUM, A.ASSET_CLASS, A.ASSET_IND_AREA, "
+			"A.ASSET_CATEGORY, A.ASSET_BUCKET, A.SOURCE, A.ASSET_COUPON, A.ASSET_MATURITY, B.ASS_PAR_VALUE, A.IMG_NOMINAL, "
+			"A.CP_TRADE_ID, A.IMAGINE_ORDER_ID, REV, ASS_FLOAT_FORMULA "
 			"FROM SEMAM.NW_RAW_TICKETS A, SEMAM.NW_ASSETS B, SEMAM.NW_CURRENCY C "
 			"WHERE B.ASS_CODE(+) = A.ASSET_CODE "
 			"AND C.CURRENCY(+) = B.ASS_CURRENCY2 "
@@ -355,11 +355,11 @@ int CProcessData::LoadTickets()
 			"A.WI, NULL \"CONFIRM\", A.SWAP_TICKET, A.DELIVERY_DATE, TO_NUMBER(NULL) \"MARGIN\", NULL \"MARGIN_CURRENCY\", "
 			"TO_NUMBER(NULL) \"MARGIN_AMOUNT\", A.FUNDED_SWAP, A.BINARY, A.AA_METHOD, A.AA_FREASON, A.BEST_EXECUTION, "
 			"A.SHORT_SALE, A.CSPB_SHORT, A.PRICE, NVL(A.DOWN_PYMNT, 100) \"DOWN_PYMNT\", A.BROKER_FEE, A.SOFTDOLLAR, "
-			"A.VAR, A.DV01, A.ASSIGN_CP, NULL \"ASSIGN_CT\", UNWIND_TICKET, A.CANCEL_TICKET, A.CORRECT_TICKET, A.SEC_FEE, "
-			"A.OR_FEE, A.ETRADE, A.BOOKER, TO_CHAR(A.BOOK_DATE, 'MM/DD/YYYY HH24:MI:SS'), A.ASSET_COUNTRY, A.ASSET_COMMON_CODE, "
-			"A.ASSET_MSTC_CODE, A.ASSET_ISIN_CODE, A.ASSET_SEDOL_NUM, A.ASSET_CLASS, A.ASSET_IND_AREA, A.ASSET_CATEGORY, "
-			"A.ASSET_BUCKET, A.SOURCE, A.ASSET_COUPON, A.ASSET_MATURITY, B.ASS_PAR_VALUE, A.IMG_NOMINAL, A.CP_TRADE_ID, "
-			"A.IMAGINE_ORDER_ID, REV, ASS_FLOAT_FORMULA "
+			"A.VAR, A.DV01, A.CUSTODIAN_R, A.ASSIGN_CP, NULL \"ASSIGN_CT\", UNWIND_TICKET, A.CANCEL_TICKET, A.CORRECT_TICKET, "
+			"A.SEC_FEE, A.OR_FEE, A.ETRADE, A.BOOKER, TO_CHAR(A.BOOK_DATE, 'MM/DD/YYYY HH24:MI:SS'), A.ASSET_COUNTRY, "
+			"A.ASSET_COMMON_CODE, A.ASSET_MSTC_CODE, A.ASSET_ISIN_CODE, A.ASSET_SEDOL_NUM, A.ASSET_CLASS, A.ASSET_IND_AREA, "
+			"A.ASSET_CATEGORY, A.ASSET_BUCKET, A.SOURCE, A.ASSET_COUPON, A.ASSET_MATURITY, B.ASS_PAR_VALUE, A.IMG_NOMINAL, "
+			"A.CP_TRADE_ID, A.IMAGINE_ORDER_ID, REV, ASS_FLOAT_FORMULA "
 			"FROM SEMAM.NW_RAW_TICKETS A, SEMAM.NW_ASSETS B, SEMAM.NW_CURRENCY C "
 			"WHERE B.ASS_CODE(+) = A.ASSET_CODE "
 			"AND C.CURRENCY(+) = B.ASS_CURRENCY2 "
@@ -378,8 +378,7 @@ int CProcessData::LoadTickets()
 int CProcessData::LoadAllocList()
 {
 	if(GetOraLoader().Open("SELECT A.TICKET_NUM, ROWIDTOCHAR(A.ROWID) \"ID\", TO_NUMBER(NULL) \"TRANS_NUM\", A.PORTFOLIO, "
-							"A.NOM_AMOUNT, DECODE(VERIFIED, 'Y', NVL(A.CUSTODIAN, DEF_CUSTODIAN), A.CUSTODIAN) \"CUSTODIAN\", "
-							"DECODE(VERIFIED, 'Y', NVL(A.ACCOUNT, DEF_ACCOUNT), A.ACCOUNT) \"ACCOUNT\", B.PRICE, "
+							"A.NOM_AMOUNT, DECODE(VERIFIED, 'Y', NVL(A.ACCOUNT, DEF_ACCOUNT), A.ACCOUNT) \"ACCOUNT\", B.PRICE, "
 							"C.TRANS_NUM \"OPT_BACK\", B.DOWN_PYMNT, "
 							"DECODE(SIGN(A.OTHER_FEES), 1, A.OTHER_FEES, B.OTHER_FEE*NVL(ALLOC, 100)/100) \"OTHER_FEES\" "
 							"FROM SEMAM.NW_RAW_TICKET_DETAIL A "
@@ -395,7 +394,7 @@ int CProcessData::LoadAllocList()
 							"JOIN SEMAM.NW_PORTFOLIOS Z ON (Z.PORTFOLIO = A.PORTFOLIO) "
 							"UNION " 
 							"SELECT A.TICKET_NUM+.2, ROWIDTOCHAR(A.ROWID), TO_NUMBER(NULL), A.PORTFOLIO, A.NOM_AMOUNT, "
-							"A.CUSTODIAN, A.ACCOUNT, B.PRICE, TO_NUMBER(NULL) \"OPT_BACK\", B.DOWN_PYMNT, "
+							"A.ACCOUNT, B.PRICE, TO_NUMBER(NULL) \"OPT_BACK\", B.DOWN_PYMNT, "
 							"DECODE(SIGN(A.OTHER_FEES), 1, A.OTHER_FEES, B.OTHER_FEE*NVL(ALLOC, 100)/100) \"OTHER_FEES\" "
 							"FROM SEMAM.NW_RAW_TICKET_DETAIL A "
 							"JOIN SEMAM.NW_RAW_TICKETS B ON (A.TICKET_NUM = B.TICKET_NUM "
@@ -410,8 +409,8 @@ int CProcessData::LoadAllocList()
 	{
 		GetOraLoader().GetFieldArray().GetAt(0)->SetWithComma(FALSE); // TicketNum
 		GetOraLoader().GetFieldArray().GetAt(2)->SetWithComma(FALSE); // TransNum
-		GetOraLoader().GetFieldArray().GetAt(7)->SetWithComma(FALSE); // Price
-		GetOraLoader().GetFieldArray().GetAt(8)->SetWithComma(FALSE); // OptBacking
+		GetOraLoader().GetFieldArray().GetAt(6)->SetWithComma(FALSE); // Price
+		GetOraLoader().GetFieldArray().GetAt(7)->SetWithComma(FALSE); // OptBacking
 		GetOraLoader().CopyFieldArray(GetSRowCtrl().GetSS()->GetFieldArray());
 		GetSRowCtrl().GetSS()->GetFieldArray().RemoveAt(0); // Remove Key
 		GetSRowCtrl().GetSS()->GetFieldArray().RemoveAt(0); // Remove ID
@@ -426,8 +425,7 @@ int CProcessData::ReLoadAllocList(const CString Ticket, const CString OptTicket)
 {
 	if(OptTicket.IsEmpty())
 		GetOraLoader().Open("SELECT A.TICKET_NUM, ROWIDTOCHAR(A.ROWID) \"ID\", TO_NUMBER(NULL) \"TRANS_NUM\", A.PORTFOLIO, "
-							"A.NOM_AMOUNT, DECODE(B.VERIFIED, 'Y', NVL(A.CUSTODIAN, DEF_CUSTODIAN), A.CUSTODIAN) \"CUSTODIAN\", "
-							"DECODE(B.VERIFIED, 'Y', NVL(A.ACCOUNT, DEF_ACCOUNT), A.ACCOUNT) \"ACCOUNT\", B.PRICE, "
+							"A.NOM_AMOUNT, DECODE(B.VERIFIED, 'Y', NVL(A.ACCOUNT, DEF_ACCOUNT), A.ACCOUNT) \"ACCOUNT\", B.PRICE, "
 							"TO_NUMBER(NULL) \"OPT_BACK\", B.DOWN_PYMNT, "
 							"DECODE(SIGN(A.OTHER_FEES), 1, A.OTHER_FEES, B.OTHER_FEE*NVL(ALLOC, 100)/100) \"OTHER_FEES\" "
 							"FROM SEMAM.NW_RAW_TICKET_DETAIL A "
@@ -441,8 +439,8 @@ int CProcessData::ReLoadAllocList(const CString Ticket, const CString OptTicket)
 							"JOIN SEMAM.NW_PORTFOLIOS Z ON (Z.PORTFOLIO = A.PORTFOLIO) "
 							"WHERE A.TICKET_NUM = " + Ticket + 
 							" UNION " 
-							"SELECT A.TICKET_NUM+.2, ROWIDTOCHAR(A.ROWID), TO_NUMBER(NULL), A.PORTFOLIO, A.NOM_AMOUNT, A.CUSTODIAN, "
-							"A.ACCOUNT, TO_NUMBER(NULL) \"PRICE\", TO_NUMBER(NULL) \"OPT_BACK\", B.DOWN_PYMNT, "
+							"SELECT A.TICKET_NUM+.2, ROWIDTOCHAR(A.ROWID), TO_NUMBER(NULL), A.PORTFOLIO, A.NOM_AMOUNT, A.ACCOUNT, "
+							"TO_NUMBER(NULL) \"PRICE\", TO_NUMBER(NULL) \"OPT_BACK\", B.DOWN_PYMNT, "
 							"DECODE(SIGN(A.OTHER_FEES), 1, A.OTHER_FEES, B.OTHER_FEE*NVL(ALLOC, 100)/100) \"OTHER_FEES\" "
 							"FROM SEMAM.NW_RAW_TICKET_DETAIL A "
 							"JOIN SEMAM.NW_RAW_TICKETS B ON (B.TICKET_NUM = A.TICKET_NUM "
@@ -457,9 +455,8 @@ int CProcessData::ReLoadAllocList(const CString Ticket, const CString OptTicket)
 							"WHERE A.TICKET_NUM = " + Ticket + " ORDER BY 1, 4 ");
 	else
 		GetOraLoader().Open("SELECT A.TICKET_NUM, ROWIDTOCHAR(A.ROWID) \"ID\", TO_NUMBER(NULL) \"TRANS_NUM\", A.PORTFOLIO, "
-							"A.NOM_AMOUNT, DECODE(B.VERIFIED, 'Y', NVL(A.CUSTODIAN, DEF_CUSTODIAN), A.CUSTODIAN) \"CUSTODIAN\", "
-							"DECODE(B.VERIFIED, 'Y', NVL(A.ACCOUNT, DEF_ACCOUNT), A.ACCOUNT) \"ACCOUNT\", B.PRICE, "
-							"C.TRANS_NUM \"OPT_BACK\", B.DOWN_PYMNT, "
+							"A.NOM_AMOUNT, DECODE(B.VERIFIED, 'Y', NVL(A.ACCOUNT, DEF_ACCOUNT), A.ACCOUNT) \"ACCOUNT\", "
+							"B.PRICE, C.TRANS_NUM \"OPT_BACK\", B.DOWN_PYMNT, "
 							"DECODE(SIGN(A.OTHER_FEES), 1, A.OTHER_FEES, B.OTHER_FEE*NVL(ALLOC, 100)/100) \"OTHER_FEES\" "
 							"FROM SEMAM.NW_RAW_TICKET_DETAIL A "
 							"JOIN SEMAM.NW_RAW_TICKETS B ON (A.TICKET_NUM = B.TICKET_NUM "
@@ -474,8 +471,8 @@ int CProcessData::ReLoadAllocList(const CString Ticket, const CString OptTicket)
 							"JOIN SEMAM.NW_PORTFOLIOS Z ON (Z.PORTFOLIO = A.PORTFOLIO) "
 							"WHERE A.TICKET_NUM = " + Ticket + 
 							" UNION " 
-							"SELECT A.TICKET_NUM+.2, ROWIDTOCHAR(A.ROWID), TO_NUMBER(NULL), A.PORTFOLIO, A.NOM_AMOUNT, A.CUSTODIAN, "
-							"A.ACCOUNT, B.PRICE, TO_NUMBER(NULL) \"OPT_BACK\", B.DOWN_PYMNT, "
+							"SELECT A.TICKET_NUM+.2, ROWIDTOCHAR(A.ROWID), TO_NUMBER(NULL), A.PORTFOLIO, A.NOM_AMOUNT, A.ACCOUNT, "
+							"B.PRICE, TO_NUMBER(NULL) \"OPT_BACK\", B.DOWN_PYMNT, "
 							"DECODE(SIGN(A.OTHER_FEES), 1, A.OTHER_FEES, B.OTHER_FEE*NVL(ALLOC, 100)/100) \"OTHER_FEES\" "
 							"FROM SEMAM.NW_RAW_TICKET_DETAIL A "
 							"JOIN SEMAM.NW_RAW_TICKETS B ON (B.TICKET_NUM = A.TICKET_NUM "
@@ -490,8 +487,8 @@ int CProcessData::ReLoadAllocList(const CString Ticket, const CString OptTicket)
 
 	GetOraLoader().GetFieldArray().GetAt(0)->SetWithComma(FALSE); // TicketNum
 	GetOraLoader().GetFieldArray().GetAt(2)->SetWithComma(FALSE); // TransNum
-	GetOraLoader().GetFieldArray().GetAt(7)->SetWithComma(FALSE); // Price
-	GetOraLoader().GetFieldArray().GetAt(8)->SetWithComma(FALSE); // OptBacking
+	GetOraLoader().GetFieldArray().GetAt(6)->SetWithComma(FALSE); // Price
+	GetOraLoader().GetFieldArray().GetAt(7)->SetWithComma(FALSE); // OptBacking
 	GetOraLoader().CopyFieldArray(GetSRowCtrl().GetSS()->GetFieldArray());
 	GetSRowCtrl().GetSS()->GetFieldArray().RemoveAt(0); // Remove Key
 	GetSRowCtrl().GetSS()->GetFieldArray().RemoveAt(1); // Remove ID
@@ -641,8 +638,7 @@ double CProcessData::GetParValue()
 	if(GetRawTicket().GetAsset().IsEmpty())
 		return 0;
 
-	GetOraLoader().GetSql() = "SELECT ASS_PAR_VALUE FROM SEMAM.NW_ASSETS "
-							"WHERE ASS_CODE = ";
+	GetOraLoader().GetSql() = "SELECT ASS_PAR_VALUE FROM SEMAM.NW_ASSETS WHERE ASS_CODE = ";
 	GetOraLoader().GetSql() += QData.GetQueryText(GetRawTicket().GetAsset());
 	GetOraLoader().Open();
 	GetOraLoader().LoadTextString(sPar);
@@ -665,11 +661,10 @@ void CProcessData::ComputeValue(BOOL bSec, BOOL bOrFee)
 	UpdateData(&GetRawTicket(), &GetRawInv());
 	Price = atof(QData.RemoveComma(GetRawTicket().GetPrice()));
 	BrokerFee = atof(QData.RemoveComma(GetRawTicket().GetBrokerFee()));
-	SetOtherFee(0);
+//	SetOtherFee(0);
 //	SetOtherFee(atof(QData.RemoveComma(GetRawTicket().GetOtherFee())));
 
-//	if(GetOtherFee() <= 0.001)
-//		SetOtherFee(ComputeOtherFee(Price, bSec, bOrFee));
+	SetOtherFee(ComputeOtherFee(Price, bSec, bOrFee));
 
 	if(BrokerFee != 0 || GetOtherFee() != 0)
 		SetNetPrice(m_Val.GetNetPrice(Price, BrokerFee, GetOtherFee()));
@@ -705,7 +700,7 @@ double CProcessData::ComputeOtherFee(double Price, BOOL bSec, BOOL bOrFee)
 {
 	double Par, OtherFee = 0, Contracts;
 	CQData QData;
-	CString PB, Text;
+	CString PB;
 
 	if(bSec)
 		OtherFee = m_Val.GetSecFees(Price, bSec);
@@ -713,9 +708,10 @@ double CProcessData::ComputeOtherFee(double Price, BOOL bSec, BOOL bOrFee)
 	if(bOrFee && (m_Val.GetType() == CALL || m_Val.GetType() == PUT))
 	{
 		Par = GetParValue();
+		
 		PB = GetRawTicket().GetAssignCP();
 		if(PB.IsEmpty())
-			PB = GetCustodian();
+			PB = GetRawTicket().GetCustodian();
 		
 		if(Par > 0)
 			Contracts = atof(QData.RemoveComma(GetRawTicket().GetNomAmount()))/Par;

@@ -102,7 +102,8 @@ BEGIN_MESSAGE_MAP(CTicketProcess, CFormView)
 	ON_EN_KILLFOCUS(IDC_PROCESS_ASSET_EDIT, &CTicketProcess::OnEnKillfocusProcessAssetEdit)
 	ON_CBN_KILLFOCUS(IDC_PROCESS_AA_COMBO, &CTicketProcess::OnCbnKillfocusProcessAaCombo)
 	ON_COMMAND(ID_PROCESS_FXCATEGORY, &CTicketProcess::OnProcessFxcategory)
-//	ON_CBN_SELCHANGE(IDC_PROCESS_ASSIGNCP_COMBO, &CTicketProcess::OnCbnSelchangeProcessAssigncpCombo)
+	ON_CBN_SELCHANGE(IDC_PROCESS_ASSIGNCP_COMBO, &CTicketProcess::OnCbnSelchangeProcessAssigncpCombo)
+	ON_CBN_SELCHANGE(IDC_PROCESS_CUSTODIAN_COMBO, &CTicketProcess::OnCbnSelchangeProcessCustodianCombo)
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
@@ -384,6 +385,7 @@ void CTicketProcess::InitControls()
 	m_TransType.Setup(this, IDC_PROCESS_TRANSTYPE_COMBO);
 	m_CP.Setup(this, IDC_PROCESS_COUNTERPARTY_COMBO);
 	m_RepoCP.Setup(this, IDC_PROCESS_REPOCP_COMBO, TRUE);
+	m_Custodian.Setup(this, IDC_PROCESS_CUSTODIAN_COMBO, TRUE);
 	m_AssignCP.Setup(this, IDC_PROCESS_ASSIGNCP_COMBO, TRUE);
     m_Currency.Setup(this, IDC_PROCESS_CURRENCY_COMBO);
     m_RateBasis.Setup(this, IDC_PROCESS_RATEBASIS_COMBO, TRUE);
@@ -534,6 +536,7 @@ void CTicketProcess::InitControls()
 	m_Data.Add(&m_SoftDollar, &pTicket->GetSoftDollar());
 	m_Data.Add(&m_VAR, &pTicket->GetVAR());
 	m_Data.Add(&m_DV01, &pTicket->GetDV01());
+	m_Data.Add(&m_Custodian, &pTicket->GetCustodian());
 	m_Data.Add(&m_AssignCP, &pTicket->GetAssignCP());
 	m_Data.Add(&m_AssignCT, &pTicket->GetAssignCT());
 	m_Data.Add(&m_OptTicket, &pTicket->GetUnWindTicket());
@@ -568,7 +571,7 @@ void CTicketProcess::InitControls()
 	m_Data.GetSRowCtrl().Add(&m_Data.GetTicket().GetTransNum());
 	m_Data.GetSRowCtrl().Add(&pInv->GetPortfolio());
 	m_Data.GetSRowCtrl().Add(&pInv->GetNomAmount());
-	m_Data.GetSRowCtrl().Add(&pInv->GetCustodian());
+//	m_Data.GetSRowCtrl().Add(&pInv->GetCustodian());
 	m_Data.GetSRowCtrl().Add(&pInv->GetAccount());
 	m_Data.GetSRowCtrl().Add(&pInv->GetPrice());
 	m_Data.GetSRowCtrl().Add(&pInv->GetLink());
@@ -634,6 +637,12 @@ BOOL CTicketProcess::IsOK()
 	{										
 		if(m_RateBasis.GetCurSel() < 0)
 			Text = "Invalid RateBasis";
+	}
+
+	if(!(TransType == INTSWAP || TransType == CASH || TransType == INTSWAP || TransType == FOREX))
+	{
+		if(m_Custodian.GetCurSel() < 0)
+			Text = "Invalid Custodian";
 	}
 
 	if(m_PFU.GetCurSel() < 0)
@@ -768,7 +777,7 @@ void CTicketProcess::UpdateCash()
 	if(m_Asset.GetData() == NEWASSET)
 		return;
 	
-	m_Data.GetCustodian() = m_Custodian;
+	//	m_Data.GetCustodian() = m_Custodian.GetData();
 	m_Data.SetupAssetInfo();
 	m_Data.ComputeValue(m_SecFee.GetCheck(), m_OrFee.GetCheck());
 	if(m_FxRate.GetWindowTextLength() > 0)
@@ -826,6 +835,7 @@ BOOL CTicketProcess::UpdateData(BOOL bSaveandValid)
 		GetData().GetCurrencyArr().CopyToComboBox(m_Currency);
 		GetData().GetCurrencyArr().CopyToComboBox(m_MarginCurrency);
 		GetData().GetContactList().CopyKeyToComboBox(m_CP);
+		GetData().GetContactList().CopyKeyToComboBox(m_Custodian);
 		GetData().GetContactList().CopyKeyToComboBox(m_AssignCP);
 		GetData().GetContactList().CopyKeyToComboBox(m_RepoCP);
 		
@@ -944,9 +954,7 @@ void CTicketProcess::OnDblClickProcessTicketList(long Col, long Row)
 			MessageBox("This ticket has been processed.  Please reload tickets.", m_Data.GetRawTicket().GetTicket());
 			return;
 		}
-		if(m_AllocSS.GetSheetRows() > 0)
-			m_Custodian = m_AllocSS.GetSheetText(4, 1); // Get Custodian
-
+		
 		if(m_TransType.GetData() == FOREX && m_Asset.GetData() == "NEW ASSET")
 			m_Asset.SetData(EMPTYSTRING);
 	}
@@ -1021,6 +1029,8 @@ void CTicketProcess::OnProcessAllocation()
 	m_Data.UpdateData();
 	m_Data.SetKey();
 	Dlg.m_Data.Setup(GetData().GetOraLoader(), m_Data.GetRawTicket(), m_Data.GetTicket().GetRepoFormula());
+	m_Data.GetRawTicket().GetAssignCP() = m_AssignCP.GetData();
+	m_Data.GetRawTicket().GetCustodian() = m_Custodian.GetData();
 //	m_Data.GetRawTicket().GetNetPrice() = m_NetPrice.GetData();
 	Dlg.m_Data.GetTicket() = m_Data.GetRawTicket();
 	Dlg.m_DownPay = m_DownPymnt.GetData();
@@ -1039,7 +1049,6 @@ void CTicketProcess::OnProcessAllocation()
 	Dlg.m_Category = m_Data.GetRawTicket().GetAssetCategory();
 	Dlg.m_Margin = m_Margin.GetData();
 	Dlg.m_PFU = m_PFU.GetData();
-	Dlg.m_sCustodian = m_Custodian;
 
 	if(Dlg.DoModal() == IDOK)
 	{		
@@ -1048,7 +1057,6 @@ void CTicketProcess::OnProcessAllocation()
 			m_Data.GetAllocList().SetAt(i, Dlg.m_RecArray);
 		m_Data.GetAllocList().CopyDataToRowCtrl(Dlg.m_RecArray.GetKey(), m_Data.GetSRowCtrl());
 		m_Margin.SetData(Dlg.m_Margin);
-		m_Custodian = Dlg.m_sCustodian;
 		UpdateCash();
 	}
 }
@@ -1088,8 +1096,7 @@ void CTicketProcess::OnProcessFindAsset()
 		m_Data.GetRawTicket().GetAssetClass() = Dlg.m_FindData.GetRec().GetClass();
 		m_Rev = Dlg.m_Rev;
 		m_Trader.SetData(Dlg.m_FindData.GetTrader());
-		m_Custodian = Dlg.m_FindData.GetCustodian();
-
+		m_Custodian.SetData(Dlg.m_FindData.GetCustodian());
 
 		m_Data.GetRawTicket().SetAssetClass(Dlg.m_FindData.GetRec().GetClass());
 		m_Future = Dlg.m_Future;
@@ -1782,9 +1789,13 @@ void CTicketProcess::OnProcessFxcategory()
 
 	Dlg.DoModal();
 }
-/*
+
 void CTicketProcess::OnCbnSelchangeProcessAssigncpCombo()
 {
-	if(m_AssignCP.GetCurSel() >= 0)
-		OnBnClickedProcessSecfeeCheck();
-} */
+	UpdateCash();
+}
+
+void CTicketProcess::OnCbnSelchangeProcessCustodianCombo()
+{
+	UpdateCash();
+}

@@ -7,7 +7,7 @@
 
 
 IMPLEMENT_DYNAMIC(CAllocData, CRowCtrl)
-void CAllocData::Setup(COraLoader &OraLoader, CRawTicketRec &RawTicket, LPCTSTR Formula)
+void CAllocData::Setup(COraLoader &OraLoader, CRawTicketRec &RawTicket, LPCTSTR RepoFormula)
 {
 	SetOraLoader(OraLoader);
 
@@ -18,7 +18,7 @@ void CAllocData::Setup(COraLoader &OraLoader, CRawTicketRec &RawTicket, LPCTSTR 
 	if(!GetTicket().GetFxRate().IsEmpty() && GetTicket().GetFxRate() != "1")
 		m_bLocal = FALSE;
 
-	m_Formula = Formula;
+	m_RepoFormula = RepoFormula;
 }
 
 void CAllocData::SetupAssetInfo()
@@ -37,7 +37,7 @@ void CAllocData::SetupAssetInfo()
 
 	m_Val.Setup(GetOraLoader(), GetTicket().GetTransType(), GetTicket().GetDir(), GetTicket().GetAsset(), 
 				GetTicket().GetValueDate(), Date, GetTicket().GetAvailAmount(), GetPrice(), Fxrate, 
-				GetTicket().GetRateBasis(), LevRate, GetFormula());
+				GetFormula(), GetTicket().GetRateBasis(), LevRate, GetRepoFormula());
 }
 
 BOOL CAllocData::LoadIDs(CString &Common, CString &Cusip, CString &Sedol, CString &Isin)
@@ -84,25 +84,25 @@ BOOL CAllocData::GetSelRawInv(int Index, CRawInvRec &RecInvRec)
 			case 3:
 				RecInvRec.SetNomAmount(Text);
 				break;
-			case 4:
-				RecInvRec.SetCustodian(Text);
+//			case 4:
+//				RecInvRec.SetCustodian(Text);
 				break;
-			case 5:
+			case 4:
 				RecInvRec.SetAccount(Text);
 				break;
-			case 6:
+			case 5:
 				RecInvRec.SetPrice(Text);
 				break;
-			case 7:
+			case 6:
 				RecInvRec.SetLink(Text);
 				break;			
-			case 8:
+			case 7:
 				if(Text.IsEmpty())
 					RecInvRec.SetDownPymnt(GetTicket().GetDownPymnt());
 				else
 					RecInvRec.SetDownPymnt(Text);
 				break;
-			case 9:
+			case 8:
 				RecInvRec.SetOtherFee(Text);
 				break;
 /*			case 4:
@@ -169,9 +169,9 @@ double CAllocData::RepoPrice(double DownPay, double Price)
 	return Price;
 }
 
-void CAllocData::ComputeValue(double OtherFee)
+void CAllocData::ComputeValue(const CString Fund)
 {
-	double Fxrate, DownPay, Contracts, Amount;
+	double Fxrate, DownPay, Contracts, Amount, OtherFee;
 	CString Buf, PB;
 	CQData QData;
 
@@ -184,16 +184,29 @@ void CAllocData::ComputeValue(double OtherFee)
 	m_Val.SetPrice(GetPrice());
 	Amount = m_Val.ComputeLevAmount(TRUE);
 
-	OtherFee += m_Val.GetSecFees(GetPrice(), GetTicket().GetSecFee() == Y);
-	if(GetTicket().GetOrFee() == Y)
-	{
-		if(m_Par > 0)
-			Contracts = m_Val.GetNomAmount()/m_Par;
-		else
-			Contracts = m_Val.GetNomAmount();
-		OtherFee += m_Val.GetOrFees(m_PB, GetTicket().GetCP(), Contracts);
-	}
+	if(GetInvArr().GetCount() <= GetSS()->GetSheetCurRow())
+		OtherFee = atof(QData.RemoveComma(GetInvArr().GetAt(GetSS()->GetSheetCurRow() - 1)));
 	
+	if(OtherFee <= 0.01)
+	{
+		OtherFee = 0;
+		OtherFee += m_Val.GetSecFees(GetPrice(), GetTicket().GetSecFee() == Y);
+
+		if(OtherFee <= 0.01 && GetTicket().GetOrFee() == Y)
+		{
+			if(m_Par > 0)
+				Contracts = m_Val.GetNomAmount()/m_Par;
+			else
+				Contracts = m_Val.GetNomAmount();
+
+			PB = GetTicket().GetAssignCP();
+			if(PB.IsEmpty())
+				PB = GetTicket().GetCustodian();
+
+			OtherFee += m_Val.GetOrFees(PB, GetTicket().GetCP(), Contracts);
+		}	
+	}
+
 	SetOtherFee(OtherFee);
 
 	if(GetOtherFee() > 0 || GetBrFee() > 0)
@@ -288,7 +301,11 @@ void CAllocData::GenerateRepo()
 		else
 			Rec.Add(QData.WriteNumber(NomAmount, TRUE, 2));
 
-		Rec.Add(Inv.GetCustodian()); // Custodian
+/*		if(!GetTicket().GetAssignCP().IsEmpty())
+			Rec.Add(GetTicket().GetAssignCP()); // Custodian
+		else
+			Rec.Add(GetTicket().GetCustodian()); */
+
 		Rec.Add(Inv.GetAccount()); // Account;
 		Rec.Add(QData.WriteNumber(LevPrice));// Price
 		Rec.Add(EMPTYSTRING); // OptLink
@@ -327,13 +344,14 @@ double CAllocData::ComputeAllocAmount(LPCTSTR Portfolio, double CurrentAmount)
 	else
 		Port.Empty();
 	AllocAmount = 0;
+	
 	for (int i = 1; i <= GetSS()->GetSheetRows(); i++)
 	{				
 		GetSelRawInv(i, Inv);
 		if(Port.IsEmpty())
 		{
 			if(GetAutoRepo() && Inv.GetDownPymnt() == "100" && GetTicket().GetRepoType() == LEVERAGE)
-				AllocAmount = AllocAmount + atof(QData.RemoveComma(GetSS()->GetSheetText(6, i)))*1000000;
+				AllocAmount = AllocAmount + atof(QData.RemoveComma(GetSS()->GetSheetText(5, i)))*1000000;
 			else
 				AllocAmount = AllocAmount + atof(QData.RemoveComma(Inv.GetNomAmount()));
 		}
@@ -341,7 +359,7 @@ double CAllocData::ComputeAllocAmount(LPCTSTR Portfolio, double CurrentAmount)
 			if(Port != Inv.GetPortfolio()) // Add everything except identical portfolio
 			{
 				if(GetAutoRepo() && Inv.GetDownPymnt() == "100" && GetTicket().GetRepoType() == LEVERAGE)
-					AllocAmount = AllocAmount + atof(QData.RemoveComma(GetSS()->GetSheetText(6, i)))*1000000;
+					AllocAmount = AllocAmount + atof(QData.RemoveComma(GetSS()->GetSheetText(5, i)))*1000000;
 				else
 					AllocAmount = AllocAmount + atof(QData.RemoveComma(Inv.GetNomAmount()));
 			}
@@ -361,7 +379,7 @@ void CAllocData::LoadAlloc(CRowCtrl &m_Data, const CString DownPayment)
 	Price = QData.RemoveComma(GetTicket().GetPrice());
 	if(!GetTicket().GetUnWindTicket().IsEmpty())
 	{
-		GetOraLoader().GetSql() = "SELECT A.TICKET_NUM, A.PORTFOLIO, A.NOM_AMOUNT, A.CUSTODIAN, A.ACCOUNT, " 
+		GetOraLoader().GetSql() = "SELECT A.TICKET_NUM, A.PORTFOLIO, A.NOM_AMOUNT, A.ACCOUNT, "
 									+ Price + " \"PRICE\", B.TRANS_NUM \"OPT_BACK\", "	+ DownPayment + 
 									"\"DOWN_PYMNT\", DECODE(SIGN(OTHER_FEES), 1, OTHER_FEES, OTHER_FEE*NVL(ALLOC, 100)/100) \"OTHER_FEES\" "
 									"FROM " + Table + ", SEMAM.NW_TR_TICKETS B, SEMAM.NW_AA_ALLOC C "
@@ -378,7 +396,7 @@ void CAllocData::LoadAlloc(CRowCtrl &m_Data, const CString DownPayment)
 	{
 		if(GetTicket().GetTransType() == "INT. SWAP")
 		{
-			GetOraLoader().GetSql() = "SELECT A.TICKET_NUM, A.PORTFOLIO, A.NOM_AMOUNT, A.CUSTODIAN, "
+			GetOraLoader().GetSql() = "SELECT A.TICKET_NUM, A.PORTFOLIO, A.NOM_AMOUNT, "
 										"A.ACCOUNT, " + Price + " \"PRICE\", TO_NUMBER(NULL) \"OPT_BACK\", " 
 										+ DownPayment + "\"DOWN_PYMNT\", "
 										"DECODE(SIGN(OTHER_FEES), 1, OTHER_FEES, OTHER_FEE*NVL(ALLOC, 100)/100) \"OTHER_FEES\" "
@@ -391,7 +409,7 @@ void CAllocData::LoadAlloc(CRowCtrl &m_Data, const CString DownPayment)
 		}
 		else
 		{
-			GetOraLoader().GetSql() = "SELECT A.TICKET_NUM, A.PORTFOLIO, A.NOM_AMOUNT, A.CUSTODIAN, "
+			GetOraLoader().GetSql() = "SELECT A.TICKET_NUM, A.PORTFOLIO, A.NOM_AMOUNT, "
 										"A.ACCOUNT, " + Price + " \"PRICE\", TO_NUMBER(NULL) \"OPT_BACK\", " 
 										+ DownPayment + "\"DOWN_PYMNT\", "
 										"DECODE(SIGN(OTHER_FEES), 1, OTHER_FEES, OTHER_FEE*NVL(ALLOC, 100)/100) \"OTHER_FEES\" "
@@ -409,6 +427,10 @@ void CAllocData::LoadAlloc(CRowCtrl &m_Data, const CString DownPayment)
 	GetOraLoader().GetSql() += "ORDER BY 1, 2 ";
 	GetOraLoader().Open();
 	GetOraLoader().GetFieldArray().GetAt(0)->SetWithComma(FALSE); // TicketNum
-	GetOraLoader().GetFieldArray().GetAt(6)->SetWithComma(FALSE); // TransNum
+	GetOraLoader().GetFieldArray().GetAt(5)->SetWithComma(FALSE); // TransNum
 	GetOraLoader().LoadRowCtrl(m_Data, TRUE, TRUE);
+
+	GetInvArr().RemoveAll();
+	for (int i = 1; i <= m_Data.GetSS()->GetSheetRows(); i ++)
+		GetInvArr().Add(m_Data.GetSS()->GetSheetText(9, i)); // Keep original pre existing other fees
 }

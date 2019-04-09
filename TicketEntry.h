@@ -117,6 +117,7 @@ public:
 	COptComboBox m_RateBasis;
 	COptComboBox m_FloatRateBasis;
 	COptComboBox m_Portfolio;
+	COptComboBox m_Custodian;
 	COptComboBox m_AssignCP;
 	COptComboBox m_MarginCurrency;
 	COptComboBox m_AAFReason;
@@ -136,7 +137,6 @@ public:
 	int m_nRiskLevel;
 	UINT m_nCurrID;
 	BOOL m_bAllocValid;
-	BOOL m_bLoaded;
 	BOOL m_bWarned;
 	CString m_Future;
 	CString m_sAAMethod;
